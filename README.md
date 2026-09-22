@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# InternTrack 🚀
 
-## Getting Started
+**InternTrack** (Monev Magang) adalah aplikasi web komprehensif yang dirancang untuk memonitor, mencatat, dan mengevaluasi aktivitas magang secara efisien. Dibangun dengan menggunakan teknologi modern (Next.js & Supabase) serta ditenagai oleh kecerdasan buatan (Groq AI), aplikasi ini menyederhanakan proses pelaporan magang menjadi lebih bermakna, profesional, dan humanis.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Fitur Utama
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. 📊 Dashboard Cerdas & Task Widget
+Memantau statistik absensi dan progres magang dalam satu lirikan. Dilengkapi dengan widget **Task Aktif** untuk mencentang tugas (To Do / In Progress) secara langsung dari beranda.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+![Dashboard](public/screenshoot/1.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. 📝 Jurnal Harian (Daily Log) Terintegrasi
+Catat kehadiran (Hadir, Izin, Sakit, Alfa), daftar kegiatan berdasarkan jam, rincian pembelajaran harian, hingga kendala yang dihadapi. Mendukung penambahan multi-aktivitas secara *real-time*.
 
-## Learn More
+![Jurnal Harian](public/screenshoot/2.png)
 
-To learn more about Next.js, take a look at the following resources:
+### 3. 🤖 Generator Laporan AI (Groq AI)
+Tidak perlu repot merangkai kata untuk laporan bulanan/mingguan. Sistem akan secara otomatis mengkompilasi seluruh jurnal harian, kegiatan, dan kendala, lalu menggunakan kecerdasan buatan (Groq AI) untuk menyusun narasi laporan akhir yang profesional namun tetap humanis.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![AI Report Generator](public/screenshoot/3.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. 📋 Kanban Task Board & Catatan (Notion-like)
+Sistem manajemen catatan dan tugas terintegrasi:
+- **Grid View**: Menyimpan ide, materi, dan *keyword* penting.
+- **Kanban Board**: Melacak progres tugas (*To Do*, *In Progress*, *Done*).
 
-## Deploy on Vercel
+### 5. 📱 PWA & Mobile-First UX
+Aplikasi didesain khusus agar sangat nyaman dibuka melalui *smartphone*. Mendukung fitur **PWA (Progressive Web App)** sehingga dapat di-*install* di *homescreen* HP layaknya aplikasi *Native* (Lengkap dengan Web App Manifest dan Custom App Icon).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 14 (App Router)](https://nextjs.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Database / BaaS**: [Supabase (PostgreSQL)](https://supabase.com/)
+- **AI Integration**: [Groq API](https://groq.com/) (menggunakan model open-source)
+- **UI Components & Icons**: [Lucide React](https://lucide.dev/), [React Hot Toast](https://react-hot-toast.com/)
+
+---
+
+## 🚀 Panduan Instalasi Lokal
+
+1. **Clone repositori ini:**
+   ```bash
+   git clone https://github.com/farhanmunada/monev-maggang.git
+   cd monev_maggangV2
+   ```
+
+2. **Instal dependensi:**
+   ```bash
+   npm install
+   ```
+
+3. **Atur Variabel Lingkungan (.env.local):**
+   Buat file `.env.local` di *root directory* dan masukkan konfigurasi berikut:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   GROQ_API_KEY=your_groq_api_key
+   ```
+
+4. **Jalankan Server:**
+   ```bash
+   npm run dev
+   ```
+   Akses `http://localhost:3000` di browser Anda.
+
+---
+*Dibuat untuk menyederhanakan administrasi magang. Happy Coding!* 🎯
