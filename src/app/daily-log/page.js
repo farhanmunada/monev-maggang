@@ -1,0 +1,369 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import toast from "react-hot-toast";
+
+export default function DailyLog() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [logId, setLogId] = useState(null);
+  
+  // Format YYYY-MM-DD untuk query database
+  const queryDate = currentDate.toISOString().split("T")[0];
+
+  // State Utama Jurnal Harian
+  const [logData, setLogData] = useState({
+    attendance: "Hadir",
+    learning: "",
+    obstacle: "",
+  });
+
+  // State Daftar Kegiatan (Aktivitas)
+  const [activities, setActivities] = useState([]);
+
+  // State Form Kegiatan Baru
+  const [isAddingActivity, setIsAddingActivity] = useState(false);
+  const [newActivity, setNewActivity] = useState({ time_range: "", title: "", description: "" });
+
+  const formattedDate = currentDate.toLocaleDateString('id-ID', { 
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+  });
+
+  // Fetch data dari Supabase saat load
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        // Cek apakah jurnal hari ini sudah ada
+        const { data: log, error: logError } = await supabase
+          .from("daily_logs")
+          .select("*")
+          .eq("date", queryDate)
+          .maybeSingle();
+
+        if (logError) throw logError;
+
+        if (log) {
+          setLogId(log.id);
+          setLogData({
+            attendance: log.attendance || "Hadir",
+            learning: log.learning || "",
+            obstacle: log.obstacle || "",
+          });
+
+          // Fetch activities
+          const { data: acts, error: actError } = await supabase
+            .from("activities")
+            .select("*")
+            .eq("daily_log_id", log.id)
+            .order("created_at", { ascending: true });
+
+          if (actError) throw actError;
+          if (acts) setActivities(acts);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [queryDate]);
+
+  const handleLogChange = (e) => {
+    const { name, value } = e.target;
+    setLogData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const addActivity = async (e) => {
+    e.preventDefault();
+    if (!newActivity.title) return toast.error("Judul kegiatan wajib diisi!");
+    
+    // Optimistic UI update (kasih temporary id)
+    const tempId = crypto.randomUUID();
+    const newAct = { ...newActivity, id: tempId };
+    setActivities(prev => [...prev, newAct]);
+    setNewActivity({ time_range: "", title: "", description: "" });
+    setIsAddingActivity(false);
+  };
+
+  const removeActivity = (actId) => {
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <span className="font-semibold text-sm">Hapus kegiatan ini?</span>
+        <div className="flex gap-2 justify-end">
+          <button 
+            onClick={() => toast.dismiss(t.id)} 
+            className="px-3 py-1.5 bg-gray-200 text-gray-800 rounded-lg text-xs font-medium hover:bg-gray-300"
+          >
+            Batal
+          </button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t.id);
+              const actToDelete = activities.find(a => a.id === actId);
+              if (actToDelete && actToDelete.created_at) {
+                try {
+                  await supabase.from("activities").delete().eq("id", actId);
+                } catch (err) {
+                  console.error("Gagal menghapus di database", err);
+                  return toast.error("Gagal menghapus kegiatan");
+                }
+              }
+              setActivities(prev => prev.filter(a => a.id !== actId));
+              toast.success("Kegiatan dihapus");
+            }} 
+            className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-medium hover:bg-red-600"
+          >
+            Hapus
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity });
+  };
+
+  const handleSaveAll = async () => {
+    try {
+      setIsSaving(true);
+      
+      // 1. Upsert Daily Log
+      let currentLogId = logId;
+      const logPayload = {
+        date: queryDate,
+        attendance: logData.attendance,
+        learning: logData.learning,
+        obstacle: logData.obstacle
+      };
+
+      if (currentLogId) {
+        // Update
+        const { error } = await supabase
+          .from("daily_logs")
+          .update(logPayload)
+          .eq("id", currentLogId);
+        if (error) throw error;
+      } else {
+        // Insert
+        const { data, error } = await supabase
+          .from("daily_logs")
+          .insert([logPayload])
+          .select()
+          .single();
+        if (error) throw error;
+        currentLogId = data.id;
+        setLogId(data.id);
+      }
+
+      // 2. Simpan aktivitas baru (yang belum punya record di DB, misal ditandai dengan tidak ada daily_log_id)
+      const newActs = activities.filter(act => !act.daily_log_id).map(act => ({
+        daily_log_id: currentLogId,
+        time_range: act.time_range,
+        title: act.title,
+        description: act.description
+      }));
+
+      if (newActs.length > 0) {
+        const { error } = await supabase
+          .from("activities")
+          .insert(newActs);
+        if (error) throw error;
+        
+        // Refresh activities state to get real IDs
+        const { data: acts } = await supabase
+            .from("activities")
+            .select("*")
+            .eq("daily_log_id", currentLogId)
+            .order("created_at", { ascending: true });
+        if (acts) setActivities(acts);
+      }
+
+      toast.success("Jurnal hari ini berhasil disimpan!");
+    } catch (err) {
+      console.error("Error saving data:", err);
+      toast.error("Gagal menyimpan data: " + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="min-h-[50vh] flex items-center justify-center animate-pulse">Memuat data dari database...</div>;
+  }
+
+  return (
+    <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
+      
+      {/* Header Tanggal & Kehadiran */}
+      <div className="bg-gradient-to-r from-primary-600 to-indigo-700 rounded-3xl p-5 md:p-8 text-white shadow-lg shadow-primary-500/20 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6">
+        <div className="absolute right-0 top-0 opacity-10 pointer-events-none">
+          <CalendarIcon className="w-64 h-64 -mr-10 -mt-10" />
+        </div>
+        
+        <div className="relative z-10">
+          <p className="text-primary-100 font-medium mb-0.5 md:mb-1 text-sm md:text-base">Jurnal Hari Ini</p>
+          <h1 className="text-xl md:text-3xl font-extrabold tracking-tight mb-2 md:mb-3">
+            {formattedDate}
+          </h1>
+          <p className="text-[10px] md:text-sm bg-black/20 inline-block px-2 md:px-3 py-1 md:py-1.5 rounded-full backdrop-blur-sm">
+            Sesi aktif hingga 23:59 WIB
+          </p>
+        </div>
+
+        <div className="relative z-10 w-full md:w-auto mt-4 md:mt-0">
+          <div className="bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/20 flex flex-nowrap w-full md:inline-flex md:w-auto">
+            {["Hadir", "Izin", "Sakit", "Alfa"].map((status) => {
+              const isActive = logData.attendance === status;
+              return (
+                <button
+                  key={status}
+                  onClick={() => setLogData(prev => ({ ...prev, attendance: status }))}
+                  className={`flex-1 md:flex-none px-2 md:px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
+                    isActive 
+                      ? "bg-white text-indigo-700 shadow-md" 
+                      : "text-white hover:bg-white/20"
+                  }`}
+                >
+                  {status}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Daftar Kegiatan */}
+      <section className="bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
+        <div className="flex justify-between items-center mb-5 md:mb-6">
+          <h2 className="text-lg md:text-xl font-bold text-foreground flex items-center gap-2">
+            <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary-500" />
+            Daftar Kegiatan
+          </h2>
+          <button 
+            onClick={() => setIsAddingActivity(!isAddingActivity)}
+            className="flex items-center gap-1.5 md:gap-2 bg-primary-50 text-primary-700 hover:bg-primary-100 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors font-medium text-xs md:text-sm"
+          >
+            <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" /> Tambah
+          </button>
+        </div>
+
+        {/* List Aktivitas */}
+        <div className="space-y-4 mb-6">
+          {activities.length === 0 ? (
+            <div className="text-center py-8 text-secondary border-2 border-dashed border-border rounded-2xl">
+              Belum ada kegiatan yang ditambahkan hari ini.
+            </div>
+          ) : (
+            activities.map((act) => (
+              <div key={act.id} className="flex flex-col md:flex-row gap-3 md:gap-4 p-4 border border-border rounded-2xl hover:shadow-md transition-shadow bg-background/50 relative group">
+                <div className="bg-primary-100 text-primary-700 px-3 py-1.5 rounded-lg w-fit h-fit text-xs md:text-sm font-bold whitespace-nowrap">
+                  {act.time_range || "Sepanjang hari"}
+                </div>
+                <div className="flex-1 pr-8">
+                  <h4 className="font-bold text-foreground text-sm md:text-base">{act.title}</h4>
+                  {act.description && <p className="text-secondary text-xs md:text-sm mt-1">{act.description}</p>}
+                </div>
+                <button 
+                  onClick={() => removeActivity(act.id)}
+                  className="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors md:opacity-0 md:group-hover:opacity-100 p-1"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Form Tambah Aktivitas */}
+        {isAddingActivity && (
+          <form onSubmit={addActivity} className="bg-gray-50 p-5 rounded-2xl border border-gray-200 animate-in fade-in slide-in-from-top-2">
+            <h4 className="font-semibold mb-4 text-foreground">Kegiatan Baru</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="md:col-span-1">
+                <input 
+                  type="text" placeholder="Waktu (Misal: 09:00 - 10:00)" 
+                  value={newActivity.time_range} onChange={e => setNewActivity({...newActivity, time_range: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <input 
+                  type="text" placeholder="Judul Kegiatan" required
+                  value={newActivity.title} onChange={e => setNewActivity({...newActivity, title: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+            </div>
+            <textarea 
+              placeholder="Deskripsi kegiatan..." rows={2}
+              value={newActivity.description} onChange={e => setNewActivity({...newActivity, description: e.target.value})}
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none mb-4"
+            />
+            <div className="flex justify-end gap-2">
+              <button type="button" onClick={() => setIsAddingActivity(false)} className="px-4 py-2 text-secondary hover:bg-gray-200 rounded-xl transition-colors font-medium">Batal</button>
+              <button type="submit" className="px-5 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-xl transition-colors font-medium">Tambah ke Daftar</button>
+            </div>
+          </form>
+        )}
+      </section>
+
+      {/* Pembelajaran & Kendala */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-card rounded-3xl border border-border p-5 md:p-6 shadow-sm">
+          <label className="flex items-center gap-2 text-base md:text-lg font-bold text-foreground mb-2 md:mb-4">
+            <BookOpenIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
+            Pembelajaran
+          </label>
+          <p className="text-xs md:text-sm text-secondary mb-3">Apa insight atau pelajaran baru yang Anda dapatkan hari ini?</p>
+          <textarea 
+            name="learning" value={logData.learning} onChange={handleLogChange}
+            rows={5} placeholder="Saya belajar tentang..."
+            className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow resize-none text-sm"
+          />
+        </div>
+
+        <div className="bg-card rounded-3xl border border-border p-5 md:p-6 shadow-sm">
+          <label className="flex items-center gap-2 text-base md:text-lg font-bold text-foreground mb-2 md:mb-4">
+            <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-amber-500" />
+            Kendala
+          </label>
+          <p className="text-xs md:text-sm text-secondary mb-3">Apakah ada hambatan dalam menjalankan kegiatan hari ini?</p>
+          <textarea 
+            name="obstacle" value={logData.obstacle} onChange={handleLogChange}
+            rows={5} placeholder="Kendala yang dihadapi adalah..."
+            className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-amber-500 transition-shadow resize-none text-sm"
+          />
+        </div>
+      </section>
+
+      {/* Tombol Simpan Akhir */}
+      <div className="flex justify-end pt-2 md:pt-4 pb-6 md:pb-0">
+        <button 
+          onClick={handleSaveAll}
+          disabled={isSaving}
+          className="flex items-center justify-center gap-2 w-full md:w-auto bg-foreground text-background hover:bg-gray-800 px-6 md:px-8 py-3.5 md:py-4 rounded-2xl shadow-xl transition-transform md:hover:-translate-y-1 font-bold text-base md:text-lg disabled:opacity-70 disabled:hover:translate-y-0"
+        >
+          <Save className="w-5 h-5 md:w-6 md:h-6" />
+          {isSaving ? "Menyimpan..." : "Simpan Jurnal Hari Ini"}
+        </button>
+      </div>
+
+    </div>
+  );
+}
+
+// Custom Icons
+function CalendarIcon(props) {
+  return (
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+  );
+}
+
+function BookOpenIcon(props) {
+  return (
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+  );
+}
