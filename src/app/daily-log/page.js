@@ -1,18 +1,28 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle } from "lucide-react";
+import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
+
+// Format local date YYYY-MM-DD
+function getLocalDateString(date = new Date()) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 export default function DailyLog() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSubmittingActivity, setIsSubmittingActivity] = useState(false);
   const [logId, setLogId] = useState(null);
   
   // Format YYYY-MM-DD untuk query database
-  const queryDate = currentDate.toISOString().split("T")[0];
+  const queryDate = getLocalDateString(currentDate);
 
   // State Utama Jurnal Harian
   const [logData, setLogData] = useState({
@@ -27,6 +37,11 @@ export default function DailyLog() {
   // State Form Kegiatan Baru
   const [isAddingActivity, setIsAddingActivity] = useState(false);
   const [newActivity, setNewActivity] = useState({ time_range: "", title: "", description: "" });
+
+  // State Edit Kegiatan
+  const [editingActivityId, setEditingActivityId] = useState(null);
+  const [editActivityForm, setEditActivityForm] = useState({ time_range: "", title: "", description: "" });
+  const [isUpdatingActivity, setIsUpdatingActivity] = useState(false);
 
   const formattedDate = currentDate.toLocaleDateString('id-ID', { 
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
@@ -63,6 +78,9 @@ export default function DailyLog() {
 
           if (actError) throw actError;
           if (acts) setActivities(acts);
+        } else {
+          setLogId(null);
+          setActivities([]);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -79,16 +97,109 @@ export default function DailyLog() {
     setLogData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Helper untuk memastikan daily_log ada di database
+  const ensureDailyLogExists = async () => {
+    if (logId) return logId;
+
+    const logPayload = {
+      date: queryDate,
+      attendance: logData.attendance || "Hadir",
+      learning: logData.learning || "",
+      obstacle: logData.obstacle || ""
+    };
+
+    const { data, error } = await supabase
+      .from("daily_logs")
+      .upsert([logPayload], { onConflict: "date" })
+      .select()
+      .single();
+
+    if (error) throw error;
+    setLogId(data.id);
+    return data.id;
+  };
+
   const addActivity = async (e) => {
     e.preventDefault();
-    if (!newActivity.title) return toast.error("Judul kegiatan wajib diisi!");
+    if (!newActivity.title.trim()) return toast.error("Judul kegiatan wajib diisi!");
     
-    // Optimistic UI update (kasih temporary id)
-    const tempId = crypto.randomUUID();
-    const newAct = { ...newActivity, id: tempId };
-    setActivities(prev => [...prev, newAct]);
-    setNewActivity({ time_range: "", title: "", description: "" });
+    try {
+      setIsSubmittingActivity(true);
+      const currentLogId = await ensureDailyLogExists();
+
+      const activityPayload = {
+        daily_log_id: currentLogId,
+        time_range: newActivity.time_range,
+        title: newActivity.title.trim(),
+        description: newActivity.description
+      };
+
+      const { data: insertedAct, error } = await supabase
+        .from("activities")
+        .insert([activityPayload])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setActivities(prev => [...prev, insertedAct]);
+      setNewActivity({ time_range: "", title: "", description: "" });
+      setIsAddingActivity(false);
+      toast.success("Kegiatan berhasil ditambahkan!");
+    } catch (err) {
+      console.error("Gagal menambahkan kegiatan:", err);
+      toast.error("Gagal menambahkan kegiatan: " + err.message);
+    } finally {
+      setIsSubmittingActivity(false);
+    }
+  };
+
+  const handleStartEdit = (act) => {
+    setEditingActivityId(act.id);
+    setEditActivityForm({
+      time_range: act.time_range || "",
+      title: act.title || "",
+      description: act.description || ""
+    });
     setIsAddingActivity(false);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingActivityId(null);
+    setEditActivityForm({ time_range: "", title: "", description: "" });
+  };
+
+  const handleUpdateActivity = async (e) => {
+    if (e) e.preventDefault();
+    if (!editActivityForm.title.trim()) return toast.error("Judul kegiatan wajib diisi!");
+
+    try {
+      setIsUpdatingActivity(true);
+      const updatePayload = {
+        time_range: editActivityForm.time_range,
+        title: editActivityForm.title.trim(),
+        description: editActivityForm.description
+      };
+
+      const { data, error } = await supabase
+        .from("activities")
+        .update(updatePayload)
+        .eq("id", editingActivityId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setActivities(prev => prev.map(a => a.id === editingActivityId ? (data || { ...a, ...updatePayload }) : a));
+      setEditingActivityId(null);
+      setEditActivityForm({ time_range: "", title: "", description: "" });
+      toast.success("Kegiatan berhasil diperbarui!");
+    } catch (err) {
+      console.error("Gagal memperbarui kegiatan:", err);
+      toast.error("Gagal memperbarui kegiatan: " + err.message);
+    } finally {
+      setIsUpdatingActivity(false);
+    }
   };
 
   const removeActivity = (actId) => {
@@ -105,17 +216,15 @@ export default function DailyLog() {
           <button 
             onClick={async () => {
               toast.dismiss(t.id);
-              const actToDelete = activities.find(a => a.id === actId);
-              if (actToDelete && actToDelete.created_at) {
-                try {
-                  await supabase.from("activities").delete().eq("id", actId);
-                } catch (err) {
-                  console.error("Gagal menghapus di database", err);
-                  return toast.error("Gagal menghapus kegiatan");
-                }
+              try {
+                const { error } = await supabase.from("activities").delete().eq("id", actId);
+                if (error) throw error;
+                setActivities(prev => prev.filter(a => a.id !== actId));
+                toast.success("Kegiatan dihapus");
+              } catch (err) {
+                console.error("Gagal menghapus di database", err);
+                toast.error("Gagal menghapus kegiatan: " + err.message);
               }
-              setActivities(prev => prev.filter(a => a.id !== actId));
-              toast.success("Kegiatan dihapus");
             }} 
             className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-medium hover:bg-red-600"
           >
@@ -131,7 +240,6 @@ export default function DailyLog() {
       setIsSaving(true);
       
       // 1. Upsert Daily Log
-      let currentLogId = logId;
       const logPayload = {
         date: queryDate,
         attendance: logData.attendance,
@@ -139,47 +247,55 @@ export default function DailyLog() {
         obstacle: logData.obstacle
       };
 
-      if (currentLogId) {
-        // Update
-        const { error } = await supabase
-          .from("daily_logs")
-          .update(logPayload)
-          .eq("id", currentLogId);
-        if (error) throw error;
-      } else {
-        // Insert
-        const { data, error } = await supabase
-          .from("daily_logs")
-          .insert([logPayload])
-          .select()
-          .single();
-        if (error) throw error;
-        currentLogId = data.id;
-        setLogId(data.id);
+      const { data: savedLog, error: logErr } = await supabase
+        .from("daily_logs")
+        .upsert([logPayload], { onConflict: "date" })
+        .select()
+        .single();
+      
+      if (logErr) throw logErr;
+
+      const currentLogId = savedLog.id;
+      setLogId(currentLogId);
+
+      // 2. Jika ada input kegiatan baru yang belum sempat diklik "Tambah ke Daftar", simpan juga
+      if (isAddingActivity && newActivity.title.trim()) {
+        const extraAct = {
+          daily_log_id: currentLogId,
+          time_range: newActivity.time_range,
+          title: newActivity.title.trim(),
+          description: newActivity.description
+        };
+        const { error: extraErr } = await supabase.from("activities").insert([extraAct]);
+        if (extraErr) throw extraErr;
+        setNewActivity({ time_range: "", title: "", description: "" });
+        setIsAddingActivity(false);
       }
 
-      // 2. Simpan aktivitas baru (yang belum punya record di DB, misal ditandai dengan tidak ada daily_log_id)
-      const newActs = activities.filter(act => !act.daily_log_id).map(act => ({
+      // 3. Simpan aktivitas yang belum punya daily_log_id (jika ada)
+      const unsavedActs = activities.filter(act => !act.daily_log_id).map(act => ({
         daily_log_id: currentLogId,
         time_range: act.time_range,
         title: act.title,
         description: act.description
       }));
 
-      if (newActs.length > 0) {
-        const { error } = await supabase
+      if (unsavedActs.length > 0) {
+        const { error: actErr } = await supabase
           .from("activities")
-          .insert(newActs);
-        if (error) throw error;
-        
-        // Refresh activities state to get real IDs
-        const { data: acts } = await supabase
-            .from("activities")
-            .select("*")
-            .eq("daily_log_id", currentLogId)
-            .order("created_at", { ascending: true });
-        if (acts) setActivities(acts);
+          .insert(unsavedActs);
+        if (actErr) throw actErr;
       }
+
+      // 4. Refresh activities state dari database
+      const { data: acts, error: fetchActsErr } = await supabase
+        .from("activities")
+        .select("*")
+        .eq("daily_log_id", currentLogId)
+        .order("created_at", { ascending: true });
+
+      if (fetchActsErr) throw fetchActsErr;
+      if (acts) setActivities(acts);
 
       toast.success("Jurnal hari ini berhasil disimpan!");
     } catch (err) {
@@ -243,7 +359,10 @@ export default function DailyLog() {
             Daftar Kegiatan
           </h2>
           <button 
-            onClick={() => setIsAddingActivity(!isAddingActivity)}
+            onClick={() => {
+              setIsAddingActivity(!isAddingActivity);
+              setEditingActivityId(null);
+            }}
             className="flex items-center gap-1.5 md:gap-2 bg-primary-50 text-primary-700 hover:bg-primary-100 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors font-medium text-xs md:text-sm"
           >
             <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" /> Tambah
@@ -258,21 +377,94 @@ export default function DailyLog() {
             </div>
           ) : (
             activities.map((act) => (
-              <div key={act.id} className="flex flex-col md:flex-row gap-3 md:gap-4 p-4 border border-border rounded-2xl hover:shadow-md transition-shadow bg-background/50 relative group">
-                <div className="bg-primary-100 text-primary-700 px-3 py-1.5 rounded-lg w-fit h-fit text-xs md:text-sm font-bold whitespace-nowrap">
-                  {act.time_range || "Sepanjang hari"}
-                </div>
-                <div className="flex-1 pr-8">
-                  <h4 className="font-bold text-foreground text-sm md:text-base">{act.title}</h4>
-                  {act.description && <p className="text-secondary text-xs md:text-sm mt-1">{act.description}</p>}
-                </div>
-                <button 
-                  onClick={() => removeActivity(act.id)}
-                  className="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors md:opacity-0 md:group-hover:opacity-100 p-1"
+              editingActivityId === act.id ? (
+                /* Form Edit Inline */
+                <form 
+                  key={act.id} 
+                  onSubmit={handleUpdateActivity} 
+                  className="bg-primary-50/60 p-5 rounded-2xl border border-primary-200 shadow-sm animate-in fade-in"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                </button>
-              </div>
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="font-bold text-sm text-primary-900 flex items-center gap-1.5">
+                      <Pencil className="w-4 h-4 text-primary-600" /> Edit Kegiatan
+                    </h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                    <div className="md:col-span-1">
+                      <input 
+                        type="text" 
+                        placeholder="Waktu (Misal: 09:00 - 10:00)" 
+                        value={editActivityForm.time_range} 
+                        onChange={e => setEditActivityForm({...editActivityForm, time_range: e.target.value})}
+                        className="w-full px-3.5 py-2 text-sm rounded-xl border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <input 
+                        type="text" 
+                        placeholder="Judul Kegiatan" 
+                        required
+                        value={editActivityForm.title} 
+                        onChange={e => setEditActivityForm({...editActivityForm, title: e.target.value})}
+                        className="w-full px-3.5 py-2 text-sm rounded-xl border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                    </div>
+                  </div>
+                  <textarea 
+                    placeholder="Deskripsi kegiatan..." 
+                    rows={2}
+                    value={editActivityForm.description} 
+                    onChange={e => setEditActivityForm({...editActivityForm, description: e.target.value})}
+                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none mb-3"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button 
+                      type="button" 
+                      onClick={handleCancelEdit} 
+                      className="px-3.5 py-1.5 text-xs text-secondary hover:bg-gray-200 rounded-xl transition-colors font-medium"
+                    >
+                      Batal
+                    </button>
+                    <button 
+                      type="submit" 
+                      disabled={isUpdatingActivity}
+                      className="px-4 py-1.5 text-xs bg-primary-600 text-white hover:bg-primary-700 rounded-xl transition-colors font-medium disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                      {isUpdatingActivity ? "Menyimpan..." : "Simpan Perubahan"}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                /* Card Kegiatan Biasa */
+                <div key={act.id} className="flex flex-col md:flex-row gap-3 md:gap-4 p-4 border border-border rounded-2xl hover:shadow-md transition-shadow bg-background/50 relative group">
+                  <div className="bg-primary-100 text-primary-700 px-3 py-1.5 rounded-lg w-fit h-fit text-xs md:text-sm font-bold whitespace-nowrap">
+                    {act.time_range || "Sepanjang hari"}
+                  </div>
+                  <div className="flex-1 pr-16">
+                    <h4 className="font-bold text-foreground text-sm md:text-base">{act.title}</h4>
+                    {act.description && <p className="text-secondary text-xs md:text-sm mt-1">{act.description}</p>}
+                  </div>
+                  <div className="absolute top-3.5 right-3.5 flex items-center gap-1">
+                    <button 
+                      type="button"
+                      title="Edit kegiatan"
+                      onClick={() => handleStartEdit(act)}
+                      className="text-gray-400 hover:text-primary-600 hover:bg-primary-50 p-1.5 rounded-lg transition-colors"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button 
+                      type="button"
+                      title="Hapus kegiatan"
+                      onClick={() => removeActivity(act.id)}
+                      className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )
             ))
           )}
         </div>
@@ -304,7 +496,13 @@ export default function DailyLog() {
             />
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => setIsAddingActivity(false)} className="px-4 py-2 text-secondary hover:bg-gray-200 rounded-xl transition-colors font-medium">Batal</button>
-              <button type="submit" className="px-5 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-xl transition-colors font-medium">Tambah ke Daftar</button>
+              <button 
+                type="submit" 
+                disabled={isSubmittingActivity}
+                className="px-5 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-xl transition-colors font-medium disabled:opacity-50"
+              >
+                {isSubmittingActivity ? "Menyimpan ke Database..." : "Simpan Kegiatan"}
+              </button>
             </div>
           </form>
         )}
