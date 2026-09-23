@@ -11,7 +11,6 @@ export default function Sidebar() {
   const links = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Jurnal Harian", href: "/daily-log", icon: BookOpen },
-    { name: "Riwayat", href: "/history", icon: Clock },
     { name: "Absensi", href: "/report", icon: FileText },
     { name: "Catatan", href: "/notes", icon: StickyNote },
   ];

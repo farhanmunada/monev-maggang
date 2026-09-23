@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle, Pencil, Trash2 } from "lucide-react";
+import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle, Pencil, Trash2, Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
 
@@ -19,6 +19,7 @@ export default function DailyLog() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmittingActivity, setIsSubmittingActivity] = useState(false);
+  const [isGeneratingLearning, setIsGeneratingLearning] = useState(false);
   const [logId, setLogId] = useState(null);
   
   // Format YYYY-MM-DD untuk query database
@@ -233,6 +234,45 @@ export default function DailyLog() {
         </div>
       </div>
     ), { duration: Infinity });
+  };
+
+  const handleGenerateLearning = async () => {
+    if (activities.length === 0) {
+      return toast.error("Tambahkan kegiatan hari ini terlebih dahulu agar AI dapat menganalisis pembelajaran.");
+    }
+
+    try {
+      setIsGeneratingLearning(true);
+      const res = await fetch("/api/generate-learning", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activities })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Gagal generate pembelajaran");
+      }
+
+      const generatedLearning = data.learning;
+      setLogData(prev => ({ ...prev, learning: generatedLearning }));
+
+      // Langsung simpan ke database
+      const currentLogId = await ensureDailyLogExists();
+      const { error: updateErr } = await supabase
+        .from("daily_logs")
+        .update({ learning: generatedLearning })
+        .eq("id", currentLogId);
+
+      if (updateErr) throw updateErr;
+
+      toast.success("Pembelajaran berhasil digenerate & tersimpan ke database!");
+    } catch (err) {
+      console.error("Gagal generate pembelajaran:", err);
+      toast.error("Gagal generate pembelajaran: " + err.message);
+    } finally {
+      setIsGeneratingLearning(false);
+    }
   };
 
   const handleSaveAll = async () => {
@@ -511,16 +551,34 @@ export default function DailyLog() {
       {/* Pembelajaran & Kendala */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <div className="bg-card rounded-3xl border border-border p-5 md:p-6 shadow-sm">
-          <label className="flex items-center gap-2 text-base md:text-lg font-bold text-foreground mb-2 md:mb-4">
-            <BookOpenIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
-            Pembelajaran
-          </label>
+          <div className="flex items-center justify-between mb-2 md:mb-4 gap-2">
+            <label className="flex items-center gap-2 text-base md:text-lg font-bold text-foreground">
+              <BookOpenIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
+              Pembelajaran
+            </label>
+            <button
+              type="button"
+              onClick={handleGenerateLearning}
+              disabled={isGeneratingLearning}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-primary-600 text-white shadow-sm hover:from-indigo-700 hover:to-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              title="Generate hasil pembelajaran dari kegiatan hari ini dengan AI"
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${isGeneratingLearning ? "animate-spin" : ""}`} />
+              {isGeneratingLearning ? "Menyusun & Menyimpan..." : "Generate AI"}
+            </button>
+          </div>
           <p className="text-xs md:text-sm text-secondary mb-3">Apa insight atau pelajaran baru yang Anda dapatkan hari ini?</p>
           <textarea 
             name="learning" value={logData.learning} onChange={handleLogChange}
-            rows={5} placeholder="Saya belajar tentang..."
+            rows={5} placeholder="Insight atau konsep yang dipelajari hari ini..."
             className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow resize-none text-sm"
           />
+          <div className="flex justify-between items-center mt-2 text-[11px] text-secondary">
+            <span>Minimal 100 karakter</span>
+            <span className={logData.learning.length >= 100 ? "text-green-600 font-medium" : "text-amber-600"}>
+              {logData.learning.length} karakter
+            </span>
+          </div>
         </div>
 
         <div className="bg-card rounded-3xl border border-border p-5 md:p-6 shadow-sm">

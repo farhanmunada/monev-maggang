@@ -164,7 +164,7 @@ export default function Dashboard() {
       <div className="mt-12 bg-card rounded-2xl border border-border shadow-sm p-6 overflow-hidden relative">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-foreground">Jurnal Terbaru</h2>
-          <Link href="/history" className="text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1">
+          <Link href="/report" className="text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1">
             Lihat Semua <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

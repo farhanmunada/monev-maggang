@@ -10,7 +10,6 @@ export default function BottomNav() {
   const links = [
     { name: "Home", href: "/", icon: LayoutDashboard },
     { name: "Jurnal", href: "/daily-log", icon: BookOpen },
-    { name: "Riwayat", href: "/history", icon: Clock },
     { name: "Absensi", href: "/report", icon: FileText },
     { name: "Notes", href: "/notes", icon: StickyNote },
   ];
