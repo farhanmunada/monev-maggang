@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle, Pencil, Trash2, Sparkles } from "lucide-react";
+import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle, Pencil, Trash2, Sparkles, Flame } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
+import { calculateStreak } from "@/lib/gamification";
 
 // Format local date YYYY-MM-DD
 function getLocalDateString(date = new Date()) {
@@ -20,6 +21,7 @@ export default function DailyLog() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmittingActivity, setIsSubmittingActivity] = useState(false);
   const [isGeneratingLearning, setIsGeneratingLearning] = useState(false);
+  const [streakCount, setStreakCount] = useState(0);
   const [logId, setLogId] = useState(null);
   
   // Format YYYY-MM-DD untuk query database
@@ -83,6 +85,16 @@ export default function DailyLog() {
           setLogId(null);
           setActivities([]);
         }
+
+        // Fetch all dates untuk hitung streak
+        const { data: allDates } = await supabase
+          .from("daily_logs")
+          .select("date");
+        if (allDates) {
+          const streak = calculateStreak(allDates);
+          setStreakCount(streak.count);
+        }
+
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
@@ -146,7 +158,7 @@ export default function DailyLog() {
       setActivities(prev => [...prev, insertedAct]);
       setNewActivity({ time_range: "", title: "", description: "" });
       setIsAddingActivity(false);
-      toast.success("Kegiatan berhasil ditambahkan!");
+      toast.success("Kegiatan berhasil ditambahkan! (+15 EXP ⚡)");
     } catch (err) {
       console.error("Gagal menambahkan kegiatan:", err);
       toast.error("Gagal menambahkan kegiatan: " + err.message);
@@ -266,7 +278,7 @@ export default function DailyLog() {
 
       if (updateErr) throw updateErr;
 
-      toast.success("Pembelajaran berhasil digenerate & tersimpan ke database!");
+      toast.success("Pembelajaran berhasil digenerate & tersimpan ke database! (+20 EXP 🧠)");
     } catch (err) {
       console.error("Gagal generate pembelajaran:", err);
       toast.error("Gagal generate pembelajaran: " + err.message);
@@ -337,7 +349,7 @@ export default function DailyLog() {
       if (fetchActsErr) throw fetchActsErr;
       if (acts) setActivities(acts);
 
-      toast.success("Jurnal hari ini berhasil disimpan!");
+      toast.success("Jurnal hari ini berhasil disimpan! (+50 EXP 🔥)");
     } catch (err) {
       console.error("Error saving data:", err);
       toast.error("Gagal menyimpan data: " + err.message);
@@ -360,12 +372,20 @@ export default function DailyLog() {
         </div>
         
         <div className="relative z-10">
-          <p className="text-primary-100 font-medium mb-0.5 md:mb-1 text-sm md:text-base">Jurnal Hari Ini</p>
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <p className="text-primary-100 font-medium text-sm md:text-base">Jurnal Hari Ini</p>
+            {streakCount > 0 && (
+              <span className="bg-amber-400/25 text-amber-200 border border-amber-300/30 text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 backdrop-blur-sm shadow-sm">
+                <Flame className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
+                {streakCount} Hari Streak
+              </span>
+            )}
+          </div>
           <h1 className="text-xl md:text-3xl font-extrabold tracking-tight mb-2 md:mb-3">
             {formattedDate}
           </h1>
           <p className="text-[10px] md:text-sm bg-black/20 inline-block px-2 md:px-3 py-1 md:py-1.5 rounded-full backdrop-blur-sm">
-            Sesi aktif hingga 23:59 WIB
+            Sesi aktif hingga 23:59 WIB • +50 EXP jika diisi
           </p>
         </div>
 
