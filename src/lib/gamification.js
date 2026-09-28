@@ -1,40 +1,114 @@
 // Helper functions for Gamification Engine
 
+// Format local date YYYY-MM-DD
+export function formatYMD(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Perhitungan Streak Harian dengan Aturan 6 Hari Kerja (Senin - Sabtu)
+ * Hari Minggu adalah Hari Libur Resmi (Sunday Shield).
+ * Streak tidak boleh putus di hari Minggu jika hari Sabtu terisi.
+ */
 export function calculateStreak(logs = []) {
   if (!logs || logs.length === 0) {
-    return { count: 0, isActiveToday: false, message: "Mulai streak pertamamu hari ini!" };
+    return { 
+      count: 0, 
+      isActiveToday: false, 
+      isSunday: new Date().getDay() === 0,
+      message: "Mulai streak pertamamu hari ini!" 
+    };
   }
 
   // Ambil tanggal unik dan urutkan descending (terbaru ke terlama)
   const uniqueDates = Array.from(new Set(logs.map(l => l.date))).sort().reverse();
   
-  // Tanggal hari ini dan kemarin dalam string lokal YYYY-MM-DD
   const now = new Date();
-  const formatYMD = (d) => {
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
+  const isTodaySunday = now.getDay() === 0; // 0 = Minggu
   const todayStr = formatYMD(now);
+
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = formatYMD(yesterday);
 
   const hasToday = uniqueDates.includes(todayStr);
-  const hasYesterday = uniqueDates.includes(yesterdayStr);
 
-  // Jika hari ini dan kemarin tidak ada catatan sama sekali, streak putus (0)
-  if (!hasToday && !hasYesterday) {
-    return { count: 0, isActiveToday: false, message: "Streak terputus. Isi jurnal hari ini untuk mulai lagi!" };
+  // Jika hari ini Hari Minggu (Hari Libur Resmi):
+  if (isTodaySunday) {
+    // Cek apakah hari Sabtu (kemarin) atau hari ini diisi
+    const hasSaturday = uniqueDates.includes(yesterdayStr);
+    
+    // Hitung streak mundur dari Sabtu (atau hari ini jika ada log di hari Minggu)
+    let count = 0;
+    let checkDate = new Date(hasToday ? now : yesterday);
+
+    while (true) {
+      // Jika checkDate jatuh pada hari Minggu dan bukan titik awal, lewati
+      if (checkDate.getDay() === 0 && formatYMD(checkDate) !== (hasToday ? todayStr : "")) {
+        checkDate.setDate(checkDate.getDate() - 1);
+        continue;
+      }
+
+      const checkStr = formatYMD(checkDate);
+      if (uniqueDates.includes(checkStr)) {
+        count++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    if (count > 0 || hasSaturday || hasToday) {
+      return {
+        count: Math.max(count, hasSaturday ? 1 : 0),
+        isActiveToday: true, // Dianggap aman di hari Minggu
+        isSunday: true,
+        message: `Hari Minggu Libur! Streak ${count} hari Anda aman terlindungi hingga Senin 🏖️`
+      };
+    }
+
+    return {
+      count: 0,
+      isActiveToday: false,
+      isSunday: true,
+      message: "Hari Minggu libur. Siapkan semangatmu untuk mulai streak baru di hari Senin!"
+    };
   }
 
-  // Hitung streak beruntun mundur
+  // Jika hari ini Senin (1): hari kerja sebelumnya adalah Sabtu (2 hari lalu)
+  const isTodayMonday = now.getDay() === 1;
+  const saturday = new Date(now);
+  saturday.setDate(saturday.getDate() - 2);
+  const saturdayStr = formatYMD(saturday);
+
+  const hasYesterdayOrSaturday = isTodayMonday 
+    ? (uniqueDates.includes(yesterdayStr) || uniqueDates.includes(saturdayStr))
+    : uniqueDates.includes(yesterdayStr);
+
+  // Jika hari ini dan hari kerja sebelumnya tidak ada catatan, streak putus (0)
+  if (!hasToday && !hasYesterdayOrSaturday) {
+    return { 
+      count: 0, 
+      isActiveToday: false, 
+      isSunday: false,
+      message: "Streak terputus. Isi jurnal hari ini untuk mulai lagi!" 
+    };
+  }
+
+  // Hitung streak beruntun mundur dengan melewati Hari Minggu
   let count = 0;
-  let checkDate = new Date(hasToday ? now : yesterday);
+  let checkDate = new Date(hasToday ? now : (isTodayMonday && !uniqueDates.includes(yesterdayStr) ? saturday : yesterday));
 
   while (true) {
+    // Lewati hari Minggu (day 0) saat menghitung mundur hari kerja
+    if (checkDate.getDay() === 0) {
+      checkDate.setDate(checkDate.getDate() - 1);
+      continue;
+    }
+
     const checkStr = formatYMD(checkDate);
     if (uniqueDates.includes(checkStr)) {
       count++;
@@ -47,20 +121,23 @@ export function calculateStreak(logs = []) {
   return {
     count,
     isActiveToday: hasToday,
+    isSunday: false,
     message: hasToday 
       ? `Luar biasa! Streak ${count} hari Anda aktif hari ini.`
-      : `Streak ${count} hari tersimpan! Isi jurnal hari ini agar streak tidak putus.`
+      : isTodayMonday && uniqueDates.includes(saturdayStr)
+        ? `Streak ${count} hari tersimpan dari hari Sabtu! Isi jurnal hari ini agar bertambah.`
+        : `Streak ${count} hari tersimpan! Isi jurnal hari ini agar streak tidak putus.`
   };
 }
 
-export function calculateLevelAndExp(logsCount = 0, activitiesCount = 0, learningCount = 0, doneTasksCount = 0) {
+export function calculateLevelAndExp(logsCount = 0, activitiesCount = 0, learningCount = 0, doneTasksCount = 0, bonusExp = 0) {
   // Formula EXP
   const expFromLogs = logsCount * 50;
   const expFromActs = activitiesCount * 15;
   const expFromLearning = learningCount * 20;
   const expFromTasks = doneTasksCount * 10;
 
-  const totalExp = expFromLogs + expFromActs + expFromLearning + expFromTasks;
+  const totalExp = expFromLogs + expFromActs + expFromLearning + expFromTasks + bonusExp;
 
   const LEVELS = [
     { level: 1, title: "Trainee Intern", minExp: 0, maxExp: 150, color: "from-blue-500 to-cyan-500", badgeColor: "bg-blue-100 text-blue-700" },
@@ -95,88 +172,90 @@ export function calculateLevelAndExp(logsCount = 0, activitiesCount = 0, learnin
       fromLogs: expFromLogs,
       fromActs: expFromActs,
       fromLearning: expFromLearning,
-      fromTasks: expFromTasks
+      fromTasks: expFromTasks,
+      fromBonus: bonusExp
     }
   };
 }
 
-export function calculateBadges({ streakCount = 0, logsCount = 0, activitiesCount = 0, learningCount = 0, doneTasksCount = 0, attendanceRate = 100, currentLevel = 1 }) {
-  const BADGES = [
+/**
+ * Papan Misi Interaktif (Interactive Quests)
+ * Berisi misi harian & mingguan dengan tombol klaim
+ */
+export function getInteractiveQuests({
+  todayLog = null,
+  todayActivitiesCount = 0,
+  doneTasksTodayCount = 0,
+  weekLogsCount = 0,
+  claimedQuestIds = []
+}) {
+  const hasLoggedToday = !!todayLog;
+  const hasLearningToday = !!(todayLog && todayLog.learning && todayLog.learning.trim().length > 15);
+
+  const QUESTS = [
     {
-      id: "streak_3",
-      title: "🔥 Konsisten",
-      desc: "Streak 3 hari kerja berturut-turut",
-      progress: Math.min(streakCount, 3),
-      target: 3,
-      unlocked: streakCount >= 3,
-      rewardExp: 30
-    },
-    {
-      id: "streak_7",
-      title: "⚡ Dedikasi Emas",
-      desc: "Streak 7 hari kerja berturut-turut",
-      progress: Math.min(streakCount, 7),
-      target: 7,
-      unlocked: streakCount >= 7,
-      rewardExp: 70
-    },
-    {
-      id: "act_5",
-      title: "🛠️ Produktif",
-      desc: "Menyelesaikan 5 kegiatan magang",
-      progress: Math.min(activitiesCount, 5),
-      target: 5,
-      unlocked: activitiesCount >= 5,
-      rewardExp: 25
-    },
-    {
-      id: "act_20",
-      title: "👑 Centurion",
-      desc: "Menyelesaikan 20 kegiatan magang",
-      progress: Math.min(activitiesCount, 20),
-      target: 20,
-      unlocked: activitiesCount >= 20,
-      rewardExp: 100
-    },
-    {
-      id: "learn_3",
-      title: "🧠 Reflektif",
-      desc: "Mencatat 3 refleksi pembelajaran",
-      progress: Math.min(learningCount, 3),
-      target: 3,
-      unlocked: learningCount >= 3,
-      rewardExp: 40
-    },
-    {
-      id: "task_3",
-      title: "🎯 Task Slayer",
-      desc: "Menyelesaikan 3 task di board catatan",
-      progress: Math.min(doneTasksCount, 3),
-      target: 3,
-      unlocked: doneTasksCount >= 3,
-      rewardExp: 30
-    },
-    {
-      id: "level_2",
-      title: "🌟 Bintang Magang",
-      desc: "Berhasil naik ke Level 2 (Junior)",
-      progress: Math.min(currentLevel, 2),
-      target: 2,
-      unlocked: currentLevel >= 2,
-      rewardExp: 50
-    },
-    {
-      id: "attend_100",
-      title: "🛡️ Disiplin Penuh",
-      desc: "Kehadiran 100% (minimal 3 log)",
-      progress: logsCount >= 3 && attendanceRate === 100 ? 1 : 0,
+      id: "quest_daily_log",
+      type: "daily",
+      title: "Catat Jurnal Hari Ini",
+      desc: "Isi dan simpan jurnal kegiatan magang hari ini",
+      rewardExp: 30,
+      icon: "📝",
+      current: hasLoggedToday ? 1 : 0,
       target: 1,
-      unlocked: logsCount >= 3 && attendanceRate === 100,
-      rewardExp: 50
+      isCompleted: hasLoggedToday,
+      isClaimed: claimedQuestIds.includes("quest_daily_log")
+    },
+    {
+      id: "quest_daily_acts",
+      type: "daily",
+      title: "Eksekusi 2 Kegiatan",
+      desc: "Tambahkan minimal 2 aktivitas pada jurnal hari ini",
+      rewardExp: 25,
+      icon: "⚡",
+      current: Math.min(todayActivitiesCount, 2),
+      target: 2,
+      isCompleted: todayActivitiesCount >= 2,
+      isClaimed: claimedQuestIds.includes("quest_daily_acts")
+    },
+    {
+      id: "quest_daily_learning",
+      type: "daily",
+      title: "Refleksi Pembelajaran",
+      desc: "Tuliskan ilmu/pengalaman baru di form refleksi hari ini",
+      rewardExp: 20,
+      icon: "🧠",
+      current: hasLearningToday ? 1 : 0,
+      target: 1,
+      isCompleted: hasLearningToday,
+      isClaimed: claimedQuestIds.includes("quest_daily_learning")
+    },
+    {
+      id: "quest_daily_task",
+      type: "daily",
+      title: "Tuntaskan Task Magang",
+      desc: "Selesaikan minimal 1 task di board catatan",
+      rewardExp: 25,
+      icon: "🎯",
+      current: Math.min(doneTasksTodayCount, 1),
+      target: 1,
+      isCompleted: doneTasksTodayCount >= 1,
+      isClaimed: claimedQuestIds.includes("quest_daily_task")
+    },
+    {
+      id: "quest_week_consistency",
+      type: "weekly",
+      title: "Pejuang 5 Hari Kerja",
+      desc: "Mengisi jurnal minimal 5 hari kerja minggu ini (Senin–Sabtu)",
+      rewardExp: 75,
+      icon: "🔥",
+      current: Math.min(weekLogsCount, 5),
+      target: 5,
+      isCompleted: weekLogsCount >= 5,
+      isClaimed: claimedQuestIds.includes("quest_week_consistency")
     }
   ];
 
-  return BADGES;
+  return QUESTS;
 }
 
 export function generateHeatmap(logs = [], daysCount = 28) {
@@ -197,14 +276,17 @@ export function generateHeatmap(logs = [], daysCount = 28) {
     const month = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
     const dateStr = `${year}-${month}-${day}`;
+    const isSunday = d.getDay() === 0;
 
     const count = logMap[dateStr] || 0;
     heatmap.push({
       date: dateStr,
       count,
+      isSunday,
       dayName: d.toLocaleDateString("id-ID", { weekday: "short" })
     });
   }
 
   return heatmap;
 }
+

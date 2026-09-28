@@ -21,13 +21,8 @@ export default function NotesPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
   const fetchNotes = async () => {
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from("notes")
         .select("*")
@@ -41,6 +36,10 @@ export default function NotesPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

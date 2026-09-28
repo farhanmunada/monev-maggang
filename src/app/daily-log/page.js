@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, Activity, AlertCircle, Pencil, Trash2, Sparkles, Flame } from "lucide-react";
+import { 
+  Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, 
+  Activity, AlertCircle, Pencil, Trash2, Sparkles, Flame, ShieldCheck, Coffee 
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
 import { calculateStreak } from "@/lib/gamification";
@@ -21,7 +24,7 @@ export default function DailyLog() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmittingActivity, setIsSubmittingActivity] = useState(false);
   const [isGeneratingLearning, setIsGeneratingLearning] = useState(false);
-  const [streakCount, setStreakCount] = useState(0);
+  const [streakInfo, setStreakInfo] = useState({ count: 0, isSunday: false, message: "" });
   const [logId, setLogId] = useState(null);
   
   // Format YYYY-MM-DD untuk query database
@@ -92,7 +95,7 @@ export default function DailyLog() {
           .select("date");
         if (allDates) {
           const streak = calculateStreak(allDates);
-          setStreakCount(streak.count);
+          setStreakInfo(streak);
         }
 
       } catch (err) {
@@ -373,11 +376,26 @@ export default function DailyLog() {
         
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <p className="text-primary-100 font-medium text-sm md:text-base">Jurnal Hari Ini</p>
-            {streakCount > 0 && (
-              <span className="bg-amber-400/25 text-amber-200 border border-amber-300/30 text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 backdrop-blur-sm shadow-sm">
-                <Flame className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
-                {streakCount} Hari Streak
+            <p className="text-primary-100 font-medium text-sm md:text-base">
+              {currentDate.getDay() === 0 ? "🏖️ Hari Istirahat Mingguan" : "Jurnal Hari Ini"}
+            </p>
+            {streakInfo.count > 0 && (
+              <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 backdrop-blur-sm shadow-sm ${
+                currentDate.getDay() === 0 
+                  ? "bg-emerald-400/30 text-emerald-100 border border-emerald-300/40" 
+                  : "bg-amber-400/25 text-amber-200 border border-amber-300/30"
+              }`}>
+                {currentDate.getDay() === 0 ? (
+                  <>
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
+                    {streakInfo.count} Hari Streak (Aman 🛡️)
+                  </>
+                ) : (
+                  <>
+                    <Flame className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
+                    {streakInfo.count} Hari Streak
+                  </>
+                )}
               </span>
             )}
           </div>
@@ -385,7 +403,9 @@ export default function DailyLog() {
             {formattedDate}
           </h1>
           <p className="text-[10px] md:text-sm bg-black/20 inline-block px-2 md:px-3 py-1 md:py-1.5 rounded-full backdrop-blur-sm">
-            Sesi aktif hingga 23:59 WIB • +50 EXP jika diisi
+            {currentDate.getDay() === 0 
+              ? "Hari Minggu Libur Resmi • Pengisian bersifat opsional" 
+              : "Sesi aktif hingga 23:59 WIB • +50 EXP jika diisi"}
           </p>
         </div>
 
@@ -410,6 +430,19 @@ export default function DailyLog() {
           </div>
         </div>
       </div>
+
+      {/* Banner Khusus Hari Minggu Libur */}
+      {currentDate.getDay() === 0 && (
+        <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 flex items-start gap-3 text-emerald-800 text-xs md:text-sm shadow-xs animate-in fade-in">
+          <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-bold text-emerald-950">Hari Ini Hari Minggu (Libur) — Sunday Shield Aktif</p>
+            <p className="text-emerald-700 mt-0.5 leading-relaxed">
+              Sesuai sistem 6 hari kerja, hari Minggu adalah hari istirahat resmi tanpa kegiatan magang. Streak Anda tetap aman terlindungi hingga hari Senin. Jika Anda ingin mencatat pembelajaran atau kegiatan tambahan, Anda tetap dipersilakan mengisi form di bawah.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Daftar Kegiatan */}
       <section className="bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">

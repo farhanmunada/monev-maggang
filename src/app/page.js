@@ -3,12 +3,19 @@
 import { useEffect, useState } from "react";
 import { 
   BookOpen, TrendingUp, Calendar, ArrowRight, FileText, CheckCircle2, 
-  Clock, Flame, Zap, Award, Trophy, Star, ShieldCheck, Sparkles, Target
+  Clock, Flame, Zap, Award, Trophy, Star, ShieldCheck, Sparkles, Target,
+  Gift, Check, Lock, PartyPopper, RefreshCw, Compass
 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
-import { calculateStreak, calculateLevelAndExp, calculateBadges, generateHeatmap } from "@/lib/gamification";
+import { 
+  calculateStreak, 
+  calculateLevelAndExp, 
+  getInteractiveQuests, 
+  generateHeatmap,
+  formatYMD 
+} from "@/lib/gamification";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -18,9 +25,9 @@ export default function Dashboard() {
   });
 
   const [gamification, setGamification] = useState({
-    streak: { count: 0, isActiveToday: false, message: "" },
+    streak: { count: 0, isActiveToday: false, isSunday: false, message: "" },
     level: { currentLevel: 1, title: "Trainee Intern", totalExp: 0, minExp: 0, maxExp: 150, progressPercent: 0, color: "from-blue-500 to-cyan-500", badgeColor: "bg-blue-100 text-blue-700" },
-    badges: [],
+    quests: [],
     heatmap: []
   });
   
@@ -28,13 +35,40 @@ export default function Dashboard() {
   const [activeTasks, setActiveTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  // Gamifikasi Interaktif: Daily Chest & Claimed Quests
+  const [dailyChest, setDailyChest] = useState(() => {
+    if (typeof window === "undefined") return { opened: false, exp: 0, message: "" };
+    try {
+      const saved = localStorage.getItem(`monev_chest_${formatYMD(new Date())}`);
+      return saved ? JSON.parse(saved) : { opened: false, exp: 0, message: "" };
+    } catch {
+      return { opened: false, exp: 0, message: "" };
+    }
+  });
+
+  const [claimedQuestIds, setClaimedQuestIds] = useState(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(`monev_claimed_quests_${formatYMD(new Date())}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [bonusExp, setBonusExp] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    try {
+      return parseInt(localStorage.getItem("monev_bonus_exp") || "0", 10);
+    } catch {
+      return 0;
+    }
+  });
+
+  const [isOpeningChest, setIsOpeningChest] = useState(false);
 
   const fetchDashboardData = async () => {
     try {
-      setLoading(true);
       // Fetch logs
       const { data: logs, error: logsError } = await supabase
         .from("daily_logs")
@@ -79,21 +113,42 @@ export default function Dashboard() {
         setRecentLogs(logs.slice(0, 3));
       }
 
+      // Ambil data hari ini untuk kalkulasi quest
+      const todayDateStr = formatYMD(new Date());
+      const todayLog = (logs || []).find(l => l.date === todayDateStr);
+      let todayActsCount = 0;
+      if (todayLog) {
+        todayActsCount = todayLog.activities ? todayLog.activities.length : 0;
+      }
+
+      // Hitung log minggu ini (7 hari terakhir)
+      const weekLogsCount = (logs || []).filter(l => {
+        const diffDays = (new Date() - new Date(l.date)) / (1000 * 60 * 60 * 24);
+        return diffDays >= 0 && diffDays <= 7;
+      }).length;
+
       // Hitung Gamifikasi
+      let currentBonus = 0;
+      let currentClaimed = [];
+      try {
+        currentBonus = parseInt(localStorage.getItem("monev_bonus_exp") || "0", 10);
+        currentClaimed = JSON.parse(localStorage.getItem(`monev_claimed_quests_${todayDateStr}`) || "[]");
+      } catch {
+        // fallback
+      }
+
       const streak = calculateStreak(logs || []);
-      const level = calculateLevelAndExp(totalLogs, totalActivities, learningCount, doneCount);
-      const badges = calculateBadges({
-        streakCount: streak.count,
-        logsCount: totalLogs,
-        activitiesCount: totalActivities,
-        learningCount,
-        doneTasksCount: doneCount,
-        attendanceRate,
-        currentLevel: level.currentLevel
+      const level = calculateLevelAndExp(totalLogs, totalActivities, learningCount, doneCount, currentBonus);
+      const quests = getInteractiveQuests({
+        todayLog,
+        todayActivitiesCount: todayActsCount,
+        doneTasksTodayCount: doneCount,
+        weekLogsCount,
+        claimedQuestIds: currentClaimed
       });
       const heatmap = generateHeatmap(logs || [], 28);
 
-      setGamification({ streak, level, badges, heatmap });
+      setGamification({ streak, level, quests, heatmap });
 
     } catch (err) {
       console.error("Error fetching dashboard:", err);
@@ -101,6 +156,10 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
   const completeTask = async (taskId) => {
     try {
@@ -116,7 +175,96 @@ export default function Dashboard() {
     }
   };
 
-  const unlockedBadgesCount = gamification.badges.filter(b => b.unlocked).length;
+  const todayStr = formatYMD(new Date());
+
+  // Handler Interaktif: Klaim Misi (Quest Claim)
+  const handleClaimQuest = (quest) => {
+    if (quest.isClaimed || !quest.isCompleted) return;
+
+    try {
+      const newClaimed = [...claimedQuestIds, quest.id];
+      setClaimedQuestIds(newClaimed);
+      localStorage.setItem(`monev_claimed_quests_${todayStr}`, JSON.stringify(newClaimed));
+
+      const newBonus = bonusExp + quest.rewardExp;
+      setBonusExp(newBonus);
+      localStorage.setItem("monev_bonus_exp", newBonus.toString());
+
+      toast.success(`Misi "${quest.title}" selesai! Kamu mengklaim +${quest.rewardExp} EXP 🎉`, {
+        icon: "✨",
+        duration: 4000
+      });
+
+      // Update quests state secara instan
+      setGamification(prev => ({
+        ...prev,
+        level: calculateLevelAndExp(stats.totalLogs, stats.totalActivities, 0, 0, newBonus),
+        quests: prev.quests.map(q => q.id === quest.id ? { ...q, isClaimed: true } : q)
+      }));
+
+      // Refresh data lengkap di background
+      fetchDashboardData();
+    } catch (e) {
+      console.error("Claim error:", e);
+      toast.error("Gagal mengklaim misi");
+    }
+  };
+
+  // Handler Interaktif: Buka Peti Hadiah Harian
+  const handleOpenChest = () => {
+    if (dailyChest.opened) return;
+
+    const isSunday = new Date().getDay() === 0;
+    const hasLoggedToday = gamification.streak.isActiveToday;
+
+    // Jika bukan hari Minggu dan belum mengisi jurnal
+    if (!isSunday && !hasLoggedToday) {
+      toast.error("Isi jurnal magang hari ini dulu untuk membuka Peti Kejutan!", {
+        icon: "🔒"
+      });
+      return;
+    }
+
+    setIsOpeningChest(true);
+
+    setTimeout(() => {
+      // Generate bonus EXP acak 25 - 50 EXP
+      const randomExp = Math.floor(Math.random() * 26) + 25;
+      const quotes = [
+        "Konsistensi harianmu hari ini adalah kunci kesuksesan karir masa depanmu!",
+        "Langkah kecil setiap hari menghasilkan lompatan karir yang besar!",
+        "Kerja cerdas dan kedisiplinan selalu membawa hasil terbaik!",
+        "Terus berproses! Setiap catatan magang adalah bukti dedikasimu."
+      ];
+      const selectedQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+      const chestData = {
+        opened: true,
+        exp: randomExp,
+        message: selectedQuote,
+        isSunday
+      };
+
+      setDailyChest(chestData);
+      localStorage.setItem(`monev_chest_${todayStr}`, JSON.stringify(chestData));
+
+      const newBonus = bonusExp + randomExp;
+      setBonusExp(newBonus);
+      localStorage.setItem("monev_bonus_exp", newBonus.toString());
+
+      setIsOpeningChest(false);
+      toast.success(`🎉 Peti Hadiah Terbuka! Kamu mendapatkan +${randomExp} EXP Bonus!`, {
+        duration: 5000,
+        icon: "🎁"
+      });
+
+      // Refresh data
+      fetchDashboardData();
+    }, 700);
+  };
+
+  const isSundayToday = gamification.streak.isSunday || new Date().getDay() === 0;
+  const isChestReady = dailyChest.opened ? false : (isSundayToday || gamification.streak.isActiveToday);
 
   return (
     <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12">
@@ -127,7 +275,7 @@ export default function Dashboard() {
             Selamat Datang, <br className="md:hidden" /> Peserta Magang
           </h1>
           <p className="text-secondary text-sm md:text-base mt-1">
-            Pantau konsistensi, kumpulkan EXP, dan raih lencana prestasi magang Anda.
+            Pantau perkembangan magang, jalankan misi harian, dan kumpulkan EXP setiap hari.
           </p>
         </div>
 
@@ -163,7 +311,7 @@ export default function Dashboard() {
               Progres Magang Anda
             </h2>
             <p className="text-xs md:text-sm text-slate-300 mb-6">
-              Kumpulkan EXP dengan rajin mengisi jurnal (+50), mencatat aktivitas (+15), dan refleksi (+20).
+              Tingkatkan level dengan menyelesaikan jurnal (+50 EXP), aktivitas (+15 EXP), misi interaktif & peti harian.
             </p>
 
             {/* EXP Progress Bar */}
@@ -187,24 +335,45 @@ export default function Dashboard() {
             <span className="bg-white/5 px-2.5 py-1 rounded-lg">Aktivitas: +{gamification.level.expBreakdown?.fromActs || 0} EXP</span>
             <span className="bg-white/5 px-2.5 py-1 rounded-lg">Refleksi: +{gamification.level.expBreakdown?.fromLearning || 0} EXP</span>
             <span className="bg-white/5 px-2.5 py-1 rounded-lg">Task: +{gamification.level.expBreakdown?.fromTasks || 0} EXP</span>
+            {bonusExp > 0 && (
+              <span className="bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2.5 py-1 rounded-lg font-bold">
+                Bonus Misi & Peti: +{bonusExp} EXP ✨
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Card Streak Harian (1 Kolom) */}
-        <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white rounded-3xl p-6 md:p-8 shadow-xl shadow-orange-500/20 relative overflow-hidden flex flex-col justify-between">
+        {/* Card Streak Harian dengan Sunday Shield (1 Kolom) */}
+        <div className={`rounded-3xl p-6 md:p-8 shadow-xl text-white relative overflow-hidden flex flex-col justify-between ${
+          isSundayToday 
+            ? "bg-gradient-to-br from-teal-600 via-emerald-600 to-cyan-700 shadow-emerald-500/20" 
+            : "bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 shadow-orange-500/20"
+        }`}>
           <div className="absolute right-0 bottom-0 opacity-15 pointer-events-none">
-            <Flame className="w-48 h-48 -mr-10 -mb-10 text-white" />
+            {isSundayToday ? (
+              <ShieldCheck className="w-48 h-48 -mr-10 -mb-10 text-white" />
+            ) : (
+              <Flame className="w-48 h-48 -mr-10 -mb-10 text-white" />
+            )}
           </div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
               <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-black/20 backdrop-blur-md">
-                Daily Streak
+                {isSundayToday ? "Sunday Shield" : "Daily Streak"}
               </span>
               <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
-                gamification.streak.isActiveToday ? "bg-white text-orange-600" : "bg-black/30 text-white"
+                isSundayToday 
+                  ? "bg-white text-emerald-700 shadow-sm"
+                  : gamification.streak.isActiveToday 
+                    ? "bg-white text-orange-600 shadow-sm" 
+                    : "bg-black/30 text-white"
               }`}>
-                {gamification.streak.isActiveToday ? "✓ Aktif Hari Ini" : "Belum Isi"}
+                {isSundayToday 
+                  ? "🏖️ Hari Libur Resmi" 
+                  : gamification.streak.isActiveToday 
+                    ? "✓ Aktif Hari Ini" 
+                    : "Belum Isi"}
               </span>
             </div>
 
@@ -221,13 +390,19 @@ export default function Dashboard() {
           </div>
 
           <div className="relative z-10 pt-4 border-t border-white/20">
-            <Link 
-              href="/daily-log"
-              className="inline-flex items-center justify-center gap-1.5 w-full bg-white text-orange-600 hover:bg-orange-50 px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-md transition-colors"
-            >
-              <Flame className="w-4 h-4 fill-orange-600" />
-              {gamification.streak.isActiveToday ? "Update Jurnal Hari Ini" : "Isi Jurnal Sekarang"}
-            </Link>
+            {isSundayToday ? (
+              <div className="bg-white/15 backdrop-blur-md rounded-xl p-2.5 text-center text-xs font-semibold text-white/95">
+                Istirahat dulu! Streak Anda aman hingga hari Senin.
+              </div>
+            ) : (
+              <Link 
+                href="/daily-log"
+                className="inline-flex items-center justify-center gap-1.5 w-full bg-white text-orange-600 hover:bg-orange-50 px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-md transition-colors"
+              >
+                <Flame className="w-4 h-4 fill-orange-600" />
+                {gamification.streak.isActiveToday ? "Update Jurnal Hari Ini" : "Isi Jurnal Sekarang"}
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -254,22 +429,28 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* HEATMAP AKTIVITAS 4 MINGGU (GITHUB-STYLE) */}
+      {/* HEATMAP AKTIVITAS 4 MINGGU (GITHUB-STYLE DENGAN PENANDA MINGGU LIBUR) */}
       <div className="bg-card rounded-3xl border border-border shadow-sm p-5 md:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
           <div>
             <h2 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-500" /> Matriks Aktivitas (4 Minggu Terakhir)
             </h2>
-            <p className="text-xs text-secondary mt-0.5">Visualisasi konsistensi catatan magang Anda setiap hari.</p>
+            <p className="text-xs text-secondary mt-0.5">Visualisasi konsistensi catatan magang Anda. Hari Minggu ditandai libur resmi.</p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-secondary">
-            <span>Kosong</span>
-            <div className="w-3.5 h-3.5 rounded-md bg-gray-100 border border-gray-200"></div>
-            <div className="w-3.5 h-3.5 rounded-md bg-green-200"></div>
-            <div className="w-3.5 h-3.5 rounded-md bg-green-500"></div>
-            <div className="w-3.5 h-3.5 rounded-md bg-green-700"></div>
-            <span>Padat</span>
+          <div className="flex items-center flex-wrap gap-2 text-xs text-secondary">
+            <span className="flex items-center gap-1">
+              <div className="w-3.5 h-3.5 rounded-md bg-amber-50 border border-amber-300"></div>
+              <span>Minggu (Libur)</span>
+            </span>
+            <span className="flex items-center gap-1 ml-2">
+              <span>Kosong</span>
+              <div className="w-3.5 h-3.5 rounded-md bg-gray-100 border border-gray-200"></div>
+              <div className="w-3.5 h-3.5 rounded-md bg-green-200"></div>
+              <div className="w-3.5 h-3.5 rounded-md bg-green-500"></div>
+              <div className="w-3.5 h-3.5 rounded-md bg-green-700"></div>
+              <span>Padat</span>
+            </span>
           </div>
         </div>
 
@@ -277,73 +458,209 @@ export default function Dashboard() {
         <div className="grid grid-cols-7 sm:grid-cols-14 md:grid-cols-28 gap-2 pt-2">
           {gamification.heatmap.map((item, idx) => {
             let colorClass = "bg-gray-100 border-gray-200 text-gray-400";
-            if (item.count >= 3) colorClass = "bg-green-600 border-green-700 text-white shadow-sm";
-            else if (item.count === 2) colorClass = "bg-green-400 border-green-500 text-white";
-            else if (item.count === 1) colorClass = "bg-green-200 border-green-300 text-green-800";
+            if (item.isSunday && item.count === 0) {
+              colorClass = "bg-amber-50/70 border-amber-200 border-dashed text-amber-600";
+            } else if (item.count >= 3) {
+              colorClass = "bg-green-600 border-green-700 text-white shadow-sm";
+            } else if (item.count === 2) {
+              colorClass = "bg-green-400 border-green-500 text-white";
+            } else if (item.count === 1) {
+              colorClass = "bg-green-200 border-green-300 text-green-800";
+            }
 
             return (
               <div 
                 key={idx}
-                title={`${item.date}: ${item.count} aktivitas`}
+                title={`${item.date} (${item.dayName}): ${item.isSunday ? 'Hari Libur Resmi' : `${item.count} aktivitas`}`}
                 className={`h-10 rounded-xl border flex flex-col items-center justify-center text-[10px] font-bold transition-transform hover:scale-110 cursor-pointer ${colorClass}`}
               >
                 <span>{item.date.split("-")[2]}</span>
+                {item.isSunday && item.count === 0 && (
+                  <span className="text-[8px] font-medium opacity-70">Libur</span>
+                )}
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* LENCANA PRESTASI (ACHIEVEMENTS / BADGES) */}
-      <div className="bg-card rounded-3xl border border-border shadow-sm p-5 md:p-6">
-        <div className="flex justify-between items-center mb-5">
-          <div>
-            <h2 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-amber-500" /> Lencana Prestasi Magang
-            </h2>
-            <p className="text-xs text-secondary mt-0.5">
-              Terbuka {unlockedBadgesCount} dari {gamification.badges.length} lencana prestasi.
-            </p>
+      {/* GAMIFIKASI INTERAKTIF BARU: PETI HADIAH HARIAN & PAPAN MISI AKTIF */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* WIDGET 1: PETI HADIAH HARIAN INTERAKTIF (1 KOLOM) */}
+        <div className="bg-gradient-to-b from-indigo-900 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between border border-indigo-800/40">
+          <div className="absolute right-0 top-0 opacity-10 pointer-events-none">
+            <Gift className="w-44 h-44 -mr-6 -mt-6 text-indigo-300" />
           </div>
-          <span className="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200">
-            {unlockedBadgesCount} / {gamification.badges.length} Terbuka
-          </span>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-          {gamification.badges.map((badge) => (
-            <div 
-              key={badge.id}
-              className={`p-4 rounded-2xl border transition-all ${
-                badge.unlocked
-                  ? "bg-gradient-to-br from-amber-50/60 to-orange-50/40 border-amber-200 shadow-sm"
-                  : "bg-gray-50/50 border-gray-200/80 opacity-70"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">{badge.title.split(" ")[0]}</span>
-                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                  badge.unlocked 
-                    ? "bg-amber-100 text-amber-800 border border-amber-300" 
-                    : "bg-gray-200 text-gray-600"
-                }`}>
-                  {badge.unlocked ? "Terbuka" : `${badge.progress}/${badge.target}`}
-                </span>
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-400/20 px-3 py-1 rounded-full border border-amber-400/30">
+                <Sparkles className="w-3.5 h-3.5" /> Peti Hadiah Harian
+              </span>
+              <span className="text-[11px] text-slate-300">
+                {isSundayToday ? "Bonus Santai Minggu" : "Reset Tiap 24 Jam"}
+              </span>
+            </div>
+
+            <div className="text-center py-4">
+              {/* Animasi Peti */}
+              <div className="relative inline-block mb-3">
+                <div className={`w-24 h-24 mx-auto rounded-3xl flex items-center justify-center text-5xl transition-all duration-300 shadow-2xl ${
+                  dailyChest.opened
+                    ? "bg-emerald-500/20 border-2 border-emerald-400 text-emerald-300 shadow-emerald-500/30"
+                    : isChestReady
+                      ? "bg-amber-500/20 border-2 border-amber-400 text-amber-300 shadow-amber-500/40 animate-bounce cursor-pointer hover:scale-105"
+                      : "bg-slate-800/60 border-2 border-slate-700 text-slate-500"
+                }`}
+                onClick={isChestReady ? handleOpenChest : undefined}
+                >
+                  {dailyChest.opened ? "🎁" : isChestReady ? "📦" : "🔒"}
+                </div>
+                {isChestReady && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500"></span>
+                  </span>
+                )}
               </div>
 
-              <h4 className="font-bold text-xs md:text-sm text-foreground">{badge.title.split(" ").slice(1).join(" ")}</h4>
-              <p className="text-[11px] text-secondary mt-0.5 mb-2.5 leading-snug">{badge.desc}</p>
+              <h3 className="text-lg font-extrabold text-white mb-1">
+                {dailyChest.opened 
+                  ? `Hadiah Terbuka (+${dailyChest.exp} EXP)!`
+                  : isChestReady 
+                    ? "Peti Kejutan Siap Dibuka!" 
+                    : isSundayToday
+                      ? "Buka Bonus Hari Minggu"
+                      : "Peti Terkunci"}
+              </h3>
+              
+              <p className="text-xs text-slate-300 max-w-xs mx-auto leading-relaxed">
+                {dailyChest.opened 
+                  ? `"${dailyChest.message}"`
+                  : isChestReady 
+                    ? "Klik peti untuk mengklaim bonus EXP dan kutipan karir harian Anda!" 
+                    : "Isi dan simpan jurnal harian Anda hari ini untuk membuka peti hadiah."}
+              </p>
+            </div>
+          </div>
 
-              {/* Progress mini bar */}
-              <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full rounded-full transition-all ${badge.unlocked ? "bg-amber-500" : "bg-gray-400"}`}
-                  style={{ width: `${(badge.progress / badge.target) * 100}%` }}
-                />
+          <div className="mt-4 pt-4 border-t border-white/10">
+            {dailyChest.opened ? (
+              <div className="w-full py-2.5 px-4 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-center text-xs font-bold text-emerald-300 flex items-center justify-center gap-1.5">
+                <Check className="w-4 h-4" /> Sudah Diklaim Hari Ini (+{dailyChest.exp} EXP)
+              </div>
+            ) : (
+              <button
+                onClick={handleOpenChest}
+                disabled={!isChestReady || isOpeningChest}
+                className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md ${
+                  isChestReady
+                    ? "bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 hover:brightness-110 active:scale-95 shadow-amber-500/30 font-black cursor-pointer"
+                    : "bg-white/10 text-slate-400 cursor-not-allowed border border-white/5"
+                }`}
+              >
+                {isOpeningChest ? (
+                  <>Membuka Peti Hadiah...</>
+                ) : isChestReady ? (
+                  <><Sparkles className="w-4 h-4" /> Buka Peti Sekarang</>
+                ) : (
+                  <><Lock className="w-4 h-4" /> Tulis Jurnal Untuk Membuka</>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* WIDGET 2: PAPAN MISI & TANTANGAN INTERAKTIF (2 KOLOM) */}
+        <div className="lg:col-span-2 bg-card rounded-3xl border border-border shadow-sm p-5 md:p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+              <div>
+                <h2 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
+                  <Compass className="w-5 h-5 text-primary-600" /> Papan Misi & Tantangan Interaktif
+                </h2>
+                <p className="text-xs text-secondary mt-0.5">
+                  Selesaikan aksi magang hari ini dan klik tombol untuk langsung mengklaim reward EXP!
+                </p>
+              </div>
+              <div className="flex items-center gap-1 text-xs font-semibold text-primary-700 bg-primary-50 px-3 py-1 rounded-full border border-primary-200">
+                <PartyPopper className="w-3.5 h-3.5" />
+                {gamification.quests.filter(q => q.isClaimed).length} / {gamification.quests.length} Misi Selesai
               </div>
             </div>
-          ))}
+
+            {/* List Misi */}
+            <div className="space-y-3">
+              {gamification.quests.map((quest) => (
+                <div 
+                  key={quest.id}
+                  className={`p-3.5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                    quest.isClaimed
+                      ? "bg-gray-50/70 border-gray-200/80 opacity-70"
+                      : quest.isCompleted
+                        ? "bg-gradient-to-r from-emerald-50/80 to-teal-50/80 border-emerald-300 shadow-sm"
+                        : "bg-card border-border hover:border-gray-300"
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl p-1 bg-white rounded-xl shadow-xs border border-gray-100 flex-shrink-0">
+                      {quest.icon}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-bold text-xs md:text-sm text-foreground">{quest.title}</h4>
+                        <span className={`text-[10px] font-extrabold px-2 py-0.2 rounded-full ${
+                          quest.type === "daily" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"
+                        }`}>
+                          {quest.type === "daily" ? "Harian" : "Mingguan"}
+                        </span>
+                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.2 rounded-full">
+                          +{quest.rewardExp} EXP
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-secondary mt-0.5 leading-snug">{quest.desc}</p>
+                      
+                      {/* Mini Progress */}
+                      <div className="flex items-center gap-2 mt-1.5 text-[10px] text-secondary">
+                        <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full rounded-full transition-all ${
+                              quest.isCompleted ? "bg-emerald-500" : "bg-primary-500"
+                            }`}
+                            style={{ width: `${Math.min(100, (quest.current / quest.target) * 100)}%` }}
+                          />
+                        </div>
+                        <span className="font-semibold">{quest.current} / {quest.target}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tombol Klaim Interaktif */}
+                  <div className="sm:self-center flex-shrink-0">
+                    {quest.isClaimed ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-gray-500 bg-gray-200/80 px-3 py-1.5 rounded-xl">
+                        <Check className="w-3.5 h-3.5" /> Diklaim
+                      </span>
+                    ) : quest.isCompleted ? (
+                      <button
+                        onClick={() => handleClaimQuest(quest)}
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:brightness-110 px-4 py-1.5 rounded-xl font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all animate-pulse cursor-pointer"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" /> Klaim +{quest.rewardExp} EXP
+                      </button>
+                    ) : (
+                      <span className="inline-block text-center w-full sm:w-auto text-[11px] font-medium text-secondary bg-gray-100 px-3 py-1.5 rounded-xl border border-gray-200">
+                        Belum Selesai
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+
       </div>
 
       {/* Task Widget & Recent Jurnal */}

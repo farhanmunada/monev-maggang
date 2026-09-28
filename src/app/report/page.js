@@ -55,13 +55,8 @@ export default function ReportPage() {
 
   const [selectedDateForAi, setSelectedDateForAi] = useState(getLocalDateString());
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from("daily_logs")
         .select(`
@@ -94,6 +89,10 @@ export default function ReportPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleGenerateAI = async () => {
     setIsAiLoading(true);
