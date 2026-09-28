@@ -279,12 +279,10 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <Link
-          href="/daily-log"
-          className="w-fit flex items-center gap-2 bg-primary-600 text-white hover:bg-primary-700 px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md shadow-primary-500/20 transition-all hover:-translate-y-0.5"
-        >
-          <BookOpen className="w-4 h-4" /> Tulis Jurnal Hari Ini
-        </Link>
+        <div className="flex items-center gap-2 bg-card border border-border px-4 py-2 rounded-2xl text-xs md:text-sm font-semibold text-secondary shadow-xs">
+          <Calendar className="w-4 h-4 text-primary-600" />
+          <span>{new Date().toLocaleDateString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
+        </div>
       </header>
 
       {/* GAMIFICATION HERO BANNER: STREAK & LEVEL EXP */}
@@ -758,24 +756,20 @@ export default function Dashboard() {
       </div>
       
       {/* Quick Action Banner */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <Link href="/daily-log" className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-600 to-indigo-700 p-6 md:p-8 text-white shadow-lg shadow-primary-500/20 transition-transform hover:-translate-y-1">
+      <div>
+        <Link 
+          href="/report" 
+          className="group relative overflow-hidden rounded-3xl bg-card border border-border p-6 md:p-8 text-foreground shadow-sm hover:shadow-md transition-all hover:-translate-y-1 flex flex-col md:flex-row md:items-center justify-between gap-4"
+        >
           <div className="relative z-10">
-            <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-2">Tulis Jurnal Hari Ini</h3>
-            <p className="text-primary-100 opacity-90 text-xs md:text-sm">Tambah kegiatan (+15 EXP) & simpan kehadiran (+50 EXP).</p>
+            <h3 className="text-xl md:text-2xl font-bold mb-1">Absensi & Riwayat Laporan</h3>
+            <p className="text-secondary text-xs md:text-sm">Rekapitulasi kehadiran lengkap & generate narasi laporan magang dengan AI.</p>
           </div>
-          <div className="absolute right-0 bottom-0 opacity-20 group-hover:scale-110 group-hover:opacity-30 transition-all duration-300">
-            <BookOpen className="w-24 h-24 md:w-32 md:h-32 -mr-6 -mb-6 md:-mr-8 md:-mb-8" />
-          </div>
-        </Link>
-        
-        <Link href="/report" className="group relative overflow-hidden rounded-3xl bg-card border border-border p-6 md:p-8 text-foreground shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-          <div className="relative z-10">
-            <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-2">Absensi & Riwayat</h3>
-            <p className="text-secondary text-xs md:text-sm">Rekapitulasi kehadiran & generate narasi laporan magang dengan AI.</p>
+          <div className="relative z-10 flex items-center gap-2 text-primary-600 font-bold text-sm group-hover:translate-x-1 transition-transform">
+            Buka Laporan Magang <ArrowRight className="w-4 h-4" />
           </div>
           <div className="absolute right-0 bottom-0 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-300">
-            <FileText className="w-24 h-24 md:w-32 md:h-32 -mr-6 -mb-6 md:-mr-8 md:-mb-8" />
+            <FileText className="w-32 h-32 -mr-6 -mb-6" />
           </div>
         </Link>
       </div>
