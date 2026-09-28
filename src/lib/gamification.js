@@ -290,3 +290,157 @@ export function generateHeatmap(logs = [], daysCount = 28) {
   return heatmap;
 }
 
+/**
+ * Mini Boss Mingguan: "Lord Mager (Raja Prokrastinasi)"
+ * Boss memiliki 100 HP setiap minggu (reset Senin).
+ * Serangan (damage):
+ * - Isi Jurnal: -20 HP
+ * - Catat 1 Aktivitas: -8 HP
+ * - Selesaikan 1 Task: -15 HP
+ */
+export function calculateBossProgress({ logs = [], tasks = [] }) {
+  const now = new Date();
+  const currentDay = now.getDay(); // 0 = Minggu, 1 = Senin, ...
+  const diffToMonday = currentDay === 0 ? 6 : currentDay - 1;
+  const mondayDate = new Date(now);
+  mondayDate.setDate(now.getDate() - diffToMonday);
+  mondayDate.setHours(0, 0, 0, 0);
+
+  const mondayStr = formatYMD(mondayDate);
+
+  // Filter logs minggu ini
+  const logsThisWeek = logs.filter(l => l.date >= mondayStr);
+  let actsThisWeek = 0;
+  logsThisWeek.forEach(l => {
+    actsThisWeek += l.activities ? l.activities.length : 1;
+  });
+
+  // Filter task selesai
+  const doneTasks = tasks.filter(t => t.status === "done").length;
+
+  const totalDamage = (logsThisWeek.length * 20) + (actsThisWeek * 8) + (doneTasks * 15);
+  const maxHp = 100;
+  const currentHp = Math.max(0, maxHp - totalDamage);
+  const isDefeated = currentHp === 0;
+
+  let bossQuote = "Yaelah baru kerja 15 menit udah buka Shopee lagi...";
+  if (isDefeated) {
+    bossQuote = "Ampun king! Lu gacor banget minggu ini, gua tepar...";
+  } else if (currentHp <= 30) {
+    bossQuote = "Aduh sekarat gua! Dikit lagi lu menang nih, jangan mager!";
+  } else if (currentHp <= 70) {
+    bossQuote = "Lumayan serangannya, tapi godaan rebahan masih kuat brow...";
+  }
+
+  return {
+    bossName: "Lord Mager",
+    subtitle: "Raja Penunda Pekerjaan",
+    maxHp,
+    currentHp,
+    damageDealt: totalDamage,
+    isDefeated,
+    bossQuote,
+    progressPercent: Math.round(((maxHp - currentHp) / maxHp) * 100)
+  };
+}
+
+/**
+ * Maskot Interaktif "Si Maggy"
+ * Avatar karir interaktif dengan respon sarkas Gen Z
+ */
+export function getMascotData({ isSunday, hasLoggedToday, streakCount = 0 }) {
+  let mood = "neutral";
+  let avatar = "🤖";
+  let defaultQuote = "Semangat budak korporat magang, masa depan cerah menanti (katanya).";
+
+  if (isSunday) {
+    mood = "vacation";
+    avatar = "🏖️";
+    defaultQuote = "Hari Minggu nih king! Tutup laptop, rebahan tanpa rasa bersalah overthinking masa depan.";
+  } else if (hasLoggedToday) {
+    mood = "hyped";
+    avatar = "🔥";
+    defaultQuote = "Gacor parah! Jurnal hari ini udah beres. Mau minta diangkat jadi komisaris lu ya?";
+  } else if (streakCount >= 3) {
+    mood = "proud";
+    avatar = "⚡";
+    defaultQuote = `Streak ${streakCount} hari konsisten! Jangan lupa ngopi dan napas bang, nanti tipes.`;
+  } else {
+    mood = "sassy";
+    avatar = "👀";
+    defaultQuote = "Jam segini jurnal masih kosong? Awas nanti ditanya mentor langsung kena mental.";
+  }
+
+  const SARCASTIC_QUOTES = [
+    "Kerja keras bagai kuda, padahal cuma dibayar ucapan terima kasih dan sertifikat pdf.",
+    "Bismillah laporan magang bab 3 kelar, padahal baru ngetik judul doang.",
+    "Buka Excel 5 menit, bengong liatin rumus 25 menit. Produktivitas sejati.",
+    "Tenang, mentor lu juga dulu magang pura-pura ngerti pas dikasih arahan kok.",
+    "Sinergi, kolaborasi, agile... banyak istilah keren padahal intinya 'lu tolong kerjain ini ya'.",
+    "Jangan lupa minum air putih, ginjal lu lebih berharga daripada KPI kantor.",
+    "Hari Minggu resmi libur! Streak aman, jadi jangan sok-sokan buka Slack.",
+    "Level naik terus! Walaupun rekening belum naik, yang penting EXP magang nambah bro."
+  ];
+
+  return {
+    name: "Si Maggy",
+    role: "Career Companion Sarcastic",
+    avatar,
+    mood,
+    defaultQuote,
+    quotes: SARCASTIC_QUOTES
+  };
+}
+
+/**
+ * Magang Wrapped (Spotify-style Weekly Career Spotlight)
+ */
+export function generateWeeklyWrapped({ logs = [], tasks = [] }) {
+  const now = new Date();
+  const currentDay = now.getDay();
+  const diffToMonday = currentDay === 0 ? 6 : currentDay - 1;
+  const mondayDate = new Date(now);
+  mondayDate.setDate(now.getDate() - diffToMonday);
+  mondayDate.setHours(0, 0, 0, 0);
+  const mondayStr = formatYMD(mondayDate);
+
+  const logsThisWeek = logs.filter(l => l.date >= mondayStr);
+  let actsThisWeek = 0;
+  logsThisWeek.forEach(l => {
+    actsThisWeek += l.activities ? l.activities.length : 1;
+  });
+
+  const doneTasksCount = tasks.filter(t => t.status === "done").length;
+
+  let title = "Ahli Pura-Pura Sibuk";
+  let description = "Minggu ini lu bertahan hidup di tengah kerasnya dunia kerja nyata.";
+  let badgeColor = "from-cyan-500 to-blue-600";
+
+  if (logsThisWeek.length >= 5 && actsThisWeek >= 10) {
+    title = "Intern Gacor Anti-Tipes";
+    description = "Dedikasi tingkat dewa! Semua log terisi penuh, mentor lu pasti bangga (tapi gaji tetep magang).";
+    badgeColor = "from-amber-400 to-orange-500";
+  } else if (actsThisWeek >= 6) {
+    title = "Slayer Task Santai";
+    description = "Kerja tuntas tanpa banyak drama. Tetap santai walau deadline mengejar.";
+    badgeColor = "from-purple-500 to-indigo-600";
+  } else if (logsThisWeek.length === 0) {
+    title = "Duta Rebahan Nasional";
+    description = "Belum ada jejak kerja tercatat minggu ini. Lu lagi magang atau lagi meditasi zen nih?";
+    badgeColor = "from-rose-500 to-red-600";
+  }
+
+  return {
+    weekTitle: "Magang Wrapped Minggu Ini",
+    personaTitle: title,
+    personaDescription: description,
+    badgeColor,
+    totalLogs: logsThisWeek.length,
+    totalActivities: actsThisWeek,
+    totalTasksDone: doneTasksCount,
+    funFact: actsThisWeek > 5 
+      ? "Kamu mengetik ratusan karakter logbook minggu ini demi secuil nilai A!"
+      : "Santai sejenak, minggu depan masih ada waktu buat ngebut!"
+  };
+}
+
