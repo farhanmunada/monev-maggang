@@ -563,7 +563,7 @@ export default function Dashboard() {
                 ) : isChestReady ? (
                   <><Sparkles className="w-4 h-4" /> Buka Peti Sekarang</>
                 ) : (
-                  <><Lock className="w-4 h-4" /> Tulis Jurnal Untuk Membuka</>
+                  <><Lock className="w-4 h-4" /> Peti Masih Terkunci</>
                 )}
               </button>
             )}
