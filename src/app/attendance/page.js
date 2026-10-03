@@ -463,7 +463,7 @@ export default function AttendancePage() {
                   </div>
                   <div className="pt-2">
                     <Link
-                      href="/daily-log"
+                      href={`/daily-log?date=${selectedDateStr}`}
                       className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all"
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -478,7 +478,7 @@ export default function AttendancePage() {
             {selectedLog && (
               <div className="p-4 border-t border-slate-100 bg-slate-50/60 flex justify-end gap-2">
                 <Link
-                  href="/daily-log"
+                  href={`/daily-log?date=${selectedDateStr}`}
                   className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
