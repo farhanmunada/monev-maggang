@@ -1,12 +1,6 @@
 // Helper functions for Gamification Engine
-
-// Format local date YYYY-MM-DD
-export function formatYMD(d = new Date()) {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
+import { formatYMD } from "./date";
+export { formatYMD };
 
 /**
  * Perhitungan Streak Harian dengan Aturan 6 Hari Kerja (Senin - Sabtu)
