@@ -78,3 +78,19 @@
 .animate-walk-bob {
   animation: walkBob 0.6s infinite ease-in-out;
 }
+
+/* Print Styles for Clean Academic Reporting */
+@media print {
+  header, nav, .no-print {
+    display: none !important;
+  }
+  main {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    max-width: 100% !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}

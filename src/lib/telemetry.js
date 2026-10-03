@@ -113,38 +113,6 @@ export function calculateStreak(logs = []) {
 }
 
 /**
- * Helper to estimate hours from time_range or default to 1.5 hrs per activity
- */
-export function estimateActivityHours(activities = []) {
-  if (!activities || activities.length === 0) return 0;
-
-  let totalMinutes = 0;
-  activities.forEach((act) => {
-    if (act.time_range && act.time_range.includes("-")) {
-      const parts = act.time_range.split("-").map((s) => s.trim());
-      if (parts.length === 2) {
-        const [startH, startM] = parts[0].split(":").map(Number);
-        const [endH, endM] = parts[1].split(":").map(Number);
-
-        if (!isNaN(startH) && !isNaN(endH)) {
-          const startTotal = startH * 60 + (isNaN(startM) ? 0 : startM);
-          const endTotal = endH * 60 + (isNaN(endM) ? 0 : endM);
-          const diff = endTotal - startTotal;
-          if (diff > 0 && diff <= 480) {
-            totalMinutes += diff;
-            return;
-          }
-        }
-      }
-    }
-    // Default 90 minutes per recorded activity
-    totalMinutes += 90;
-  });
-
-  return Math.round((totalMinutes / 60) * 10) / 10;
-}
-
-/**
  * Calculate comprehensive professional telemetry metrics
  */
 export function calculateTelemetry(logs = [], notes = []) {
@@ -164,7 +132,6 @@ export function calculateTelemetry(logs = [], notes = []) {
   });
 
   const totalActivitiesCount = allActivities.length;
-  const totalHoursLogged = estimateActivityHours(allActivities);
 
   const tasks = notes.filter((n) => n.type === "task");
   const totalTasks = tasks.length;
@@ -191,7 +158,6 @@ export function calculateTelemetry(logs = [], notes = []) {
     absentDays,
     attendanceRate,
     totalActivitiesCount,
-    totalHoursLogged,
     tasks: {
       total: totalTasks,
       done: doneTasks,

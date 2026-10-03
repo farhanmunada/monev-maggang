@@ -219,7 +219,7 @@ export default function WalkingCompanions() {
   return (
     <>
       {/* Toggle Button in bottom right corner */}
-      <div className="fixed bottom-20 md:bottom-4 right-4 z-40">
+      <div className="fixed bottom-20 md:bottom-4 right-4 z-40 no-print">
         <button
           type="button"
           onClick={() => setIsVisible(!isVisible)}
@@ -245,7 +245,7 @@ export default function WalkingCompanions() {
 
       {/* Walking Area at Bottom Screen */}
       {isVisible && (
-        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 h-16 pointer-events-none z-30 overflow-hidden select-none">
+        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 h-16 pointer-events-none z-30 overflow-hidden select-none no-print">
           {companionsState.map((c) => {
             const compData = COMPANIONS.find((item) => item.id === c.id);
             if (!compData) return null;

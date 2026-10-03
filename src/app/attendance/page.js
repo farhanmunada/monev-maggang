@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Filter, CalendarCheck2, Clock, ChevronDown, ChevronRight, BookOpen, AlertCircle } from "lucide-react";
+import { Search, Filter, CalendarCheck2, Clock, ChevronDown, ChevronRight, BookOpen, AlertCircle, Printer } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
 import { formatIndonesianDate } from "@/lib/date";
@@ -97,9 +97,21 @@ export default function AttendancePage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-white border border-slate-200/90 px-3.5 py-2 rounded-xl text-xs shadow-2xs">
-          <span className="text-slate-500 font-medium">Tingkat Hadir:</span>
-          <span className="font-bold text-emerald-600 font-mono text-sm">{attendanceRate}%</span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="no-print flex items-center gap-1.5 bg-white border border-slate-200/90 hover:border-slate-300 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-2xs transition-all cursor-pointer hover:bg-slate-50"
+            title="Cetak atau simpan PDF rekapitulasi kehadiran"
+          >
+            <Printer className="w-3.5 h-3.5 text-slate-500" />
+            <span>Cetak PDF</span>
+          </button>
+
+          <div className="flex items-center gap-2 bg-white border border-slate-200/90 px-3.5 py-2 rounded-xl text-xs shadow-2xs">
+            <span className="text-slate-500 font-medium">Tingkat Hadir:</span>
+            <span className="font-bold text-emerald-600 font-mono text-sm">{attendanceRate}%</span>
+          </div>
         </div>
       </header>
 
@@ -132,7 +144,7 @@ export default function AttendancePage() {
       </div>
 
       {/* Pencarian dan Filter Status */}
-      <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
+      <div className="no-print flex flex-col md:flex-row gap-3 md:items-center justify-between">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
           <input
