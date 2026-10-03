@@ -2,12 +2,12 @@ import { Edit2, Trash2 } from "lucide-react";
 
 function getTypeBadgeClass(type) {
   switch (type) {
-    case "task":
-      return "bg-blue-50 text-blue-700 border-blue-200";
     case "materi":
       return "bg-teal-50 text-teal-700 border-teal-200";
     case "meeting":
       return "bg-amber-50 text-amber-700 border-amber-200";
+    case "snippet":
+      return "bg-blue-50 text-blue-700 border-blue-200";
     case "keyword":
     default:
       return "bg-purple-50 text-purple-700 border-purple-200";
@@ -15,13 +15,11 @@ function getTypeBadgeClass(type) {
 }
 
 export default function NotesGrid({ notes, onOpenModal, onDelete }) {
-  const nonTaskNotes = notes.filter((n) => n.type !== "task");
-
-  if (nonTaskNotes.length === 0) {
+  if (notes.length === 0) {
     return (
       <div className="text-center py-14 text-slate-400 bg-white border border-dashed border-slate-200 rounded-2xl">
         <p className="text-xs">
-          Belum ada catatan materi atau keyword. Otak lagi rileks tanpa beban tugas?
+          Belum ada catatan materi atau referensi. Catat ide atau instruksi penting di sini.
         </p>
       </div>
     );
@@ -29,7 +27,7 @@ export default function NotesGrid({ notes, onOpenModal, onDelete }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {nonTaskNotes.map((note) => (
+      {notes.map((note) => (
         <div
           key={note.id}
           className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:border-slate-300 transition-all flex flex-col group"
@@ -62,7 +60,7 @@ export default function NotesGrid({ notes, onOpenModal, onDelete }) {
             </div>
           </div>
           <h3 className="font-semibold text-sm text-slate-900 mb-1.5 line-clamp-2">{note.title}</h3>
-          <p className="text-xs text-slate-500 whitespace-pre-wrap flex-1 line-clamp-4 leading-relaxed">
+          <p className="text-xs text-slate-500 whitespace-pre-wrap flex-1 line-clamp-4 leading-relaxed font-sans">
             {note.content}
           </p>
           <p className="text-[10px] text-slate-400 mt-3 pt-2.5 border-t border-slate-100 font-mono">

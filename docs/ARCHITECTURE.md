@@ -1,73 +1,75 @@
-# Arsitektur: Refaktor Modular & Clean Code
+# Arsitektur: Next-Gen Bento & Ambient Layout
 
-## 1. Desain Arsitektur Baru
+## 1. Desain Struktur File
 ```
 src/
 ├── app/
-│   ├── page.js                  <-- Slim Page Orchestrator (~100 baris)
-│   ├── daily-log/page.js        <-- Slim Page Orchestrator (~80 baris)
-│   ├── report/page.js           <-- Slim Page Orchestrator (~80 baris)
-│   └── notes/page.js            <-- Slim Page Orchestrator (~70 baris)
+│   ├── layout.js                 <-- Root layout: Navbar Floating Island + WalkingCompanions + Container
+│   ├── globals.css               <-- Palet Warm Slate & animasi walking companions
+│   ├── page.js                   <-- Next-Gen Bento Dashboard (anti-black)
+│   ├── daily-log/page.js         <-- Jurnal Harian (Warm Porcelain)
+│   ├── attendance/page.js        <-- Dedicated Absensi & Kehadiran
+│   ├── ai-report/page.js         <-- Dedicated AI Report Studio
+│   ├── tasks/page.js             <-- Dedicated Kanban Board
+│   ├── notes/page.js             <-- Dedicated Knowledge Vault
+│   └── report/page.js            <-- Redirector ke /attendance
 ├── components/
-│   ├── Sidebar.js
-│   ├── BottomNav.js
+│   ├── Navbar.js                 <-- Floating Island Topbar (menggantikan Sidebar)
+│   ├── BottomNav.js              <-- Mobile Floating Dock
+│   ├── WalkingCompanions.js      <-- Karakter ambient berjalan di dasar layar
 │   ├── dashboard/
-│   │   ├── HeroCommand.js
-│   │   ├── MascotCard.js
-│   │   ├── BossBattleCard.js
-│   │   ├── DailyChestCard.js
-│   │   ├── QuestsBoard.js
-│   │   ├── ActivityHeatmap.js
-│   │   ├── ActiveTasksWidget.js
-│   │   ├── RecentLogsWidget.js
-│   │   └── WrappedModal.js
+│   │   ├── BentoGreeting.js      <-- Status hari ini & CTA jurnal
+│   │   ├── MetricTiles.js        <-- Metrik kerja (Kehadiran, Aktivitas, Task)
+│   │   ├── ActivityFeed.js       <-- Feed aktivitas terkini
+│   │   └── PriorityTasks.js      <-- Task prioritas teratas
 │   ├── daily-log/
 │   │   ├── LogHeader.js
-│   │   ├── SundayShieldBanner.js
 │   │   ├── ActivityList.js
 │   │   ├── ActivityForm.js
 │   │   └── ReflectionSection.js
-│   ├── report/
+│   ├── attendance/
+│   │   ├── AttendanceCalendar.js <-- Kalender/matriks kehadiran
 │   │   ├── AttendanceStats.js
-│   │   ├── LogHistoryList.js
-│   │   └── AiReportGenerator.js
+│   │   └── AttendanceHistory.js
+│   ├── ai-report/
+│   │   └── ReportStudio.js       <-- Editor & generator narasi formal
+│   ├── tasks/
+│   │   └── KanbanBoard.js
 │   └── notes/
 │       ├── NotesGrid.js
-│       ├── KanbanBoard.js
 │       └── NoteModal.js
 └── lib/
     ├── supabase.js
-    ├── date.js                  <-- Single Source of Truth penanggalan
-    ├── audio.js                 <-- Web Audio API synthesizer
-    ├── storage.js               <-- SSR-safe LocalStorage helper
-    └── gamification.js          <-- Gamification Engine
+    ├── date.js
+    └── telemetry.js              <-- Metrik kerja nyata (tanpa game/HP/EXP)
 ```
 
-## 2. Tahapan Pengerjaan Bertahap (Incremental Slices)
+## 2. Tahapan Pengerjaan Bertahap (Execution Slices)
 
-1. **Slice 1: Ekstraksi Utility Dasar**
-   - Buat `src/lib/date.js`
-   - Buat `src/lib/audio.js`
-   - Buat `src/lib/storage.js`
-   - Refactor `src/lib/gamification.js` untuk menggunakan `src/lib/date.js`
+- **Slice 1: Navigation & Layout Overhaul**
+  - Buat `src/components/Navbar.js` (Floating Island Topbar).
+  - Update `src/components/BottomNav.js` untuk mobile.
+  - Hapus referensi `Sidebar.js` di `src/app/layout.js`, ubah padding konten untuk top-floating nav.
+  - Tambahkan animasi ambient keyframes di `src/app/globals.css`.
 
-2. **Slice 2: Modularisasi Dashboard**
-   - Buat modul `src/components/dashboard/*`
-   - Sederhanakan `src/app/page.js`
+- **Slice 2: Ambient Walking Companions**
+  - Buat `src/components/WalkingCompanions.js` (karakter berjalan di footer layar dengan interaksi dialog lucu dan toggle on/off).
 
-3. **Slice 3: Modularisasi Daily Log**
-   - Buat modul `src/components/daily-log/*`
-   - Sederhanakan `src/app/daily-log/page.js`
+- **Slice 3: Pemisahan Rute Absensi & AI Report**
+  - Buat `src/app/attendance/page.js`.
+  - Buat `src/app/ai-report/page.js`.
+  - Pasang redirect di `src/app/report/page.js`.
 
-4. **Slice 4: Modularisasi Report & Absensi**
-   - Buat modul `src/components/report/*`
-   - Sederhanakan `src/app/report/page.js`
+- **Slice 4: Pemisahan Rute Tasks & Notes**
+  - Buat `src/app/tasks/page.js` (Kanban murni).
+  - Perbarui `src/app/notes/page.js` (Knowledge vault murni).
 
-5. **Slice 5: Modularisasi Notes & Kanban**
-   - Buat modul `src/components/notes/*`
-   - Sederhanakan `src/app/notes/page.js`
+- **Slice 5: Pembersihan Gamifikasi & Rombak Bento Dashboard**
+  - Buat `src/lib/telemetry.js` menggantikan logika gamifikasi lama.
+  - Rombak `src/app/page.js` menjadi Next-Gen Bento Dashboard (100% Warm Porcelain, zero dark cards).
+  - Rombak `src/app/daily-log/page.js` agar seragam dengan warna terang/warm.
 
-6. **Slice 6: Verifikasi & Audit Kualitas**
-   - `npm run lint`
-   - `npm run build`
-   - Commit atomik konvensional
+- **Slice 6: Verifikasi Kualitas & Build**
+  - `npm run lint`
+  - `npm run build`
+  - Commit atomik.

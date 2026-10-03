@@ -5,7 +5,7 @@ import { Save } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
 import { formatYMD } from "@/lib/date";
-import { calculateStreak } from "@/lib/gamification";
+import { calculateStreak } from "@/lib/telemetry";
 
 import LogHeader from "@/components/daily-log/LogHeader";
 import SundayShieldBanner from "@/components/daily-log/SundayShieldBanner";
@@ -321,7 +321,7 @@ export default function DailyLog() {
       if (fetchActsErr) throw fetchActsErr;
       if (acts) setActivities(acts);
 
-      toast.success("Jurnal hari ini tersimpan aman (+50 EXP).");
+      toast.success("Jurnal hari ini tersimpan aman.");
     } catch (err) {
       console.error("Error saving data:", err);
       toast.error("Gagal menyimpan data: " + err.message);
@@ -391,7 +391,7 @@ export default function DailyLog() {
           type="button"
           onClick={handleSaveAll}
           disabled={isSaving}
-          className="flex items-center justify-center gap-2 w-full md:w-auto bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-xl shadow-xs transition-all active:scale-95 font-semibold text-sm disabled:opacity-60 cursor-pointer"
+          className="flex items-center justify-center gap-2 w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-xs transition-all active:scale-95 font-semibold text-sm disabled:opacity-60 cursor-pointer"
         >
           <Save className="w-4 h-4" />
           {isSaving ? "Menyimpan ke Database..." : "Simpan Jurnal Hari Ini"}
