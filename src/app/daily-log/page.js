@@ -99,6 +99,12 @@ export default function DailyLog() {
     setLogData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const getCurrentTimeStr = () => {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  };
+
   const ensureDailyLogExists = async () => {
     if (logId) return logId;
 
@@ -130,7 +136,7 @@ export default function DailyLog() {
 
       const activityPayload = {
         daily_log_id: currentLogId,
-        time_range: newActivity.time_range,
+        time_range: newActivity.time_range || getCurrentTimeStr(),
         title: newActivity.title.trim(),
         description: newActivity.description,
       };
@@ -144,9 +150,9 @@ export default function DailyLog() {
       if (error) throw error;
 
       setActivities((prev) => [...prev, insertedAct]);
-      setNewActivity({ time_range: "", title: "", description: "" });
+      setNewActivity({ time_range: getCurrentTimeStr(), title: "", description: "" });
       setIsAddingActivity(false);
-      toast.success("Kegiatan tercatat. Bukti kerja nyata bertambah (+15 EXP).");
+      toast.success("Kegiatan berhasil tercatat.");
     } catch (err) {
       console.error("Gagal menambahkan kegiatan:", err);
       toast.error("Gagal menambahkan kegiatan: " + err.message);
@@ -362,8 +368,16 @@ export default function DailyLog() {
           onEditFormChange={(key, val) => setEditActivityForm((prev) => ({ ...prev, [key]: val }))}
           onRemoveActivity={removeActivity}
           onToggleAdd={() => {
-            setIsAddingActivity(!isAddingActivity);
+            const nextState = !isAddingActivity;
+            setIsAddingActivity(nextState);
             setEditingActivityId(null);
+            if (nextState) {
+              setNewActivity({
+                time_range: getCurrentTimeStr(),
+                title: "",
+                description: "",
+              });
+            }
           }}
           isAddingActivity={isAddingActivity}
         />

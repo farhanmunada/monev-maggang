@@ -13,14 +13,6 @@ export default function ActivityList({
   onToggleAdd,
   isAddingActivity,
 }) {
-  const handleRecentHour = () => {
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, "0");
-    const endH = `${pad(now.getHours())}:00`;
-    const startH = `${pad((now.getHours() - 1 + 24) % 24)}:00`;
-    onEditFormChange("time_range", `${startH} - ${endH}`);
-  };
-
   return (
     <div className="space-y-3 mb-5">
       <div className="flex justify-between items-center mb-2">
@@ -60,41 +52,21 @@ export default function ActivityList({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="md:col-span-1">
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                    Waktu Pelaksanaan
+                  </label>
                   <input
                     type="text"
-                    placeholder="Waktu (Misal: 09:00 - 11:30)"
+                    placeholder="Misal: 14:30 atau 09:00 - 11:30"
                     value={editActivityForm.time_range}
                     onChange={(e) => onEditFormChange("time_range", e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 font-mono"
                   />
-
-                  {/* Quick Presets */}
-                  <div className="flex flex-wrap gap-1 mt-1.5">
-                    <span className="text-[10px] text-slate-400 font-medium py-0.5 mr-0.5">Preset:</span>
-                    {[
-                      { label: "08:00 - 12:00", value: "08:00 - 12:00" },
-                      { label: "13:00 - 17:00", value: "13:00 - 17:00" },
-                      { label: "09:00 - 17:00", value: "09:00 - 17:00" },
-                    ].map((p) => (
-                      <button
-                        key={p.value}
-                        type="button"
-                        onClick={() => onEditFormChange("time_range", p.value)}
-                        className="text-[10px] font-mono px-1.5 py-0.5 bg-white border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded transition-all cursor-pointer"
-                      >
-                        {p.label}
-                      </button>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={handleRecentHour}
-                      className="text-[10px] font-mono px-1.5 py-0.5 bg-white border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded transition-all cursor-pointer"
-                    >
-                      1 Jam Terakhir
-                    </button>
-                  </div>
                 </div>
                 <div className="md:col-span-2">
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                    Judul Kegiatan
+                  </label>
                   <input
                     type="text"
                     placeholder="Judul Kegiatan"
@@ -105,14 +77,19 @@ export default function ActivityList({
                   />
                 </div>
               </div>
-              <textarea
-                placeholder="Deskripsi kegiatan..."
-                rows={2}
-                value={editActivityForm.description}
-                onChange={(e) => onEditFormChange("description", e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none"
-              />
-              <div className="flex justify-end gap-2">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                  Deskripsi Kegiatan
+                </label>
+                <textarea
+                  placeholder="Deskripsi kegiatan..."
+                  rows={2}
+                  value={editActivityForm.description}
+                  onChange={(e) => onEditFormChange("description", e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none leading-relaxed"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-1">
                 <button
                   type="button"
                   onClick={onCancelEdit}
