@@ -66,7 +66,7 @@ export function calculateStreak(logs = []) {
         count: Math.max(count, hasSaturday ? 1 : 0),
         isActiveToday: true, // Dianggap aman di hari Minggu
         isSunday: true,
-        message: `Hari Minggu Libur! Streak ${count} hari Anda aman terlindungi hingga Senin 🏖️`
+        message: `Hari Minggu libur resmi. Streak ${count} hari tersimpan rapi sampai Senin.`
       };
     }
 
@@ -74,7 +74,7 @@ export function calculateStreak(logs = []) {
       count: 0,
       isActiveToday: false,
       isSunday: true,
-      message: "Hari Minggu libur. Siapkan semangatmu untuk mulai streak baru di hari Senin!"
+      message: "Hari Minggu libur. Tarik selimut, siapkan mental buat Senin pagi."
     };
   }
 
@@ -94,7 +94,7 @@ export function calculateStreak(logs = []) {
       count: 0, 
       isActiveToday: false, 
       isSunday: false,
-      message: "Streak terputus. Isi jurnal hari ini untuk mulai lagi!" 
+      message: "Streak hangus tak tersisa. Mau isi jurnal sekarang atau pura-pura lupa?" 
     };
   }
 
@@ -123,10 +123,10 @@ export function calculateStreak(logs = []) {
     isActiveToday: hasToday,
     isSunday: false,
     message: hasToday 
-      ? `Luar biasa! Streak ${count} hari Anda aktif hari ini.`
+      ? `Streak ${count} hari menyala. Tumben rajin banget, ada maunya ya?`
       : isTodayMonday && uniqueDates.includes(saturdayStr)
-        ? `Streak ${count} hari tersimpan dari hari Sabtu! Isi jurnal hari ini agar bertambah.`
-        : `Streak ${count} hari tersimpan! Isi jurnal hari ini agar streak tidak putus.`
+        ? `Streak ${count} hari aman dari Sabtu. Isi hari ini biar gak hangus sia-sia.`
+        : `Streak ${count} hari bertahan. Jangan biarkan malasmu merusaknya.`
   };
 }
 
@@ -196,10 +196,10 @@ export function getInteractiveQuests({
     {
       id: "quest_daily_log",
       type: "daily",
-      title: "Catat Jurnal Hari Ini",
-      desc: "Isi dan simpan jurnal kegiatan magang hari ini",
+      title: "Isi Jurnal Hari Ini",
+      desc: "Biar mentor tahu kamu hadir dan gak cuma scrolling seharian",
       rewardExp: 30,
-      icon: "📝",
+      icon: "FileText",
       current: hasLoggedToday ? 1 : 0,
       target: 1,
       isCompleted: hasLoggedToday,
@@ -209,9 +209,9 @@ export function getInteractiveQuests({
       id: "quest_daily_acts",
       type: "daily",
       title: "Eksekusi 2 Kegiatan",
-      desc: "Tambahkan minimal 2 aktivitas pada jurnal hari ini",
+      desc: "Buktikan kamu beneran kerja minimal dua hal berfaedah",
       rewardExp: 25,
-      icon: "⚡",
+      icon: "Zap",
       current: Math.min(todayActivitiesCount, 2),
       target: 2,
       isCompleted: todayActivitiesCount >= 2,
@@ -221,9 +221,9 @@ export function getInteractiveQuests({
       id: "quest_daily_learning",
       type: "daily",
       title: "Refleksi Pembelajaran",
-      desc: "Tuliskan ilmu/pengalaman baru di form refleksi hari ini",
+      desc: "Catat ilmu baru sebelum menguap ditelan bumi",
       rewardExp: 20,
-      icon: "🧠",
+      icon: "Brain",
       current: hasLearningToday ? 1 : 0,
       target: 1,
       isCompleted: hasLearningToday,
@@ -232,10 +232,10 @@ export function getInteractiveQuests({
     {
       id: "quest_daily_task",
       type: "daily",
-      title: "Tuntaskan Task Magang",
-      desc: "Selesaikan minimal 1 task di board catatan",
+      title: "Tuntaskan 1 Task",
+      desc: "Beresin satu beban sebelum numpuk jadi skripsi",
       rewardExp: 25,
-      icon: "🎯",
+      icon: "CheckSquare",
       current: Math.min(doneTasksTodayCount, 1),
       target: 1,
       isCompleted: doneTasksTodayCount >= 1,
@@ -245,9 +245,9 @@ export function getInteractiveQuests({
       id: "quest_week_consistency",
       type: "weekly",
       title: "Pejuang 5 Hari Kerja",
-      desc: "Mengisi jurnal minimal 5 hari kerja minggu ini (Senin–Sabtu)",
+      desc: "Konsisten ngisi jurnal 5 hari. Pembuktian kamu bukan mitos",
       rewardExp: 75,
-      icon: "🔥",
+      icon: "Flame",
       current: Math.min(weekLogsCount, 5),
       target: 5,
       isCompleted: weekLogsCount >= 5,
@@ -323,13 +323,13 @@ export function calculateBossProgress({ logs = [], tasks = [] }) {
   const currentHp = Math.max(0, maxHp - totalDamage);
   const isDefeated = currentHp === 0;
 
-  let bossQuote = "Yaelah baru kerja 15 menit udah buka Shopee lagi...";
+  let bossQuote = "Buka laptop 5 menit, ngelamun 2 jam. Lucu banget kamu.";
   if (isDefeated) {
-    bossQuote = "Ampun king! Lu gacor banget minggu ini, gua tepar...";
+    bossQuote = "Lord Mager tumbang. Jangan bangga dulu, besok ada Lord Revisi.";
   } else if (currentHp <= 30) {
-    bossQuote = "Aduh sekarat gua! Dikit lagi lu menang nih, jangan mager!";
+    bossQuote = "Darahku tipis, tapi godaan kasur empuk masih memanggilmu.";
   } else if (currentHp <= 70) {
-    bossQuote = "Lumayan serangannya, tapi godaan rebahan masih kuat brow...";
+    bossQuote = "Serangan lumayan. Tapi yakin gak mau scrolling medsos bentar?";
   }
 
   return {
@@ -346,45 +346,45 @@ export function calculateBossProgress({ logs = [], tasks = [] }) {
 
 /**
  * Maskot Interaktif "Si Maggy"
- * Avatar karir interaktif dengan respon sarkas Gen Z
+ * Avatar karir interaktif dengan respon sarkas dan menggemaskan
  */
 export function getMascotData({ isSunday, hasLoggedToday, streakCount = 0 }) {
   let mood = "neutral";
-  let avatar = "🤖";
-  let defaultQuote = "Semangat budak korporat magang, masa depan cerah menanti (katanya).";
+  let avatar = "Bot";
+  let defaultQuote = "Semangat anak magang tersayang, masa depan cerah menanti (katanya).";
 
   if (isSunday) {
     mood = "vacation";
-    avatar = "🏖️";
-    defaultQuote = "Hari Minggu nih king! Tutup laptop, rebahan tanpa rasa bersalah overthinking masa depan.";
+    avatar = "Coffee";
+    defaultQuote = "Hari Minggu. Dilarang keras sok sibuk buka dokumen, sana istirahat.";
   } else if (hasLoggedToday) {
     mood = "hyped";
-    avatar = "🔥";
-    defaultQuote = "Gacor parah! Jurnal hari ini udah beres. Mau minta diangkat jadi komisaris lu ya?";
+    avatar = "Flame";
+    defaultQuote = "Jurnal beres. Mau minta diangkat jadi komisaris sekarang atau nanti?";
   } else if (streakCount >= 3) {
     mood = "proud";
-    avatar = "⚡";
-    defaultQuote = `Streak ${streakCount} hari konsisten! Jangan lupa ngopi dan napas bang, nanti tipes.`;
+    avatar = "Zap";
+    defaultQuote = `Streak ${streakCount} hari. Ternyata kamu bisa konsisten juga ya, kaget.`;
   } else {
     mood = "sassy";
-    avatar = "👀";
-    defaultQuote = "Jam segini jurnal masih kosong? Awas nanti ditanya mentor langsung kena mental.";
+    avatar = "Search";
+    defaultQuote = "Jurnal masih kosong melompong. Nunggu ilham atau nunggu ditegur mentor?";
   }
 
   const SARCASTIC_QUOTES = [
-    "Kerja keras bagai kuda, padahal cuma dibayar ucapan terima kasih dan sertifikat pdf.",
-    "Bismillah laporan magang bab 3 kelar, padahal baru ngetik judul doang.",
-    "Buka Excel 5 menit, bengong liatin rumus 25 menit. Produktivitas sejati.",
-    "Tenang, mentor lu juga dulu magang pura-pura ngerti pas dikasih arahan kok.",
-    "Sinergi, kolaborasi, agile... banyak istilah keren padahal intinya 'lu tolong kerjain ini ya'.",
-    "Jangan lupa minum air putih, ginjal lu lebih berharga daripada KPI kantor.",
-    "Hari Minggu resmi libur! Streak aman, jadi jangan sok-sokan buka Slack.",
-    "Level naik terus! Walaupun rekening belum naik, yang penting EXP magang nambah bro."
+    "Kerja keras bagai kuda, dibayar secangkir kopi dan ucapan terima kasih.",
+    "Baru ngetik salam pembuka di dokumen, capeknya kayak habis lari maraton.",
+    "Buka spreadsheet, tatap kolomnya lekat-lekat, lalu pasrah.",
+    "Tenang, seni magang adalah kelihatan sibuk di waktu yang tepat.",
+    "Istilah kantor keren: align, sync, touch base. Padahal maksudnya kerjain sekarang.",
+    "Minum air putih. Ginjal kamu lebih berharga daripada evaluasi akhir bulan.",
+    "Minggu libur resmi. Streak aman, tutup Slack sebelum makin overthinking.",
+    "Level magang naik terus. Saldo dompet yang belum mau ikut naik."
   ];
 
   return {
     name: "Si Maggy",
-    role: "Career Companion Sarcastic",
+    role: "Career Companion",
     avatar,
     mood,
     defaultQuote,
@@ -393,7 +393,7 @@ export function getMascotData({ isSunday, hasLoggedToday, streakCount = 0 }) {
 }
 
 /**
- * Magang Wrapped (Spotify-style Weekly Career Spotlight)
+ * Magang Wrapped (Weekly Career Spotlight)
  */
 export function generateWeeklyWrapped({ logs = [], tasks = [] }) {
   const now = new Date();
@@ -413,20 +413,20 @@ export function generateWeeklyWrapped({ logs = [], tasks = [] }) {
   const doneTasksCount = tasks.filter(t => t.status === "done").length;
 
   let title = "Ahli Pura-Pura Sibuk";
-  let description = "Minggu ini lu bertahan hidup di tengah kerasnya dunia kerja nyata.";
+  let description = "Minggu ini kamu bertahan hidup di tengah kerasnya dunia kerja nyata.";
   let badgeColor = "from-cyan-500 to-blue-600";
 
   if (logsThisWeek.length >= 5 && actsThisWeek >= 10) {
-    title = "Intern Gacor Anti-Tipes";
-    description = "Dedikasi tingkat dewa! Semua log terisi penuh, mentor lu pasti bangga (tapi gaji tetep magang).";
+    title = "Intern Gacor Anti-Tumbang";
+    description = "Dedikasi tingkat tinggi. Semua log terisi penuh, mentor pasti terharu.";
     badgeColor = "from-amber-400 to-orange-500";
   } else if (actsThisWeek >= 6) {
-    title = "Slayer Task Santai";
-    description = "Kerja tuntas tanpa banyak drama. Tetap santai walau deadline mengejar.";
+    title = "Slayer Task Kalem";
+    description = "Kerja tuntas tanpa drama. Tetap tenang walau deadline menatap sinis.";
     badgeColor = "from-purple-500 to-indigo-600";
   } else if (logsThisWeek.length === 0) {
     title = "Duta Rebahan Nasional";
-    description = "Belum ada jejak kerja tercatat minggu ini. Lu lagi magang atau lagi meditasi zen nih?";
+    description = "Belum ada jejak kerja tercatat minggu ini. Sedang magang atau meditasi zen?";
     badgeColor = "from-rose-500 to-red-600";
   }
 
@@ -439,8 +439,8 @@ export function generateWeeklyWrapped({ logs = [], tasks = [] }) {
     totalActivities: actsThisWeek,
     totalTasksDone: doneTasksCount,
     funFact: actsThisWeek > 5 
-      ? "Kamu mengetik ratusan karakter logbook minggu ini demi secuil nilai A!"
-      : "Santai sejenak, minggu depan masih ada waktu buat ngebut!"
+      ? "Kamu mengetik ratusan karakter logbook minggu ini demi secuil nilai A."
+      : "Santai sejenak, minggu depan masih ada waktu buat ngebut tugas."
   };
 }
 

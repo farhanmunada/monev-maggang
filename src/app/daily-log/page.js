@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import { 
   Save, Plus, Clock, FileText, CheckCircle2, UserCheck, UserMinus, 
-  Activity, AlertCircle, Pencil, Trash2, Sparkles, Flame, ShieldCheck, Coffee 
+  Activity, AlertCircle, Pencil, Trash2, Sparkles, Flame, ShieldCheck, Coffee,
+  BookOpen, Calendar
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
 import { calculateStreak } from "@/lib/gamification";
 
-// Format local date YYYY-MM-DD
 function getLocalDateString(date = new Date()) {
   const d = new Date(date);
   const year = d.getFullYear();
@@ -19,7 +19,7 @@ function getLocalDateString(date = new Date()) {
 }
 
 export default function DailyLog() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmittingActivity, setIsSubmittingActivity] = useState(false);
@@ -27,24 +27,19 @@ export default function DailyLog() {
   const [streakInfo, setStreakInfo] = useState({ count: 0, isSunday: false, message: "" });
   const [logId, setLogId] = useState(null);
   
-  // Format YYYY-MM-DD untuk query database
   const queryDate = getLocalDateString(currentDate);
 
-  // State Utama Jurnal Harian
   const [logData, setLogData] = useState({
     attendance: "Hadir",
     learning: "",
     obstacle: "",
   });
 
-  // State Daftar Kegiatan (Aktivitas)
   const [activities, setActivities] = useState([]);
 
-  // State Form Kegiatan Baru
   const [isAddingActivity, setIsAddingActivity] = useState(false);
   const [newActivity, setNewActivity] = useState({ time_range: "", title: "", description: "" });
 
-  // State Edit Kegiatan
   const [editingActivityId, setEditingActivityId] = useState(null);
   const [editActivityForm, setEditActivityForm] = useState({ time_range: "", title: "", description: "" });
   const [isUpdatingActivity, setIsUpdatingActivity] = useState(false);
@@ -53,12 +48,10 @@ export default function DailyLog() {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
   });
 
-  // Fetch data dari Supabase saat load
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        // Cek apakah jurnal hari ini sudah ada
         const { data: log, error: logError } = await supabase
           .from("daily_logs")
           .select("*")
@@ -75,7 +68,6 @@ export default function DailyLog() {
             obstacle: log.obstacle || "",
           });
 
-          // Fetch activities
           const { data: acts, error: actError } = await supabase
             .from("activities")
             .select("*")
@@ -89,7 +81,6 @@ export default function DailyLog() {
           setActivities([]);
         }
 
-        // Fetch all dates untuk hitung streak
         const { data: allDates } = await supabase
           .from("daily_logs")
           .select("date");
@@ -113,7 +104,6 @@ export default function DailyLog() {
     setLogData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Helper untuk memastikan daily_log ada di database
   const ensureDailyLogExists = async () => {
     if (logId) return logId;
 
@@ -137,7 +127,7 @@ export default function DailyLog() {
 
   const addActivity = async (e) => {
     e.preventDefault();
-    if (!newActivity.title.trim()) return toast.error("Judul kegiatan wajib diisi!");
+    if (!newActivity.title.trim()) return toast.error("Judul kegiatan tidak boleh kosong.");
     
     try {
       setIsSubmittingActivity(true);
@@ -161,7 +151,7 @@ export default function DailyLog() {
       setActivities(prev => [...prev, insertedAct]);
       setNewActivity({ time_range: "", title: "", description: "" });
       setIsAddingActivity(false);
-      toast.success("Kegiatan berhasil ditambahkan! (+15 EXP ⚡)");
+      toast.success("Kegiatan tercatat. Bukti kerja nyata bertambah (+15 EXP).");
     } catch (err) {
       console.error("Gagal menambahkan kegiatan:", err);
       toast.error("Gagal menambahkan kegiatan: " + err.message);
@@ -187,7 +177,7 @@ export default function DailyLog() {
 
   const handleUpdateActivity = async (e) => {
     if (e) e.preventDefault();
-    if (!editActivityForm.title.trim()) return toast.error("Judul kegiatan wajib diisi!");
+    if (!editActivityForm.title.trim()) return toast.error("Judul kegiatan wajib diisi.");
 
     try {
       setIsUpdatingActivity(true);
@@ -209,7 +199,7 @@ export default function DailyLog() {
       setActivities(prev => prev.map(a => a.id === editingActivityId ? (data || { ...a, ...updatePayload }) : a));
       setEditingActivityId(null);
       setEditActivityForm({ time_range: "", title: "", description: "" });
-      toast.success("Kegiatan berhasil diperbarui!");
+      toast.success("Kegiatan berhasil diperbarui.");
     } catch (err) {
       console.error("Gagal memperbarui kegiatan:", err);
       toast.error("Gagal memperbarui kegiatan: " + err.message);
@@ -220,12 +210,12 @@ export default function DailyLog() {
 
   const removeActivity = (actId) => {
     toast((t) => (
-      <div className="flex flex-col gap-3">
-        <span className="font-semibold text-sm">Hapus kegiatan ini?</span>
+      <div className="flex flex-col gap-2.5">
+        <span className="font-semibold text-xs text-white">Hapus kegiatan ini dari catatan?</span>
         <div className="flex gap-2 justify-end">
           <button 
             onClick={() => toast.dismiss(t.id)} 
-            className="px-3 py-1.5 bg-gray-200 text-gray-800 rounded-lg text-xs font-medium hover:bg-gray-300"
+            className="px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs hover:bg-slate-700"
           >
             Batal
           </button>
@@ -236,13 +226,13 @@ export default function DailyLog() {
                 const { error } = await supabase.from("activities").delete().eq("id", actId);
                 if (error) throw error;
                 setActivities(prev => prev.filter(a => a.id !== actId));
-                toast.success("Kegiatan dihapus");
+                toast.success("Kegiatan dihapus.");
               } catch (err) {
-                console.error("Gagal menghapus di database", err);
+                console.error("Gagal menghapus:", err);
                 toast.error("Gagal menghapus kegiatan: " + err.message);
               }
             }} 
-            className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-medium hover:bg-red-600"
+            className="px-2.5 py-1 bg-rose-600 text-white rounded-lg text-xs font-semibold hover:bg-rose-700"
           >
             Hapus
           </button>
@@ -253,7 +243,7 @@ export default function DailyLog() {
 
   const handleGenerateLearning = async () => {
     if (activities.length === 0) {
-      return toast.error("Tambahkan kegiatan hari ini terlebih dahulu agar AI dapat menganalisis pembelajaran.");
+      return toast.error("Tambahkan minimal satu kegiatan dulu sebelum minta AI merangkum.");
     }
 
     try {
@@ -272,7 +262,6 @@ export default function DailyLog() {
       const generatedLearning = data.learning;
       setLogData(prev => ({ ...prev, learning: generatedLearning }));
 
-      // Langsung simpan ke database
       const currentLogId = await ensureDailyLogExists();
       const { error: updateErr } = await supabase
         .from("daily_logs")
@@ -281,7 +270,7 @@ export default function DailyLog() {
 
       if (updateErr) throw updateErr;
 
-      toast.success("Pembelajaran berhasil digenerate & tersimpan ke database! (+20 EXP 🧠)");
+      toast.success("Refleksi pembelajaran dirangkum rapi (+20 EXP).");
     } catch (err) {
       console.error("Gagal generate pembelajaran:", err);
       toast.error("Gagal generate pembelajaran: " + err.message);
@@ -294,7 +283,6 @@ export default function DailyLog() {
     try {
       setIsSaving(true);
       
-      // 1. Upsert Daily Log
       const logPayload = {
         date: queryDate,
         attendance: logData.attendance,
@@ -313,7 +301,6 @@ export default function DailyLog() {
       const currentLogId = savedLog.id;
       setLogId(currentLogId);
 
-      // 2. Jika ada input kegiatan baru yang belum sempat diklik "Tambah ke Daftar", simpan juga
       if (isAddingActivity && newActivity.title.trim()) {
         const extraAct = {
           daily_log_id: currentLogId,
@@ -327,7 +314,6 @@ export default function DailyLog() {
         setIsAddingActivity(false);
       }
 
-      // 3. Simpan aktivitas yang belum punya daily_log_id (jika ada)
       const unsavedActs = activities.filter(act => !act.daily_log_id).map(act => ({
         daily_log_id: currentLogId,
         time_range: act.time_range,
@@ -342,7 +328,6 @@ export default function DailyLog() {
         if (actErr) throw actErr;
       }
 
-      // 4. Refresh activities state dari database
       const { data: acts, error: fetchActsErr } = await supabase
         .from("activities")
         .select("*")
@@ -352,7 +337,7 @@ export default function DailyLog() {
       if (fetchActsErr) throw fetchActsErr;
       if (acts) setActivities(acts);
 
-      toast.success("Jurnal hari ini berhasil disimpan! (+50 EXP 🔥)");
+      toast.success("Jurnal hari ini tersimpan aman (+50 EXP).");
     } catch (err) {
       console.error("Error saving data:", err);
       toast.error("Gagal menyimpan data: " + err.message);
@@ -362,70 +347,68 @@ export default function DailyLog() {
   };
 
   if (isLoading) {
-    return <div className="min-h-[50vh] flex items-center justify-center animate-pulse">Memuat data dari database...</div>;
+    return <div className="min-h-[50vh] flex items-center justify-center text-xs text-slate-400">Memuat jurnal...</div>;
   }
 
   return (
-    <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
+    <div className="space-y-6 md:space-y-7 pb-10">
       
       {/* Header Tanggal & Kehadiran */}
-      <div className="bg-gradient-to-r from-primary-600 to-indigo-700 rounded-3xl p-5 md:p-8 text-white shadow-lg shadow-primary-500/20 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6">
-        <div className="absolute right-0 top-0 opacity-10 pointer-events-none">
-          <CalendarIcon className="w-64 h-64 -mr-10 -mt-10" />
-        </div>
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <p className="text-primary-100 font-medium text-sm md:text-base">
-              {currentDate.getDay() === 0 ? "🏖️ Hari Istirahat Mingguan" : "Jurnal Hari Ini"}
-            </p>
+      <div className="bg-slate-950 text-white rounded-2xl p-5 md:p-7 shadow-xs border border-slate-800 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-blue-400" />
+              {currentDate.getDay() === 0 ? "Hari Istirahat Mingguan" : "Jurnal Harian"}
+            </span>
             {streakInfo.count > 0 && (
-              <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 backdrop-blur-sm shadow-sm ${
+              <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 border ${
                 currentDate.getDay() === 0 
-                  ? "bg-emerald-400/30 text-emerald-100 border border-emerald-300/40" 
-                  : "bg-amber-400/25 text-amber-200 border border-amber-300/30"
+                  ? "bg-teal-500/10 text-teal-300 border-teal-500/20" 
+                  : "bg-amber-500/10 text-amber-300 border-amber-500/20"
               }`}>
                 {currentDate.getDay() === 0 ? (
                   <>
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
-                    {streakInfo.count} Hari Streak (Aman 🛡️)
+                    <ShieldCheck className="w-3 h-3 text-teal-400" />
+                    <span>{streakInfo.count} Hari Streak (Aman)</span>
                   </>
                 ) : (
                   <>
-                    <Flame className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
-                    {streakInfo.count} Hari Streak
+                    <Flame className="w-3 h-3 text-amber-400" />
+                    <span>{streakInfo.count} Hari Streak</span>
                   </>
                 )}
               </span>
             )}
           </div>
-          <h1 className="text-xl md:text-3xl font-extrabold tracking-tight mb-2 md:mb-3">
+          <h1 className="text-xl md:text-2xl font-extrabold tracking-tight">
             {formattedDate}
           </h1>
-          <p className="text-[10px] md:text-sm bg-black/20 inline-block px-2 md:px-3 py-1 md:py-1.5 rounded-full backdrop-blur-sm">
+          <p className="text-xs text-slate-400 mt-1">
             {currentDate.getDay() === 0 
-              ? "Hari Minggu Libur Resmi • Pengisian bersifat opsional" 
-              : "Sesi aktif hingga 23:59 WIB • +50 EXP jika diisi"}
+              ? "Hari Minggu libur resmi. Pengisian catatan bersifat opsional." 
+              : "Batas input sampai 23:59 WIB. Tuliskan apa yang kamu kerjakan hari ini."}
           </p>
         </div>
 
-        <div className="relative z-10 w-full md:w-auto mt-4 md:mt-0">
-          <div className="bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/20 flex flex-nowrap w-full md:inline-flex md:w-auto">
+        {/* Status Kehadiran Selector */}
+        <div className="w-full md:w-auto mt-2 md:mt-0">
+          <div className="bg-slate-900 p-1 rounded-xl border border-slate-800 flex gap-1 w-full md:w-auto">
             {["Hadir", "Izin", "Sakit", "Alfa"].map((status) => {
               const isActive = logData.attendance === status;
               return (
                 <button
                   key={status}
                   onClick={() => setLogData(prev => ({ ...prev, attendance: status }))}
-                  className={`flex-1 md:flex-none px-2 md:px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
+                  className={`flex-1 md:flex-none px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     isActive 
-                      ? "bg-white text-indigo-700 shadow-md" 
-                      : "text-white hover:bg-white/20"
+                      ? "bg-white text-slate-950 shadow-xs" 
+                      : "text-slate-400 hover:text-white"
                   }`}
                 >
                   {status}
                 </button>
-              )
+              );
             })}
           </div>
         </div>
@@ -433,40 +416,42 @@ export default function DailyLog() {
 
       {/* Banner Khusus Hari Minggu Libur */}
       {currentDate.getDay() === 0 && (
-        <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 flex items-start gap-3 text-emerald-800 text-xs md:text-sm shadow-xs animate-in fade-in">
-          <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+        <div className="bg-teal-50 border border-teal-200/80 rounded-2xl p-4 flex items-start gap-3 text-teal-900 text-xs shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold text-emerald-950">Hari Ini Hari Minggu (Libur) — Sunday Shield Aktif</p>
-            <p className="text-emerald-700 mt-0.5 leading-relaxed">
-              Sesuai sistem 6 hari kerja, hari Minggu adalah hari istirahat resmi tanpa kegiatan magang. Streak Anda tetap aman terlindungi hingga hari Senin. Jika Anda ingin mencatat pembelajaran atau kegiatan tambahan, Anda tetap dipersilakan mengisi form di bawah.
+            <p className="font-bold">Sunday Shield Aktif</p>
+            <p className="text-teal-700 mt-0.5 leading-relaxed">
+              Hari Minggu adalah hari istirahat resmi. Streak tetap terlindungi hingga hari Senin. Kamu bebas mengisi atau cukup menikmati waktu istirahat.
             </p>
           </div>
         </div>
       )}
 
       {/* Daftar Kegiatan */}
-      <section className="bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
-        <div className="flex justify-between items-center mb-5 md:mb-6">
-          <h2 className="text-lg md:text-xl font-bold text-foreground flex items-center gap-2">
-            <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary-500" />
-            Daftar Kegiatan
-          </h2>
+      <section className="bg-white rounded-2xl border border-slate-200/90 p-5 md:p-6 shadow-xs">
+        <div className="flex justify-between items-center mb-5">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-blue-600" /> Daftar Aktivitas
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">Catat rincian kegiatan spesifik beserta estimasi waktu.</p>
+          </div>
           <button 
             onClick={() => {
               setIsAddingActivity(!isAddingActivity);
               setEditingActivityId(null);
             }}
-            className="flex items-center gap-1.5 md:gap-2 bg-primary-50 text-primary-700 hover:bg-primary-100 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors font-medium text-xs md:text-sm"
+            className="flex items-center gap-1.5 bg-slate-900 text-white hover:bg-slate-800 px-3 py-1.5 rounded-xl font-semibold text-xs shadow-xs active:scale-95 transition-all"
           >
-            <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" /> Tambah
+            <Plus className="w-3.5 h-3.5" /> Tambah Kegiatan
           </button>
         </div>
 
         {/* List Aktivitas */}
-        <div className="space-y-4 mb-6">
+        <div className="space-y-3 mb-5">
           {activities.length === 0 ? (
-            <div className="text-center py-8 text-secondary border-2 border-dashed border-border rounded-2xl">
-              Belum ada kegiatan yang ditambahkan hari ini.
+            <div className="text-center py-7 text-slate-400 border border-dashed border-slate-200 rounded-xl text-xs">
+              Belum ada kegiatan yang dicatat. Klik &quot;Tambah Kegiatan&quot; untuk mulai mengisi.
             </div>
           ) : (
             activities.map((act) => (
@@ -475,21 +460,21 @@ export default function DailyLog() {
                 <form 
                   key={act.id} 
                   onSubmit={handleUpdateActivity} 
-                  className="bg-primary-50/60 p-5 rounded-2xl border border-primary-200 shadow-sm animate-in fade-in"
+                  className="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-2xs space-y-3"
                 >
-                  <div className="flex justify-between items-center mb-3">
-                    <h4 className="font-bold text-sm text-primary-900 flex items-center gap-1.5">
-                      <Pencil className="w-4 h-4 text-primary-600" /> Edit Kegiatan
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                      <Pencil className="w-3.5 h-3.5 text-blue-600" /> Edit Rincian Kegiatan
                     </h4>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="md:col-span-1">
                       <input 
                         type="text" 
-                        placeholder="Waktu (Misal: 09:00 - 10:00)" 
+                        placeholder="Waktu (Misal: 09:00 - 11:30)" 
                         value={editActivityForm.time_range} 
                         onChange={e => setEditActivityForm({...editActivityForm, time_range: e.target.value})}
-                        className="w-full px-3.5 py-2 text-sm rounded-xl border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -499,7 +484,7 @@ export default function DailyLog() {
                         required
                         value={editActivityForm.title} 
                         onChange={e => setEditActivityForm({...editActivityForm, title: e.target.value})}
-                        className="w-full px-3.5 py-2 text-sm rounded-xl border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
                       />
                     </div>
                   </div>
@@ -508,20 +493,20 @@ export default function DailyLog() {
                     rows={2}
                     value={editActivityForm.description} 
                     onChange={e => setEditActivityForm({...editActivityForm, description: e.target.value})}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none mb-3"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 resize-none"
                   />
                   <div className="flex justify-end gap-2">
                     <button 
                       type="button" 
                       onClick={handleCancelEdit} 
-                      className="px-3.5 py-1.5 text-xs text-secondary hover:bg-gray-200 rounded-xl transition-colors font-medium"
+                      className="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-200 rounded-lg font-medium"
                     >
                       Batal
                     </button>
                     <button 
                       type="submit" 
                       disabled={isUpdatingActivity}
-                      className="px-4 py-1.5 text-xs bg-primary-600 text-white hover:bg-primary-700 rounded-xl transition-colors font-medium disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
+                      className="px-3 py-1.5 text-xs bg-slate-900 text-white hover:bg-slate-800 rounded-lg font-semibold flex items-center gap-1.5 shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5" />
                       {isUpdatingActivity ? "Menyimpan..." : "Simpan Perubahan"}
@@ -529,31 +514,31 @@ export default function DailyLog() {
                   </div>
                 </form>
               ) : (
-                /* Card Kegiatan Biasa */
-                <div key={act.id} className="flex flex-col md:flex-row gap-3 md:gap-4 p-4 border border-border rounded-2xl hover:shadow-md transition-shadow bg-background/50 relative group">
-                  <div className="bg-primary-100 text-primary-700 px-3 py-1.5 rounded-lg w-fit h-fit text-xs md:text-sm font-bold whitespace-nowrap">
+                /* Card Kegiatan */
+                <div key={act.id} className="flex flex-col md:flex-row gap-3 p-3.5 border border-slate-200/90 rounded-xl hover:border-slate-300 transition-all bg-white relative group">
+                  <div className="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md w-fit h-fit text-xs font-mono font-medium whitespace-nowrap">
                     {act.time_range || "Sepanjang hari"}
                   </div>
-                  <div className="flex-1 pr-16">
-                    <h4 className="font-bold text-foreground text-sm md:text-base">{act.title}</h4>
-                    {act.description && <p className="text-secondary text-xs md:text-sm mt-1">{act.description}</p>}
+                  <div className="flex-1 pr-14">
+                    <h4 className="font-semibold text-slate-900 text-xs md:text-sm">{act.title}</h4>
+                    {act.description && <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">{act.description}</p>}
                   </div>
-                  <div className="absolute top-3.5 right-3.5 flex items-center gap-1">
+                  <div className="absolute top-3 right-3 flex items-center gap-1">
                     <button 
                       type="button"
                       title="Edit kegiatan"
                       onClick={() => handleStartEdit(act)}
-                      className="text-gray-400 hover:text-primary-600 hover:bg-primary-50 p-1.5 rounded-lg transition-colors"
+                      className="text-slate-400 hover:text-slate-900 hover:bg-slate-100 p-1.5 rounded-lg transition-colors"
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Pencil className="w-3.5 h-3.5" />
                     </button>
                     <button 
                       type="button"
                       title="Hapus kegiatan"
                       onClick={() => removeActivity(act.id)}
-                      className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                      className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg transition-colors"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -564,37 +549,50 @@ export default function DailyLog() {
 
         {/* Form Tambah Aktivitas */}
         {isAddingActivity && (
-          <form onSubmit={addActivity} className="bg-gray-50 p-5 rounded-2xl border border-gray-200 animate-in fade-in slide-in-from-top-2">
-            <h4 className="font-semibold mb-4 text-foreground">Kegiatan Baru</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <form onSubmit={addActivity} className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 className="font-bold text-xs text-slate-900">Input Kegiatan Baru</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="md:col-span-1">
                 <input 
-                  type="text" placeholder="Waktu (Misal: 09:00 - 10:00)" 
-                  value={newActivity.time_range} onChange={e => setNewActivity({...newActivity, time_range: e.target.value})}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  type="text" 
+                  placeholder="Waktu (Misal: 08:30 - 12:00)" 
+                  value={newActivity.time_range} 
+                  onChange={e => setNewActivity({...newActivity, time_range: e.target.value})}
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
                 />
               </div>
               <div className="md:col-span-2">
                 <input 
-                  type="text" placeholder="Judul Kegiatan" required
-                  value={newActivity.title} onChange={e => setNewActivity({...newActivity, title: e.target.value})}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  type="text" 
+                  placeholder="Judul Kegiatan (Misal: Implementasi API auth)" 
+                  required
+                  value={newActivity.title} 
+                  onChange={e => setNewActivity({...newActivity, title: e.target.value})}
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
                 />
               </div>
             </div>
             <textarea 
-              placeholder="Deskripsi kegiatan..." rows={2}
-              value={newActivity.description} onChange={e => setNewActivity({...newActivity, description: e.target.value})}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none mb-4"
+              placeholder="Deskripsi kegiatan atau hasil pengerjaan..." 
+              rows={2}
+              value={newActivity.description} 
+              onChange={e => setNewActivity({...newActivity, description: e.target.value})}
+              className="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 resize-none"
             />
             <div className="flex justify-end gap-2">
-              <button type="button" onClick={() => setIsAddingActivity(false)} className="px-4 py-2 text-secondary hover:bg-gray-200 rounded-xl transition-colors font-medium">Batal</button>
+              <button 
+                type="button" 
+                onClick={() => setIsAddingActivity(false)} 
+                className="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-200 rounded-lg font-medium"
+              >
+                Batal
+              </button>
               <button 
                 type="submit" 
                 disabled={isSubmittingActivity}
-                className="px-5 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-xl transition-colors font-medium disabled:opacity-50"
+                className="px-3.5 py-1.5 bg-slate-900 text-white hover:bg-slate-800 rounded-lg font-semibold text-xs disabled:opacity-50 shadow-xs"
               >
-                {isSubmittingActivity ? "Menyimpan ke Database..." : "Simpan Kegiatan"}
+                {isSubmittingActivity ? "Menyimpan..." : "Simpan Kegiatan"}
               </button>
             </div>
           </form>
@@ -602,77 +600,77 @@ export default function DailyLog() {
       </section>
 
       {/* Pembelajaran & Kendala */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <div className="bg-card rounded-3xl border border-border p-5 md:p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-2 md:mb-4 gap-2">
-            <label className="flex items-center gap-2 text-base md:text-lg font-bold text-foreground">
-              <BookOpenIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
-              Pembelajaran
-            </label>
-            <button
-              type="button"
-              onClick={handleGenerateLearning}
-              disabled={isGeneratingLearning}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-primary-600 text-white shadow-sm hover:from-indigo-700 hover:to-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              title="Generate hasil pembelajaran dari kegiatan hari ini dengan AI"
-            >
-              <Sparkles className={`w-3.5 h-3.5 ${isGeneratingLearning ? "animate-spin" : ""}`} />
-              {isGeneratingLearning ? "Menyusun & Menyimpan..." : "Generate AI"}
-            </button>
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-5 md:p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-3 gap-2">
+              <label className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <BookOpen className="w-4 h-4 text-blue-600" />
+                Refleksi Pembelajaran
+              </label>
+              <button
+                type="button"
+                onClick={handleGenerateLearning}
+                disabled={isGeneratingLearning}
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200/80 hover:bg-indigo-100 disabled:opacity-50 transition-all cursor-pointer"
+                title="Generate refleksi pembelajaran dari daftar kegiatan dengan AI"
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${isGeneratingLearning ? "animate-spin" : ""}`} />
+                {isGeneratingLearning ? "Menyusun..." : "Rangkum AI"}
+              </button>
+            </div>
+            <p className="text-xs text-slate-500 mb-3">Tuliskan pemahaman atau hal baru yang berhasil dipelajari hari ini.</p>
+            <textarea 
+              name="learning" 
+              value={logData.learning} 
+              onChange={handleLogChange}
+              rows={5} 
+              placeholder="Catat ilmu baru sebelum menguap begitu saja saat ditanya pembimbing..."
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 resize-none text-xs leading-relaxed"
+            />
           </div>
-          <p className="text-xs md:text-sm text-secondary mb-3">Apa insight atau pelajaran baru yang Anda dapatkan hari ini?</p>
-          <textarea 
-            name="learning" value={logData.learning} onChange={handleLogChange}
-            rows={5} placeholder="Insight atau konsep yang dipelajari hari ini..."
-            className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow resize-none text-sm"
-          />
-          <div className="flex justify-between items-center mt-2 text-[11px] text-secondary">
-            <span>Minimal 100 karakter</span>
-            <span className={logData.learning.length >= 100 ? "text-green-600 font-medium" : "text-amber-600"}>
+          <div className="flex justify-between items-center mt-2 text-[11px] text-slate-400">
+            <span>Rekomendasi minimal 100 karakter</span>
+            <span className={logData.learning.length >= 100 ? "text-emerald-600 font-semibold font-mono" : "text-slate-500 font-mono"}>
               {logData.learning.length} karakter
             </span>
           </div>
         </div>
 
-        <div className="bg-card rounded-3xl border border-border p-5 md:p-6 shadow-sm">
-          <label className="flex items-center gap-2 text-base md:text-lg font-bold text-foreground mb-2 md:mb-4">
-            <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-amber-500" />
-            Kendala
-          </label>
-          <p className="text-xs md:text-sm text-secondary mb-3">Apakah ada hambatan dalam menjalankan kegiatan hari ini?</p>
-          <textarea 
-            name="obstacle" value={logData.obstacle} onChange={handleLogChange}
-            rows={5} placeholder="Kendala yang dihadapi adalah..."
-            className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-amber-500 transition-shadow resize-none text-sm"
-          />
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-5 md:p-6 shadow-xs flex flex-col justify-between">
+          <div>
+            <label className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-3">
+              <AlertCircle className="w-4 h-4 text-amber-500" />
+              Kendala & Hambatan
+            </label>
+            <p className="text-xs text-slate-500 mb-3">Ada kendala teknis atau masalah koordinasi dalam tugas hari ini?</p>
+            <textarea 
+              name="obstacle" 
+              value={logData.obstacle} 
+              onChange={handleLogChange}
+              rows={5} 
+              placeholder="Ceritakan tantangan atau blocker yang dihadapi hari ini..."
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 resize-none text-xs leading-relaxed"
+            />
+          </div>
+          <div className="mt-2 text-[11px] text-slate-400">
+            Kosongkan jika semua pekerjaan berjalan lancar tanpa hambatan.
+          </div>
         </div>
       </section>
 
       {/* Tombol Simpan Akhir */}
-      <div className="flex justify-end pt-2 md:pt-4 pb-6 md:pb-0">
+      <div className="flex justify-end pt-2">
         <button 
           onClick={handleSaveAll}
           disabled={isSaving}
-          className="flex items-center justify-center gap-2 w-full md:w-auto bg-foreground text-background hover:bg-gray-800 px-6 md:px-8 py-3.5 md:py-4 rounded-2xl shadow-xl transition-transform md:hover:-translate-y-1 font-bold text-base md:text-lg disabled:opacity-70 disabled:hover:translate-y-0"
+          className="flex items-center justify-center gap-2 w-full md:w-auto bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-xl shadow-xs transition-all active:scale-95 font-semibold text-sm disabled:opacity-60 cursor-pointer"
         >
-          <Save className="w-5 h-5 md:w-6 md:h-6" />
-          {isSaving ? "Menyimpan..." : "Simpan Jurnal Hari Ini"}
+          <Save className="w-4 h-4" />
+          {isSaving ? "Menyimpan ke Database..." : "Simpan Jurnal Hari Ini"}
         </button>
       </div>
 
     </div>
-  );
-}
-
-// Custom Icons
-function CalendarIcon(props) {
-  return (
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-  );
-}
-
-function BookOpenIcon(props) {
-  return (
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
   );
 }
