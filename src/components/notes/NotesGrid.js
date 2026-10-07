@@ -14,7 +14,7 @@ function getTypeBadgeClass(type) {
   }
 }
 
-export default function NotesGrid({ notes, onOpenModal, onDelete }) {
+export default function NotesGrid({ notes, onOpenModal, onDelete, onViewNote }) {
   if (notes.length === 0) {
     return (
       <div className="text-center py-14 text-slate-400 bg-white border border-dashed border-slate-200 rounded-2xl">
@@ -30,7 +30,8 @@ export default function NotesGrid({ notes, onOpenModal, onDelete }) {
       {notes.map((note) => (
         <div
           key={note.id}
-          className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:border-slate-300 transition-all flex flex-col group"
+          onClick={() => onViewNote && onViewNote(note)}
+          className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all flex flex-col group cursor-pointer"
         >
           <div className="flex justify-between items-start mb-2.5">
             <span
@@ -40,7 +41,7 @@ export default function NotesGrid({ notes, onOpenModal, onDelete }) {
             >
               {note.type}
             </span>
-            <div className="flex gap-1">
+            <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
               <button
                 type="button"
                 onClick={() => onOpenModal(note)}

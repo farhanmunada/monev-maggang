@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import NotesGrid from "@/components/notes/NotesGrid";
 import NoteModal from "@/components/notes/NoteModal";
+import NoteDetailModal from "@/components/notes/NoteDetailModal";
 
 export default function NotesPage() {
   const [notes, setNotes] = useState([]);
@@ -15,6 +16,7 @@ export default function NotesPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingNote, setViewingNote] = useState(null);
   const [formData, setFormData] = useState({
     id: null,
     title: "",
@@ -207,8 +209,22 @@ export default function NotesPage() {
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
         </div>
       ) : (
-        <NotesGrid notes={filteredNotes} onOpenModal={openModal} onDelete={handleDelete} />
+        <NotesGrid
+          notes={filteredNotes}
+          onOpenModal={openModal}
+          onDelete={handleDelete}
+          onViewNote={setViewingNote}
+        />
       )}
+
+      <NoteDetailModal
+        note={viewingNote}
+        onClose={() => setViewingNote(null)}
+        onEdit={(note) => {
+          setViewingNote(null);
+          openModal(note);
+        }}
+      />
 
       <NoteModal
         isOpen={isModalOpen}
