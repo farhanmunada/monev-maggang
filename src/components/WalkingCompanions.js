@@ -99,6 +99,7 @@ export default function WalkingCompanions() {
   const [isTodayLogged, setIsTodayLogged] = useState(false);
 
   const clickIndexRef = useRef({ mochi: 0, chip: 0, pip: 0 });
+  const bubbleTimeoutRef = useRef({});
   const stepCountRef = useRef(0);
 
   const [companionsState, setCompanionsState] = useState([
@@ -134,6 +135,7 @@ export default function WalkingCompanions() {
   useEffect(() => {
     if (!isUrgent || !isVisible) return;
 
+    let hideTimer;
     const timer = setTimeout(() => {
       setCompanionsState((prev) =>
         prev.map((c) =>
@@ -143,17 +145,26 @@ export default function WalkingCompanions() {
         )
       );
 
-      const hideTimer = setTimeout(() => {
+      hideTimer = setTimeout(() => {
         setCompanionsState((prev) =>
           prev.map((c) => (c.id === "chip" ? { ...c, activeBubble: null } : c))
         );
       }, 5000);
-
-      return () => clearTimeout(hideTimer);
     }, 3000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (hideTimer) clearTimeout(hideTimer);
+    };
   }, [isUrgent, isVisible]);
+
+  // Cleanup bubble timeouts on unmount
+  useEffect(() => {
+    const timeouts = bubbleTimeoutRef.current;
+    return () => {
+      Object.values(timeouts).forEach((t) => clearTimeout(t));
+    };
+  }, []);
 
   // Walking loop
   useEffect(() => {
@@ -205,11 +216,15 @@ export default function WalkingCompanions() {
     const nextQuote = pool[currentIndex % pool.length];
     clickIndexRef.current[id] = currentIndex + 1;
 
+    if (bubbleTimeoutRef.current[id]) {
+      clearTimeout(bubbleTimeoutRef.current[id]);
+    }
+
     setCompanionsState((prev) =>
       prev.map((c) => (c.id === id ? { ...c, activeBubble: nextQuote } : c))
     );
 
-    setTimeout(() => {
+    bubbleTimeoutRef.current[id] = setTimeout(() => {
       setCompanionsState((prev) =>
         prev.map((c) => (c.id === id ? { ...c, activeBubble: null } : c))
       );
@@ -245,7 +260,7 @@ export default function WalkingCompanions() {
 
       {/* Walking Area at Bottom Screen */}
       {isVisible && (
-        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 h-16 pointer-events-none z-30 overflow-hidden select-none no-print">
+        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 h-16 pointer-events-none z-30 overflow-visible select-none no-print">
           {companionsState.map((c) => {
             const compData = COMPANIONS.find((item) => item.id === c.id);
             if (!compData) return null;
@@ -263,7 +278,13 @@ export default function WalkingCompanions() {
                 {/* Speech Bubble */}
                 {c.activeBubble && (
                   <div
-                    className={`absolute -top-14 max-w-[220px] w-max backdrop-blur-md border text-[11px] font-medium p-2.5 rounded-xl shadow-md leading-tight text-center animate-in fade-in zoom-in-90 duration-200 z-50 ${
+                    className={`absolute bottom-full mb-3 max-w-[220px] sm:max-w-[260px] w-max backdrop-blur-md border text-[11px] font-medium p-2.5 rounded-xl shadow-md leading-snug text-center animate-in fade-in zoom-in-90 duration-200 z-50 pointer-events-auto ${
+                      c.x < 15
+                        ? "left-0"
+                        : c.x > 85
+                        ? "right-0"
+                        : "left-1/2 -translate-x-1/2"
+                    } ${
                       isUrgent
                         ? "bg-amber-50/95 border-amber-200 text-amber-900"
                         : "bg-white/95 border-slate-200/90 text-slate-800"
@@ -271,7 +292,13 @@ export default function WalkingCompanions() {
                   >
                     <p>{c.activeBubble}</p>
                     <div
-                      className={`w-2 h-2 border-r border-b rotate-45 mx-auto -mb-3.5 mt-1 ${
+                      className={`absolute -bottom-1 w-2 h-2 border-r border-b rotate-45 ${
+                        c.x < 15
+                          ? "left-4"
+                          : c.x > 85
+                          ? "right-4"
+                          : "left-1/2 -translate-x-1/2"
+                      } ${
                         isUrgent
                           ? "bg-amber-50 border-amber-200"
                           : "bg-white border-slate-200"
