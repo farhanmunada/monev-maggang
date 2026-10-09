@@ -4,7 +4,7 @@ import { formatIndonesianDate } from "@/lib/date";
 
 export default function RecentLogsWidget({ logs, loading }) {
   return (
-    <div className="bg-white/80 backdrop-blur-md rounded-3xl border border-slate-200/80 shadow-xs p-5 md:p-6 flex flex-col justify-between">
+    <div className="glass-panel rounded-3xl p-5 md:p-6 flex flex-col justify-between">
       <div>
         <div className="flex justify-between items-center mb-4">
           <div>

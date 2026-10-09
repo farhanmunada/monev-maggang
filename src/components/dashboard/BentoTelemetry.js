@@ -24,7 +24,7 @@ export default function BentoTelemetry({ telemetry }) {
       {/* 1. Kehadiran Magang */}
       <Link
         href="/attendance"
-        className="bg-white/75 backdrop-blur-md border border-slate-200/80 hover:border-slate-300 hover:bg-white/90 rounded-3xl p-5 shadow-xs transition-all flex flex-col justify-between group cursor-pointer relative overflow-hidden"
+        className="glass-panel rounded-3xl p-5 shadow-xs flex flex-col justify-between group cursor-pointer relative overflow-hidden"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export default function BentoTelemetry({ telemetry }) {
       {/* 2. Total Kegiatan Terisi */}
       <Link
         href="/daily-log"
-        className="bg-white/75 backdrop-blur-md border border-slate-200/80 hover:border-slate-300 hover:bg-white/90 rounded-3xl p-5 shadow-xs transition-all flex flex-col justify-between group cursor-pointer relative overflow-hidden"
+        className="glass-panel rounded-3xl p-5 shadow-xs flex flex-col justify-between group cursor-pointer relative overflow-hidden"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -134,7 +134,7 @@ export default function BentoTelemetry({ telemetry }) {
       {/* 3. Progres Task Kanban */}
       <Link
         href="/tasks"
-        className="bg-white/75 backdrop-blur-md border border-slate-200/80 hover:border-slate-300 hover:bg-white/90 rounded-3xl p-5 shadow-xs transition-all flex flex-col justify-between group cursor-pointer relative overflow-hidden"
+        className="glass-panel rounded-3xl p-5 shadow-xs flex flex-col justify-between group cursor-pointer relative overflow-hidden"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">

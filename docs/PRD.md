@@ -1,35 +1,42 @@
-# PRD: Redesain Topbar Standar Glassmorphic & Harmonisasi Glass UI
+# PRD: Implementasi Aurora Mesh & Sistem True Glassmorphism
 
-## 1. Tujuan (Objective)
-Menghapus desain navbar berbentuk floating island overlay dan menggantinya dengan **Navbar Standar Penuh (Edge-to-Edge Sticky Topbar)** yang menerapkan efek **Glassmorphism dinamis saat discroll**. Selain itu, memadukan sentuhan glassmorphism ke elemen-elemen UI strategis lainnya (kartu metrik, panel statistik, modal, dan bottom navigation) guna menciptakan tampilan antarmuka yang lebih lapang, premium, dan kohesif.
+## 1. Masalah & Kebutuhan (Problem Statement)
+Efek glassmorphism saat ini tidak terlihat (*"kaga ada glass morph blass"*) karena dua faktor teknis utama:
+1. Kanvas dasar berupa warna datar monokromatik (`#F8FAFC`), sehingga blur optik tidak memiliki variasi warna atau elemen kontras di baliknya untuk dibiaskan.
+2. Opasitas background elemen terlalu tinggi (0.8 - 0.9) dan tidak memiliki pantulan cahaya tepi (*specular rim highlight* `inset 0 1px 1px white`) serta peningkatan saturasi optik (`saturate(180%)`).
 
-## 2. Cakupan & Spesifikasi Fitur (Scope)
+Pengguna menanyakan: *"apakah perlu warna baru untk kombinasi ?"*
+Solusinya adalah menghadirkan kombinasi warna latar belakang **Aurora Mesh Gradient** yang dinamis dan berkelas, dipadukan dengan formula **True Glassmorphism Surface**.
 
-### A. Redesain Top Navbar (`src/components/Navbar.js`)
-- **Format:** Lebar penuh (`w-full sticky top-0 z-40`), bukan pill overlay mengambang di tengah.
-- **Perilaku Scroll Dinamis:**
-  - **Saat di puncak halaman (`scrollY <= 10`):** Latar belakang bersih/transparan atau semi-transparan minimal tanpa border bawah yang tebal.
-  - **Saat halaman digulir (`scrollY > 10`):** Bertransformasi menjadi **Frosted Glass / Glassmorphic Header** (`backdrop-blur-md bg-white/80 border-b border-slate-200/80 shadow-2xs transition-all duration-300`).
-- **Tata Letak:**
-  - Kiri: Logo InternTrack + Nama Aplikasi.
-  - Tengah/Kanan: Menu navigasi (`Beranda`, `Jurnal`, `Absensi`, `Laporan AI`, `Tasks`, `Catatan`) dengan pills/indikator aktif yang halus.
-  - Kanan: Indikator status tanggal aktif / quick shortcut.
+## 2. Cakupan Solusi (Scope)
 
-### B. Penyesuaian Layout Root (`src/app/layout.js`)
-- Mengubah padding atas konten utama (`<main>`) agar mengalir alami di bawah sticky navbar tanpa adanya tumpang tindih visual.
+### A. Palet Kombinasi Baru: Aurora Mesh Lighting
+Latar belakang kanvas dihiasi oleh orbs pencahayaan ambient yang ditempatkan secara strategis di `src/app/layout.js`:
+- **Violet & Indigo Orb (`#6366F1` / `#8B5CF6`):** di area atas tengah, menciptakan bias warna di balik sticky navbar.
+- **Sky Blue Orb (`#0EA5E9`):** di area kiri atas, memberi nuansa segar dan profesional.
+- **Warm Rose & Amber Orb (`#F59E0B` / `#F43F5E`):** di area kanan tengah, memberi kehangatan visual tanpa menyilaukan.
+- Opasitas halus (12-18%) dengan `blur-[110px]` sehingga tetap lembut, tidak mengganggu keterbacaan teks, namun memberi material kaya untuk dibiaskan oleh kaca.
 
-### C. Perpaduan Glassmorphism pada Komponen Utama
-- **Halaman Presensi & Absensi (`src/app/attendance/page.js`):**
-  - Panel statistik bulanan (`grid-cols-5`): Tampilan glass cards halus (`bg-white/75 backdrop-blur-md border border-slate-200/80 shadow-xs`).
-  - Bar navigasi bulan & aksi PDF: Aksen glassmorphic button.
-- **Mobile Bottom Navigation (`src/components/BottomNav.js`):**
-  - Mengoptimalkan efek frosted glass (`bg-white/85 backdrop-blur-xl border border-white/60 shadow-lg`).
-- **Dashboard Bento Cards (`src/app/page.js` & elemen metrik):**
-  - Sentuhan transparan halus dengan blur untuk meningkatkan kedalaman visual (depth).
+### B. Formula True Glassmorphism (`src/app/globals.css`)
+- **Utility `.glass-card` / `.glass-panel`:**
+  - `background: rgba(255, 255, 255, 0.65)`
+  - `backdrop-filter: blur(16px) saturate(180%)`
+  - `-webkit-backdrop-filter: blur(16px) saturate(180%)`
+  - `border: 1px solid rgba(255, 255, 255, 0.75)`
+  - `box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9)`
+- **Utility `.glass-nav`:**
+  - `background: rgba(255, 255, 255, 0.70)` saat di-scroll
+  - `backdrop-filter: blur(20px) saturate(190%)`
+  - Specular top rim & subtle border
+
+### C. Komponen yang Ditingkatkan
+1. `src/app/layout.js`: Inject Aurora Mesh Orbs di kanvas background.
+2. `src/components/Navbar.js`: Menggunakan kelas `.glass-nav` dengan opasitas 0.68 - 0.72 saat di-scroll.
+3. `src/app/attendance/page.js`: Panel statistik, kontrol kalender, dan sel kalender mengadopsi translusensi kaca nyata.
+4. `src/app/page.js` & Bento widgets: Kartu metrik dan greeting card menggunakan styling `.glass-panel`.
 
 ## 3. Kriteria Penerimaan (Acceptance Criteria)
-1. Navbar berada di posisi atas penuh (`sticky top-0 w-full`), bukan floating island melayang di tengah layar.
-2. Ketika halaman di-scroll ke bawah, navbar secara otomatis mengaktifkan efek glassmorphism dengan transisi halus.
-3. Konten halaman tidak tertutup canggung oleh navbar dan memiliki jarak scroll yang nyaman.
-4. Elemen kartu statistik dan navigasi mobile mengadopsi estetika glassmorphic yang selaras.
-5. `npm run lint` dan `npm run build` sukses 100% tanpa error.
+1. Efek frosted glass terlihat sangat jelas dan nyata secara visual, baik pada navbar maupun pada kartu metrik.
+2. Saat menggulir (scroll) halaman, teks, badge, dan kartu di bawah navbar terlihat membias (blur + saturated) secara dinamis.
+3. Kontras teks tetap terjaga 100% dan memenuhi standar aksesibilitas keterbacaan.
+4. `npm run lint` dan `npm run build` sukses tanpa error.

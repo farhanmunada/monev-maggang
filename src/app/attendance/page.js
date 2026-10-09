@@ -209,31 +209,31 @@ export default function AttendancePage() {
 
       {/* Monthly Statistics Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
+        <div className="glass-panel rounded-2xl p-4">
           <p className="text-[11px] text-slate-500 font-medium">Tingkat Hadir</p>
           <p className="text-xl md:text-2xl font-extrabold text-emerald-600 font-mono mt-0.5">
             {monthStats.rate}%
           </p>
         </div>
-        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
+        <div className="glass-panel rounded-2xl p-4">
           <p className="text-[11px] text-slate-500 font-medium">Hadir Bulan Ini</p>
           <p className="text-xl md:text-2xl font-bold text-slate-900 font-mono mt-0.5">
             {monthStats.hadir} <span className="text-xs font-normal text-slate-400">Hari</span>
           </p>
         </div>
-        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
+        <div className="glass-panel rounded-2xl p-4">
           <p className="text-[11px] text-slate-500 font-medium">Izin</p>
           <p className="text-xl md:text-2xl font-bold text-blue-600 font-mono mt-0.5">
             {monthStats.izin} <span className="text-xs font-normal text-slate-400">Hari</span>
           </p>
         </div>
-        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
+        <div className="glass-panel rounded-2xl p-4">
           <p className="text-[11px] text-slate-500 font-medium">Sakit</p>
           <p className="text-xl md:text-2xl font-bold text-amber-600 font-mono mt-0.5">
             {monthStats.sakit} <span className="text-xs font-normal text-slate-400">Hari</span>
           </p>
         </div>
-        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all col-span-2 sm:col-span-1">
+        <div className="glass-panel rounded-2xl p-4 col-span-2 sm:col-span-1">
           <p className="text-[11px] text-slate-500 font-medium">Alfa</p>
           <p className="text-xl md:text-2xl font-bold text-rose-600 font-mono mt-0.5">
             {monthStats.alfa} <span className="text-xs font-normal text-slate-400">Hari</span>
@@ -242,7 +242,7 @@ export default function AttendancePage() {
       </div>
 
       {/* Main Interactive Calendar Grid */}
-      <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-4 md:p-6 shadow-xs">
+      <div className="glass-panel rounded-3xl p-4 md:p-6 shadow-sm">
         {/* Days Header */}
         <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2 text-center">
           {DAY_NAMES.map((dayName, idx) => (
@@ -269,7 +269,7 @@ export default function AttendancePage() {
                 return (
                   <div
                     key={cell.key}
-                    className="min-h-[75px] md:min-h-[105px] rounded-2xl bg-slate-50/50 border border-transparent opacity-30 pointer-events-none"
+                    className="min-h-[75px] md:min-h-[105px] rounded-2xl bg-white/20 border border-white/40 opacity-30 pointer-events-none"
                   />
                 );
               }
@@ -280,13 +280,13 @@ export default function AttendancePage() {
               const attendance = cell.log?.attendance;
               const actCount = cell.log?.activities?.length || 0;
 
-              let cellStyle = "border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-2xs";
+              let cellStyle = "border-white/80 bg-white/60 backdrop-blur-xs hover:border-slate-300 hover:bg-white/85 hover:shadow-2xs";
               if (isToday && isPayday) {
-                cellStyle = "ring-2 ring-indigo-500 border-amber-400 bg-amber-50/30 shadow-xs";
+                cellStyle = "ring-2 ring-indigo-500 border-amber-400 bg-amber-50/60 backdrop-blur-xs shadow-xs";
               } else if (isToday) {
-                cellStyle = "ring-2 ring-indigo-500 border-indigo-300 bg-indigo-50/20 shadow-xs";
+                cellStyle = "ring-2 ring-indigo-500 border-indigo-300 bg-indigo-50/50 backdrop-blur-xs shadow-xs";
               } else if (isPayday) {
-                cellStyle = "border-amber-300/90 bg-amber-50/25 hover:border-amber-400 hover:bg-amber-50/40 hover:shadow-2xs";
+                cellStyle = "border-amber-300/90 bg-amber-50/50 backdrop-blur-xs hover:border-amber-400 hover:bg-amber-50/70 hover:shadow-2xs";
               }
 
               return (

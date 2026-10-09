@@ -41,7 +41,7 @@ export default function QuickShortcuts() {
   ];
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-5 md:p-6 shadow-xs">
+    <div className="glass-panel rounded-3xl p-5 md:p-6">
       <div className="mb-4">
         <h2 className="text-sm font-bold text-slate-900 tracking-tight">Navigasi Modul Kerja</h2>
         <p className="text-xs text-slate-500 mt-0.5">Akses langsung ke seluruh workspace aplikasi</p>

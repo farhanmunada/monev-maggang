@@ -16,9 +16,22 @@ export default function RootLayout({ children }) {
         className="bg-slate-50 text-slate-900 font-sans antialiased pb-24 md:pb-16 selection:bg-indigo-600 selection:text-white min-h-screen relative overflow-x-hidden"
         suppressHydrationWarning
       >
-        {/* Soft Ambient Radial Background */}
-        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-indigo-100/40 via-blue-50/20 to-transparent blur-3xl rounded-full" />
+        {/* Multi-layered Ambient Aurora Mesh Background */}
+        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none">
+          {/* Top Center: Indigo & Violet Aurora Orb */}
+          <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[680px] h-[420px] bg-gradient-to-b from-indigo-300/35 via-purple-200/25 to-transparent blur-[90px] rounded-full" />
+
+          {/* Top Left: Sky Blue & Cyan Glow Orb */}
+          <div className="absolute -top-16 left-[5%] w-[480px] h-[480px] bg-gradient-to-br from-sky-300/30 via-cyan-200/20 to-transparent blur-[85px] rounded-full" />
+
+          {/* Mid Right: Warm Rose & Peach Glow Orb */}
+          <div className="absolute top-[28%] -right-20 w-[520px] h-[520px] bg-gradient-to-bl from-rose-300/25 via-amber-200/20 to-transparent blur-[95px] rounded-full" />
+
+          {/* Bottom Left: Soft Emerald & Teal Accent Orb */}
+          <div className="absolute bottom-[10%] -left-24 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-300/20 via-teal-200/15 to-transparent blur-[90px] rounded-full" />
+
+          {/* Subtle noise/texture mesh overlay */}
+          <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-35" />
         </div>
 
         <Toaster
