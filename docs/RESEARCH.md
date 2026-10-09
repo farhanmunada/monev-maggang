@@ -1,29 +1,33 @@
-# Riset: Konsep Desain "Modern Pixel-Glass" & Overhaul UX Visual
+# Riset: Penyelarasan Pixel-Glass, Multi-Day Recapper, Speed-Log, & Reduksi Teks
 
-## 1. Validasi Ide Pengguna: Glassmorphism + Pixelate Modern
-- **Apakah bagus?** **Sangat bagus dan unik!**
-  - Menggabungkan material *frosted glass* (kedalaman, glow aurora, refraksi halus) dengan *elemen pixelate modern* (retro-pixel badges `[TODO]`, `[RUNNING]`, `[DONE]`, pixel indicator dots, font mono bertema retro-tech) menciptakan identitas desain **"Neo-Digital Artisan / Modern Pixel-Glass"**.
-  - Sangat kohesif dengan elemen *Walking Companions* yang sudah ada di aplikasi (sprite karakter pixel yang berjalan di layar). Ini membuat seluruh tema terasa satu kesatuan dunia visual yang hidup dan menyenangkan.
-
-## 2. Analisis UX: Menghilangkan Hambatan Membaca & Garis Tebal
-1. **Kurangi Beban Teks (Visual-First & Non-Text-Heavy):**
-   - Pengguna tidak suka membaca teks panjang. Solusi: Ubah informasi menjadi **visual visual chips, icon cues, progress gauge, dan micro-badges**.
-   - Hindari deskripsi berulang di header atau footer. Gunakan counter bergaya digital pixel seperti `[04/12]` dan icon status.
-2. **Eliminasi Garis Tebal (Anti-Thick Borders):**
-   - Menghapus semua `border-l-4`, `border-2`, dan border pembatas hitam/kaku di seluruh halaman.
-   - Menggantinya dengan **hairline glass borders (1px border-white/80 atau border-slate-200/50)** dan specular highlight `inset 0 1px 1px white` untuk ilusi tepi kaca tipis tanpa garis tebal.
-
-## 3. Analisis Masalah Halaman Task (`/tasks`) ("UI Majapahit")
+## 1. Analisis Masalah Teks Berlebih (Text Bloat) di Seluruh Sistem
 1. **Kondisi Saat Ini:**
-   - Masih menggunakan kartu putih solid biasa dengan border samping tebal `border-l-4 border-l-indigo-600` / `border-l-emerald-600`.
-   - Kolom kanban terasa kaku dan datar, tidak menyatu dengan background Aurora Mesh.
-   - Tombol dan header terasa generik dan kuno.
-2. **Solusi Overhaul:**
-   - Transformasi kolom menjadi **Glass Columns** (`glass-panel`) semi-transparan.
-   - Kartu tugas menjadi **Glassmorphic Task Cards** dengan aksen **Modern Pixel Tags** (`[TODO]`, `[IN_PROG]`, `[DONE]`) dengan micro-border halus (zero thick lines).
-   - Indikator aksi geser/pindah cepat yang visual dan instan tanpa perlu membaca panduan panjang.
+   - Halaman `/ai-report`, `/daily-log`, `/notes`, dan Dashboard memiliki sub-header deskriptif panjang (2-3 baris kalimat) yang jarang dibaca pengguna.
+   - Komponen formulir memiliki label instruksional yang berulang dan melelahkan mata.
+2. **Solusi "Glanceable UI" (Anti-Text Walls):**
+   - Mengganti kalimat penjelasan panjang dengan **Pixel Status Badges** (seperti `[AI.STUDIO]`, `[LOG.EDITOR]`, `[VAULT.NOTES]`).
+   - Menyederhanakan copy menjadi 1 baris micro-copy padat dan fungsional.
+   - Mengutamakan visual cues (chip, icon, progress indicator) dibanding deskripsi teks.
 
-## 4. Analisis Navbar: Aksesibilitas & Readability Terdepan
-- Penyesuaian kontras teks agar tidak tertelan transparansi (`text-slate-800 font-semibold`).
-- Indikator aktif kontras tinggi (`bg-slate-900 text-white` dengan specular rim halus).
-- Logo dengan sentuhan badge retro-pixel minimalis `[PRO] / [WORKSPACE]`.
+## 2. Riset Fitur A: AI Multi-Day Recapper (Mingguan & Periode Tgl 20)
+1. **Kebutuhan Nyata Magang:**
+   - Kampus dan pembimbing industri umumnya meminta **Laporan Mingguan (Weekly Summary)** atau **Laporan Bulanan Periode Cutoff (Tgl 21–20)**.
+   - Generator saat ini hanya mendukung 1 hari tunggal.
+2. **Desain Solusi di `/ai-report`:**
+   - Mode Selector Chip:
+     - `[HARI INI]`
+     - `[7 HARI TERAKHIR]`
+     - `[PERIODE GAJIAN / CUTOFF (21-20)]`
+   - AI memproses agregasi seluruh aktivitas dari tanggal-tanggal terkait dan menghasilkan format bullet ringkas formal.
+
+## 3. Riset Fitur D: Quick Floating Speed-Log (Catat Cepat Global)
+1. **Alur Kerja Pengguna:**
+   - Pengguna seringkali sedang berada di Kanban `/tasks` atau Kalender `/attendance`, lalu teringat 1 aktivitas yang ingin dicatat tanpa harus navigasi dan reload ke `/daily-log`.
+2. **Desain Solusi Global:**
+   - Komponen `src/components/SpeedLogModal.js` yang dipasang global di `src/app/layout.js`.
+   - Floating Trigger Button `[+ SPEED LOG]` di sudut kanan bawah (posisi ergonomis di atas walking companions).
+   - Form 1-klik: Preset chip aktivitas (`[STANDUP]`, `[DEV]`, `[BUGFIX]`, `[MEETING]`, `[TESTING]`) + input teks singkat + `Enter` langsung simpan ke database log hari ini.
+
+## 4. Riset Fitur No. 4: Penyelarasan Modern Pixel-Glass di `/notes` & `/ai-report`
+- `/notes`: Ubah `NotesGrid`, filter category chips, dan card notes menjadi `glass-panel` tanpa garis tebal, dengan aksen pixel badge `[KEYWORD]`, `[MEETING]`, `[SNIPPET]`.
+- `/ai-report`: Panel studio kaca frosted, tombol generator glass modern, dan copy box dengan specular rim highlight.
