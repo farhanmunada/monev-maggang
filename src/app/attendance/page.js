@@ -13,6 +13,8 @@ import {
   X,
   ExternalLink,
   Plus,
+  Coins,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -101,6 +103,7 @@ export default function AttendancePage() {
       const dateStr = `${currentYear}-${pad(currentMonth + 1)}-${pad(day)}`;
       const dateObj = new Date(currentYear, currentMonth, day);
       const isSunday = dateObj.getDay() === 0;
+      const isPayday = day === 20;
 
       const log = logsByDate[dateStr] || null;
 
@@ -110,6 +113,7 @@ export default function AttendancePage() {
         day,
         dateStr,
         isSunday,
+        isPayday,
         log,
       });
     }
@@ -271,40 +275,60 @@ export default function AttendancePage() {
               }
 
               const isToday = cell.dateStr === todayStr;
+              const isPayday = cell.isPayday;
               const hasLog = !!cell.log;
               const attendance = cell.log?.attendance;
               const actCount = cell.log?.activities?.length || 0;
+
+              let cellStyle = "border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-2xs";
+              if (isToday && isPayday) {
+                cellStyle = "ring-2 ring-indigo-500 border-amber-400 bg-amber-50/30 shadow-xs";
+              } else if (isToday) {
+                cellStyle = "ring-2 ring-indigo-500 border-indigo-300 bg-indigo-50/20 shadow-xs";
+              } else if (isPayday) {
+                cellStyle = "border-amber-300/90 bg-amber-50/25 hover:border-amber-400 hover:bg-amber-50/40 hover:shadow-2xs";
+              }
 
               return (
                 <div
                   key={cell.key}
                   onClick={() => setSelectedDateStr(cell.dateStr)}
-                  className={`min-h-[75px] md:min-h-[105px] p-2 md:p-2.5 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer group select-none relative ${
-                    isToday
-                      ? "ring-2 ring-indigo-500 border-indigo-300 bg-indigo-50/20 shadow-xs"
-                      : "border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-2xs"
-                  }`}
+                  className={`min-h-[75px] md:min-h-[105px] p-2 md:p-2.5 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer group select-none relative ${cellStyle}`}
                 >
                   {/* Top Bar of Cell: Day Number */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-1">
                     <span
                       className={`text-xs md:text-sm font-bold font-mono ${
                         isToday
-                          ? "w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center -ml-0.5 -mt-0.5"
+                          ? "w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center -ml-0.5 -mt-0.5 shadow-2xs"
                           : cell.isSunday
                           ? "text-rose-500"
+                          : isPayday
+                          ? "text-amber-900 font-extrabold"
                           : "text-slate-800"
                       }`}
                     >
                       {cell.day}
                     </span>
 
-                    {/* Small Activity Dot / Count on Desktop */}
-                    {hasLog && actCount > 0 && (
-                      <span className="hidden md:inline-flex text-[9px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-medium">
-                        {actCount} act
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      {isPayday && (
+                        <span
+                          title="Switch Periode & Hari Gajian"
+                          className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-lg bg-amber-100 text-amber-800 border border-amber-300/80 shadow-2xs"
+                        >
+                          <Coins className="w-2.5 h-2.5 text-amber-600 shrink-0" />
+                          <span className="hidden md:inline font-mono">Gajian</span>
+                        </span>
+                      )}
+
+                      {/* Small Activity Dot / Count on Desktop */}
+                      {hasLog && actCount > 0 && (
+                        <span className="hidden md:inline-flex text-[9px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-medium">
+                          {actCount} act
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Bottom: Attendance Status Indicator */}
@@ -341,6 +365,30 @@ export default function AttendancePage() {
             })}
           </div>
         )}
+
+        {/* Calendar Legend & Info */}
+        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Keterangan:</span>
+            <span className="inline-flex items-center gap-1.5 text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Hadir
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-blue-500" /> Izin
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-amber-500" /> Sakit
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-rose-500" /> Alfa
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-50/90 border border-amber-200/80 px-2.5 py-1 rounded-xl shadow-2xs">
+            <Coins className="w-3.5 h-3.5 text-amber-600" />
+            <span><strong>Tgl 20:</strong> Switch Periode & Hari Gajian</span>
+          </div>
+        </div>
       </div>
 
       {/* Date Detail Inspection Modal */}
@@ -368,6 +416,26 @@ export default function AttendancePage() {
 
             {/* Modal Content */}
             <div className="p-5 overflow-y-auto space-y-4 flex-1">
+              {/* Payday & Switch Period Banner */}
+              {selectedDateStr?.endsWith("-20") && (
+                <div className="bg-gradient-to-r from-amber-50 via-amber-50/70 to-orange-50/40 border border-amber-200/90 rounded-2xl p-3.5 flex items-start gap-3 shadow-2xs">
+                  <div className="p-2 bg-amber-100 text-amber-700 rounded-xl shrink-0 mt-0.5">
+                    <Coins className="w-4 h-4" />
+                  </div>
+                  <div className="text-xs space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-amber-900">Switch Periode & Hari Gajian</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-200/80 text-amber-800 px-1.5 py-0.5 rounded-md">
+                        Cut-off Bulanan
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-amber-800/90 leading-relaxed">
+                      Tanggal 20 menandai penutupan siklus evaluasi bulanan magang dan jadwal pencairan uang saku / honor.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {selectedLog ? (
                 <>
                   {/* Status Presensi */}
