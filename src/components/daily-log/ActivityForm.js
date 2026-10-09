@@ -13,32 +13,32 @@ export default function ActivityForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-slate-50/80 p-4 md:p-5 rounded-2xl border border-indigo-200 shadow-2xs space-y-3.5 mt-4 animate-in fade-in duration-150"
+      className="bg-white/90 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-indigo-200/80 shadow-xs space-y-3.5 mt-4 animate-in fade-in duration-150"
     >
       <div className="flex justify-between items-center">
-        <h4 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5 text-indigo-600" /> Input Kegiatan Baru
+        <h4 className="font-bold text-xs text-slate-900 flex items-center gap-1.5 font-mono">
+          <Clock className="w-3.5 h-3.5 text-indigo-600" /> [INPUT KEGIATAN BARU]
         </h4>
-        <span className="text-[11px] text-slate-500 font-medium">
-          Waktu terisi otomatis, sesuaikan jika perlu
+        <span className="text-[10px] font-mono text-slate-400">
+          AUTO.TIME
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div className="md:col-span-1">
-          <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-            Waktu Pelaksanaan
+          <label className="block text-[11px] font-semibold text-slate-600 mb-1 font-mono">
+            Waktu
           </label>
           <input
             type="text"
             placeholder="Misal: 14:30 atau 14:00 - 15:30"
             value={newActivity.time_range}
             onChange={(e) => onChange("time_range", e.target.value)}
-            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 font-mono shadow-2xs"
+            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-1 focus:ring-indigo-600 font-mono shadow-2xs"
           />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+          <label className="block text-[11px] font-semibold text-slate-600 mb-1 font-mono">
             Judul Kegiatan
           </label>
           <input
@@ -47,21 +47,21 @@ export default function ActivityForm({
             required
             value={newActivity.title}
             onChange={(e) => onChange("title", e.target.value)}
-            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 shadow-2xs"
+            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-1 focus:ring-indigo-600 shadow-2xs"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-          Deskripsi / Hasil Pengerjaan
+        <label className="block text-[11px] font-semibold text-slate-600 mb-1 font-mono">
+          Deskripsi / Deliverable
         </label>
         <textarea
           placeholder="Rincian teknis, deliverable yang dihasilkan, atau link PR/commit..."
           rows={3}
           value={newActivity.description}
           onChange={(e) => onChange("description", e.target.value)}
-          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none leading-relaxed shadow-2xs"
+          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none leading-relaxed shadow-2xs"
         />
       </div>
 
@@ -69,7 +69,7 @@ export default function ActivityForm({
         <button
           type="button"
           onClick={onCancel}
-          className="px-3.5 py-1.5 text-xs text-slate-600 hover:bg-slate-200 rounded-xl font-medium cursor-pointer"
+          className="px-3.5 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-xl font-medium cursor-pointer"
         >
           Batal
         </button>

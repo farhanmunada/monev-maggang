@@ -54,11 +54,11 @@ export default function QuickShortcuts() {
             <Link
               key={tool.title}
               href={tool.href}
-              className="p-4 rounded-2xl border border-slate-200/80 hover:border-slate-300 bg-slate-50/40 hover:bg-slate-50 transition-all flex flex-col justify-between group shadow-2xs hover:shadow-xs"
+              className="p-3.5 rounded-2xl border border-white/80 hover:border-slate-300 bg-white/70 hover:bg-white/95 backdrop-blur-xs transition-all flex flex-col justify-between group shadow-2xs hover:shadow-xs"
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${tool.color} group-hover:scale-105 transition-transform`}>
-                  <Icon className="w-4 h-4" />
+              <div className="flex items-center justify-between mb-2.5">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center border ${tool.color} group-hover:scale-105 transition-transform`}>
+                  <Icon className="w-3.5 h-3.5" />
                 </div>
                 <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
@@ -66,7 +66,7 @@ export default function QuickShortcuts() {
                 <h3 className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
                   {tool.title}
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-0.5 leading-snug line-clamp-2 font-normal">
+                <p className="text-[11px] text-slate-500 mt-0.5 leading-snug line-clamp-2 font-normal font-sans">
                   {tool.desc}
                 </p>
               </div>

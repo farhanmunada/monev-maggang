@@ -47,9 +47,9 @@ export default function ActiveTasksWidget({ tasks, loading, onCompleteTask }) {
             {tasks.map((task) => (
               <div
                 key={task.id}
-                className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all group"
+                className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-white/95 border border-white/80 hover:border-slate-300 bg-white/70 backdrop-blur-xs transition-all group shadow-2xs"
               >
-                <div className="flex items-center gap-3.5 min-w-0">
+                <div className="flex items-center gap-3 min-w-0">
                   <button
                     type="button"
                     onClick={() => onCompleteTask(task.id)}
@@ -71,13 +71,13 @@ export default function ActiveTasksWidget({ tasks, loading, onCompleteTask }) {
                 </div>
 
                 <span
-                  className={`text-[10px] px-2.5 py-0.5 rounded-full font-medium flex-shrink-0 ml-2 font-mono ${
+                  className={`pixel-badge shrink-0 ml-2 ${
                     task.status === "in_progress"
-                      ? "bg-blue-50 text-blue-700 border border-blue-200/60"
-                      : "bg-slate-100 text-slate-600 border border-slate-200/60"
+                      ? "bg-indigo-50/90 text-indigo-700 border-indigo-300"
+                      : "bg-slate-100/90 text-slate-600 border-slate-300"
                   }`}
                 >
-                  {task.status === "in_progress" ? "In Progress" : "To Do"}
+                  {task.status === "in_progress" ? "[RUN]" : "[TODO]"}
                 </span>
               </div>
             ))}

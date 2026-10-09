@@ -392,7 +392,7 @@ function DailyLogContent() {
       {isSunday && <SundayShieldBanner />}
 
       {/* Activities Timeline & Form */}
-      <section className="bg-white rounded-3xl border border-slate-200/90 p-5 md:p-6 shadow-xs">
+      <section className="glass-panel rounded-3xl p-5 md:p-6">
         <ActivityList
           activities={activities}
           editingActivityId={editingActivityId}
@@ -439,7 +439,7 @@ function DailyLogContent() {
       />
 
       {/* Floating / Sticky Save Bar */}
-      <div className="sticky bottom-6 z-20 flex items-center justify-between bg-white/95 backdrop-blur-md border border-slate-200/90 p-3.5 md:p-4 rounded-2xl shadow-lg">
+      <div className="sticky bottom-6 z-20 flex items-center justify-between glass-panel p-3.5 md:p-4 rounded-2xl shadow-lg">
         <div className="text-xs text-slate-500 hidden sm:flex items-center gap-2">
           {lastSavedAt ? (
             <span className="flex items-center gap-1.5 text-emerald-600 font-semibold font-mono">

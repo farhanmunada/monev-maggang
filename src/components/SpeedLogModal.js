@@ -97,17 +97,17 @@ export default function SpeedLogModal() {
 
   return (
     <>
-      {/* Floating Speed Log Button */}
+      {/* Floating Speed Log Button (Stacked cleanly above Focus Mode button) */}
       <button
         type="button"
         onClick={handleOpen}
-        className="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-40 bg-slate-900/90 hover:bg-slate-950 text-white px-3.5 py-2 rounded-2xl shadow-lg shadow-slate-900/25 backdrop-blur-md border border-white/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer group"
+        className="fixed bottom-32 md:bottom-16 right-4 md:right-4 z-40 bg-slate-900/90 hover:bg-slate-950 text-white px-3 py-1.5 rounded-xl shadow-lg shadow-slate-900/25 backdrop-blur-md border border-white/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer group select-none"
         title="Catat Cepat Log Harian Tanpa Pindah Rute"
       >
-        <div className="w-5 h-5 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
-          <Zap className="w-3 h-3 fill-current" />
+        <div className="w-4 h-4 rounded-md bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
+          <Zap className="w-2.5 h-2.5 fill-current" />
         </div>
-        <span className="pixel-badge text-white bg-slate-800 border-slate-600 group-hover:border-amber-400">
+        <span className="pixel-badge text-white bg-slate-800 border-slate-600 group-hover:border-amber-400 text-[10px]">
           SPEED.LOG
         </span>
       </button>

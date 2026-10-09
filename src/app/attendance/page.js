@@ -147,20 +147,20 @@ export default function AttendancePage() {
   return (
     <div className="space-y-6 md:space-y-7 pb-12">
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-4">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/60 pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">
               <CalendarCheck2 className="w-3 h-3" />
               PRESENSI.LOG
             </span>
+            <span className="pixel-badge text-slate-600 bg-white/70 border-slate-200">
+              TOTAL: {monthStats.total} LOG
+            </span>
           </div>
-          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
-            Kalender Kehadiran & Riwayat Jurnal
+          <h1 className="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">
+            Presensi & Rekap Kehadiran
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-0.5">
-            Klik tanggal pada kalender untuk membuka rincian kegiatan dan pembelajaran harian.
-          </p>
         </div>
 
         {/* Action Buttons & Month Navigation */}
@@ -168,37 +168,37 @@ export default function AttendancePage() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="flex items-center gap-1.5 bg-white border border-slate-200/90 hover:border-slate-300 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-2xs transition-all cursor-pointer hover:bg-slate-50"
-            title="Cetak atau simpan PDF kalender kehadiran"
+            className="flex items-center gap-1.5 bg-white/75 backdrop-blur-sm border border-white/90 hover:bg-white text-slate-700 px-3 py-1.5 rounded-xl text-xs font-mono font-medium shadow-2xs transition-all cursor-pointer"
+            title="Cetak PDF"
           >
             <Printer className="w-3.5 h-3.5 text-slate-500" />
-            <span>Cetak PDF</span>
+            <span>[CETAK.PDF]</span>
           </button>
 
           <button
             type="button"
             onClick={handleToday}
-            className="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+            className="px-3 py-1.5 bg-indigo-50/80 hover:bg-indigo-100/90 text-indigo-700 border border-indigo-200/80 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer"
           >
-            Hari Ini
+            [TODAY]
           </button>
 
-          <div className="flex items-center bg-white border border-slate-200/90 rounded-xl shadow-2xs overflow-hidden">
+          <div className="flex items-center bg-white/75 backdrop-blur-sm border border-white/90 rounded-xl shadow-2xs overflow-hidden">
             <button
               type="button"
               onClick={handlePrevMonth}
-              className="p-2 hover:bg-slate-50 text-slate-600 hover:text-slate-900 border-r border-slate-200/90 transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-slate-100 text-slate-600 hover:text-slate-900 border-r border-slate-200/60 transition-colors cursor-pointer"
               title="Bulan sebelumnya"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="px-3.5 py-1.5 font-bold text-xs text-slate-800 font-mono whitespace-nowrap">
+            <span className="px-3 py-1 font-bold text-xs text-slate-800 font-mono whitespace-nowrap">
               {MONTH_NAMES[currentMonth]} {currentYear}
             </span>
             <button
               type="button"
               onClick={handleNextMonth}
-              className="p-2 hover:bg-slate-50 text-slate-600 hover:text-slate-900 border-l border-slate-200/90 transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-slate-100 text-slate-600 hover:text-slate-900 border-l border-slate-200/60 transition-colors cursor-pointer"
               title="Bulan berikutnya"
             >
               <ChevronRight className="w-4 h-4" />
@@ -209,34 +209,34 @@ export default function AttendancePage() {
 
       {/* Monthly Statistics Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="glass-panel rounded-2xl p-4">
-          <p className="text-[11px] text-slate-500 font-medium">Tingkat Hadir</p>
-          <p className="text-xl md:text-2xl font-extrabold text-emerald-600 font-mono mt-0.5">
+        <div className="glass-panel rounded-2xl p-3.5">
+          <span className="pixel-badge text-emerald-800 bg-emerald-50/90 border-emerald-300">[HADIR %]</span>
+          <p className="text-xl md:text-2xl font-extrabold text-emerald-600 font-mono mt-1">
             {monthStats.rate}%
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-4">
-          <p className="text-[11px] text-slate-500 font-medium">Hadir Bulan Ini</p>
-          <p className="text-xl md:text-2xl font-bold text-slate-900 font-mono mt-0.5">
-            {monthStats.hadir} <span className="text-xs font-normal text-slate-400">Hari</span>
+        <div className="glass-panel rounded-2xl p-3.5">
+          <span className="pixel-badge text-slate-800 bg-slate-100/90 border-slate-300">[HADIR]</span>
+          <p className="text-xl md:text-2xl font-bold text-slate-900 font-mono mt-1">
+            {monthStats.hadir} <span className="text-xs font-normal text-slate-400">HARI</span>
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-4">
-          <p className="text-[11px] text-slate-500 font-medium">Izin</p>
-          <p className="text-xl md:text-2xl font-bold text-blue-600 font-mono mt-0.5">
-            {monthStats.izin} <span className="text-xs font-normal text-slate-400">Hari</span>
+        <div className="glass-panel rounded-2xl p-3.5">
+          <span className="pixel-badge text-blue-800 bg-blue-50/90 border-blue-300">[IZIN]</span>
+          <p className="text-xl md:text-2xl font-bold text-blue-600 font-mono mt-1">
+            {monthStats.izin} <span className="text-xs font-normal text-slate-400">HARI</span>
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-4">
-          <p className="text-[11px] text-slate-500 font-medium">Sakit</p>
-          <p className="text-xl md:text-2xl font-bold text-amber-600 font-mono mt-0.5">
-            {monthStats.sakit} <span className="text-xs font-normal text-slate-400">Hari</span>
+        <div className="glass-panel rounded-2xl p-3.5">
+          <span className="pixel-badge text-amber-800 bg-amber-50/90 border-amber-300">[SAKIT]</span>
+          <p className="text-xl md:text-2xl font-bold text-amber-600 font-mono mt-1">
+            {monthStats.sakit} <span className="text-xs font-normal text-slate-400">HARI</span>
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-4 col-span-2 sm:col-span-1">
-          <p className="text-[11px] text-slate-500 font-medium">Alfa</p>
-          <p className="text-xl md:text-2xl font-bold text-rose-600 font-mono mt-0.5">
-            {monthStats.alfa} <span className="text-xs font-normal text-slate-400">Hari</span>
+        <div className="glass-panel rounded-2xl p-3.5 col-span-2 sm:col-span-1">
+          <span className="pixel-badge text-rose-800 bg-rose-50/90 border-rose-300">[ALFA]</span>
+          <p className="text-xl md:text-2xl font-bold text-rose-600 font-mono mt-1">
+            {monthStats.alfa} <span className="text-xs font-normal text-slate-400">HARI</span>
           </p>
         </div>
       </div>

@@ -41,7 +41,7 @@ export default function RecentLogsWidget({ logs, loading }) {
               <Link
                 key={log.id}
                 href="/attendance"
-                className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-slate-50 transition-all border border-slate-100 hover:border-slate-200 group"
+                className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-white/95 transition-all border border-white/80 hover:border-slate-300 bg-white/70 backdrop-blur-xs group shadow-2xs"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
                   <div
