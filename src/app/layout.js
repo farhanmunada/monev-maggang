@@ -38,11 +38,11 @@ export default function RootLayout({ children }) {
           }}
         />
 
-        {/* Floating Topbar for Desktop */}
+        {/* Standard Sticky Topbar */}
         <Navbar />
 
         {/* Main Content Area */}
-        <main className="relative z-10 pt-6 md:pt-22 px-4 md:px-8 max-w-6xl mx-auto">
+        <main className="relative z-10 pt-4 md:pt-6 px-4 md:px-8 max-w-6xl mx-auto">
           {children}
         </main>
 

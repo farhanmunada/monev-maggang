@@ -1,32 +1,35 @@
-# PRD: Highlight Tanggal 20 (Switch Periode & Gajian) pada Kalender Presensi
+# PRD: Redesain Topbar Standar Glassmorphic & Harmonisasi Glass UI
 
-## 1. Latar Belakang & Tujuan (Objective)
-Pengguna magang memiliki siklus evaluasi bulanan dan pencairan uang saku/gaji yang jatuh tempo pada **tanggal 20 setiap bulannya**. Tanggal ini sekaligus menandai "switch periode" (pergantian siklus laporan dan presensi magang).
-Tujuan dari pembaruan ini adalah:
-- Memberikan penanda visual yang estetik, intuitif, dan menonjol pada sel tanggal 20 di Kalender Presensi (`/attendance`).
-- Menyediakan badge khusus penanda "Switch Periode & Gajian" di dalam sel kalender.
-- Memberikan informasi kontekstual pada modal detail saat tanggal 20 diklik (banner perayaan pencairan gaji & penutupan siklus periode).
-- Menyediakan penjelas/legenda ringkas di bawah kalender untuk kejelasan informasi.
+## 1. Tujuan (Objective)
+Menghapus desain navbar berbentuk floating island overlay dan menggantinya dengan **Navbar Standar Penuh (Edge-to-Edge Sticky Topbar)** yang menerapkan efek **Glassmorphism dinamis saat discroll**. Selain itu, memadukan sentuhan glassmorphism ke elemen-elemen UI strategis lainnya (kartu metrik, panel statistik, modal, dan bottom navigation) guna menciptakan tampilan antarmuka yang lebih lapang, premium, dan kohesif.
 
-## 2. Cakupan Fitur (Scope)
-1. **Highlight Sel Kalender Tanggal 20 (`src/app/attendance/page.js`):**
-   - Menambahkan properti identifikasi `isPeriodSwitch` / `isPayday` pada generator sel tanggal 20.
-   - Penataan visual sel tanggal 20:
-     - Badge khusus di sudut sel: Ikon koin/dompet (`Coins` / `Wallet`) dengan teks "Gajian" atau "Cutoff".
-     - Aksen border bernuansa emas/amber hangat (`border-amber-300 bg-amber-50/20`) yang tetap menyatu dengan tema Warm Slate & Porcelain.
-     - Tetap mendukung status presensi harian (Hadir, Izin, Sakit, Alfa) tanpa tumpang tindih tata letak.
-2. **Keterangan & Banner Detail Modal:**
-   - Saat tanggal 20 diklik, modal rincian kegiatan menyertakan kartu informasi highlight: *"🎉 Switch Periode & Hari Gajian — Tanggal cut-off evaluasi magang dan pencairan honor/uang saku bulanan."*
-3. **Legenda Kalender Presensi:**
-   - Menambahkan penanda pada legenda status di halaman kalender presensi agar pengguna dan evaluator langsung memahami arti penanda tanggal 20.
+## 2. Cakupan & Spesifikasi Fitur (Scope)
 
-## 3. Desain Visual & Pengalaman Pengguna (UI/UX)
-- **Palet Warna:** Warm Amber (`#F59E0B`, `bg-amber-50`, `border-amber-200/90`, `text-amber-700`) untuk aksen gajian, dipadukan dengan palet dasar putih `#FFFFFF` dan `#F8FAFC`.
-- **Ikon:** Lucide React (`Coins` atau `Wallet`) tanpa emoji statis tidak konsisten.
-- **Responsivitas:** Tampilan di layar kecil (mobile) menggunakan badge ringkas atau dot indikator emas, sedangkan desktop menampilkan badge lengkap.
+### A. Redesain Top Navbar (`src/components/Navbar.js`)
+- **Format:** Lebar penuh (`w-full sticky top-0 z-40`), bukan pill overlay mengambang di tengah.
+- **Perilaku Scroll Dinamis:**
+  - **Saat di puncak halaman (`scrollY <= 10`):** Latar belakang bersih/transparan atau semi-transparan minimal tanpa border bawah yang tebal.
+  - **Saat halaman digulir (`scrollY > 10`):** Bertransformasi menjadi **Frosted Glass / Glassmorphic Header** (`backdrop-blur-md bg-white/80 border-b border-slate-200/80 shadow-2xs transition-all duration-300`).
+- **Tata Letak:**
+  - Kiri: Logo InternTrack + Nama Aplikasi.
+  - Tengah/Kanan: Menu navigasi (`Beranda`, `Jurnal`, `Absensi`, `Laporan AI`, `Tasks`, `Catatan`) dengan pills/indikator aktif yang halus.
+  - Kanan: Indikator status tanggal aktif / quick shortcut.
 
-## 4. Kriteria Penerimaan (Acceptance Criteria)
-1. Sel tanggal 20 di setiap bulan pada kalender `/attendance` memiliki aksen visual highlight yang jelas dan membedakannya dari tanggal biasa.
-2. Jika tanggal 20 jatuh pada hari ini, highlight tanggal 20 dan penanda "Hari Ini" berpadu rapi tanpa tabrakan layout.
-3. Modal detail tanggal 20 menampilkan kartu informasi status switch periode & gajian.
-4. Kode memenuhi standar linting dan build (`npm run lint` & `npm run build` sukses).
+### B. Penyesuaian Layout Root (`src/app/layout.js`)
+- Mengubah padding atas konten utama (`<main>`) agar mengalir alami di bawah sticky navbar tanpa adanya tumpang tindih visual.
+
+### C. Perpaduan Glassmorphism pada Komponen Utama
+- **Halaman Presensi & Absensi (`src/app/attendance/page.js`):**
+  - Panel statistik bulanan (`grid-cols-5`): Tampilan glass cards halus (`bg-white/75 backdrop-blur-md border border-slate-200/80 shadow-xs`).
+  - Bar navigasi bulan & aksi PDF: Aksen glassmorphic button.
+- **Mobile Bottom Navigation (`src/components/BottomNav.js`):**
+  - Mengoptimalkan efek frosted glass (`bg-white/85 backdrop-blur-xl border border-white/60 shadow-lg`).
+- **Dashboard Bento Cards (`src/app/page.js` & elemen metrik):**
+  - Sentuhan transparan halus dengan blur untuk meningkatkan kedalaman visual (depth).
+
+## 3. Kriteria Penerimaan (Acceptance Criteria)
+1. Navbar berada di posisi atas penuh (`sticky top-0 w-full`), bukan floating island melayang di tengah layar.
+2. Ketika halaman di-scroll ke bawah, navbar secara otomatis mengaktifkan efek glassmorphism dengan transisi halus.
+3. Konten halaman tidak tertutup canggung oleh navbar dan memiliki jarak scroll yang nyaman.
+4. Elemen kartu statistik dan navigasi mobile mengadopsi estetika glassmorphic yang selaras.
+5. `npm run lint` dan `npm run build` sukses 100% tanpa error.

@@ -209,31 +209,31 @@ export default function AttendancePage() {
 
       {/* Monthly Statistics Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
           <p className="text-[11px] text-slate-500 font-medium">Tingkat Hadir</p>
           <p className="text-xl md:text-2xl font-extrabold text-emerald-600 font-mono mt-0.5">
             {monthStats.rate}%
           </p>
         </div>
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
           <p className="text-[11px] text-slate-500 font-medium">Hadir Bulan Ini</p>
           <p className="text-xl md:text-2xl font-bold text-slate-900 font-mono mt-0.5">
             {monthStats.hadir} <span className="text-xs font-normal text-slate-400">Hari</span>
           </p>
         </div>
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
           <p className="text-[11px] text-slate-500 font-medium">Izin</p>
           <p className="text-xl md:text-2xl font-bold text-blue-600 font-mono mt-0.5">
             {monthStats.izin} <span className="text-xs font-normal text-slate-400">Hari</span>
           </p>
         </div>
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all">
           <p className="text-[11px] text-slate-500 font-medium">Sakit</p>
           <p className="text-xl md:text-2xl font-bold text-amber-600 font-mono mt-0.5">
             {monthStats.sakit} <span className="text-xs font-normal text-slate-400">Hari</span>
           </p>
         </div>
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs col-span-2 sm:col-span-1">
+        <div className="bg-white/75 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:bg-white/90 transition-all col-span-2 sm:col-span-1">
           <p className="text-[11px] text-slate-500 font-medium">Alfa</p>
           <p className="text-xl md:text-2xl font-bold text-rose-600 font-mono mt-0.5">
             {monthStats.alfa} <span className="text-xs font-normal text-slate-400">Hari</span>
@@ -242,7 +242,7 @@ export default function AttendancePage() {
       </div>
 
       {/* Main Interactive Calendar Grid */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl p-4 md:p-6 shadow-xs">
+      <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-4 md:p-6 shadow-xs">
         {/* Days Header */}
         <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2 text-center">
           {DAY_NAMES.map((dayName, idx) => (
@@ -393,8 +393,8 @@ export default function AttendancePage() {
 
       {/* Date Detail Inspection Modal */}
       {selectedDateStr && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-xl flex flex-col max-h-[85vh] overflow-hidden">
+        <div className="fixed inset-0 bg-slate-900/35 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
+          <div className="bg-white/95 backdrop-blur-xl w-full max-w-lg rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden border border-white/80">
             {/* Modal Header */}
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
               <div>

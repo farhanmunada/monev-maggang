@@ -23,7 +23,7 @@ export default function BentoGreeting({ telemetry }) {
   const quote = sarcasticQuotes[quoteIndex];
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
       {/* Decorative ambient subtle mesh */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-indigo-100/50 via-blue-50/20 to-transparent rounded-full pointer-events-none -mr-24 -mt-24 blur-3xl" />
 

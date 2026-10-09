@@ -1,39 +1,23 @@
-# Riset: Transformasi Layout Next-Gen & Highlight Periode Presensi
+# Riset: Redesain Navbar Klasik-Glassmorphism & Perpaduan Elemen Glass UI
 
-## 1. Analisis Masalah UI/UX Sebelumnya
-1. **Sidebar Konvensional Membatasi Kanvas:**
-   - Sidebar statis 72px/288px di sisi kiri memotong ruang horizontal layar desktop.
-   - Mengurangi fleksibilitas layout Bento Grid yang membutuhkan ruang lebar bebas hambatan.
-2. **Kontras Ekstrem Gelap (Dark Cards Fatigue):**
-   - Elemen `bg-slate-950` dan `bg-slate-900` pada hero dashboard, boss card, dan modal terasa terlalu berat dan kontras negatif terhadap latar terang.
-   - User menginginkan tampilan bersih tanpa dekorasi hitam pekat (*anti-black decorative*).
-3. **Penyatuan Fitur yang Tidak Kohesif (Coupled Routes):**
-   - Absensi dan Generator AI disatukan di `/report` sehingga alur kerja membingungkan.
-   - Task Kanban dan Catatan disatukan di `/notes`, padahal memiliki mental model berbeda (eksekusi vs dokumentasi).
-4. **Gamifikasi Berlebihan (Clutter):**
-   - Lord Mager, chest reward, level, dan exp quest mendistraksi dari produktivitas kerja nyata.
-5. **Kebutuhan Delight Menggemaskan:**
-   - User menyukai elemen karakter ambient yang hidup dan berjalan-jalan secara alami di layar tanpa sistem poin/EXP.
+## 1. Analisis Masalah Navbar Saat Ini
+1. **Model Floating Island Overlay:**
+   - Navbar saat ini menggunakan pola floating island/pill (`fixed top-4 left-0 right-0 max-w-fit rounded-full`).
+   - Masalah: Terasa seperti overlay yang mengambang canggung di atas konten, sering menutupi bagian atas saat scrolling, dan membatasi ruang navigasi horizontal.
+2. **Kebutuhan Pengguna:**
+   - Mengganti model overlay menjadi **Navbar Standar Penuh (Edge-to-Edge Topbar)**:
+     - Menempel di bagian atas layar (`sticky top-0 w-full z-40`).
+     - Tampilan bersih saat di posisi paling atas (`scrollY === 0`).
+     - Berubah menjadi **Glassmorphic Surface** dinamis saat digulir (`scrollY > 10`): `backdrop-blur-md bg-white/80 border-b border-slate-200/80 shadow-2xs`.
+   - Memadukan estetika **Glassmorphism** di elemen-elemen UI utama lainnya agar antarmuka tampak kohesif, premium, dan modern.
 
-## 2. Riset Fitur Baru: Highlight Tanggal 20 (Switch Periode & Gajian)
-1. **Konteks Kebutuhan Pengguna:**
-   - Halaman target: `/attendance` (`src/app/attendance/page.js`).
-   - Setiap tanggal 20 merupakan hari penting:
-     - **Switch Periode:** Cutoff / pergantian siklus evaluasi bulanan magang (misal periode 21 bulan lalu hingga 20 bulan ini).
-     - **Gajian (Payday):** Tanggal pencairan uang saku / gaji magang peserta.
-   - Pengguna meminta penanda visual (highlight) yang jelas di kalender bulanan agar langsung terlihat saat membuka halaman kehadiran.
-
-2. **Analisis Teknis Implementasi Kalender Saat Ini:**
-   - File: `src/app/attendance/page.js`.
-   - Grid sel kalender di-generate melalui useMemo `calendarCells`.
-   - Setiap sel memiliki properti `day`, `dateStr`, `isSunday`, `log`.
-   - Kondisi tanggal 20: `const isPayday = day === 20;`.
-   - Styling sel saat ini:
-     - Normal: `border-slate-200/80 bg-white hover:border-slate-300`
-     - Hari Ini: `ring-2 ring-indigo-500 border-indigo-300 bg-indigo-50/20`
-   - Kebutuhan Styling Tanggal 20:
-     - Badge khusus: Pill emas/amber dengan icon Lucide `Coins` atau label "💰 Gajian" / "Switch Periode".
-     - Border/Background aksen halus: `border-amber-300/80 bg-gradient-to-b from-amber-50/40 to-white ring-1 ring-amber-400/40` yang harmonis dengan palet *Warm Slate & Porcelain*.
-     - Integrasi dengan Hari Ini: Jika tanggal 20 bertepatan dengan hari ini, ring indigo tetap aktif dengan aksen badge gajian tetap mencolok.
-     - Modal Detail: Ketika sel tanggal 20 diklik, modal menampilkan banner info khusus: status penutupan siklus evaluasi magang & hari pencairan gaji.
-     - Legenda / Status Bar: Menambahkan indikator keterangan kalender di bawah header/grid agar pengguna langsung memahami arti highlight tanggal 20.
+## 2. Analisis Penerapan Glassmorphism di Komponen UI
+1. **Top Navbar (`src/components/Navbar.js`):**
+   - Struktur horizontal standar: Logo + Brand di sisi kiri, menu navigasi dengan indikator aktif di tengah/kanan, dan quick action/status.
+   - Deteksi scroll dinamis menggunakan React `useEffect` + event listener `scroll` (passive) untuk transisi halus antar-state (transparan/bersih di top -> glassmorphic dengan blur dan border saat scroll).
+2. **Main Layout (`src/app/layout.js`):**
+   - Penyesuaian `main` container padding agar pas dengan navbar sticky top-0 standar (`pt-6` bukan padding aneh akibat floating overlay).
+3. **Harmonisasi Elemen Glassmorphic Lintas Halaman:**
+   - **Kartu Metrik & Quick Stats:** Penerapan `backdrop-blur-md bg-white/75 border border-white/90 shadow-xs` dengan highlight radial halus.
+   - **Modal & Filter Bar:** Memberikan depth glassmorphism lembut di header dan wrapper card.
+   - **Bottom Navigation Mobile (`src/components/BottomNav.js`):** Peningkatan efek frosted glass agar seragam dengan topbar.

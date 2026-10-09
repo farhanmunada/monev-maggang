@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -14,6 +15,21 @@ import {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 15) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const links = [
     { name: "Beranda", href: "/", icon: LayoutDashboard },
@@ -25,23 +41,39 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="fixed top-4 left-0 right-0 z-40 hidden md:flex justify-center px-4 pointer-events-none">
-      <nav className="pointer-events-auto flex items-center gap-1 bg-white/85 backdrop-blur-xl border border-slate-200/90 shadow-sm shadow-slate-200/50 rounded-full px-3 py-1.5 transition-all">
+    <header
+      className={`sticky top-0 left-0 right-0 z-40 w-full transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-2xs py-2.5"
+          : "bg-transparent border-b border-transparent py-4"
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between">
         {/* Brand */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 pl-2 pr-3 py-1 mr-1 border-r border-slate-200/80 group"
-        >
-          <div className="w-7 h-7 rounded-lg overflow-hidden border border-slate-200/80 bg-white flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
-            <Image src="/icon.png" alt="InternTrack Logo" width={24} height={24} className="object-cover" />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-xl overflow-hidden border border-slate-200/90 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+            <Image
+              src="/icon.png"
+              alt="InternTrack Logo"
+              width={26}
+              height={26}
+              className="object-cover"
+            />
           </div>
-          <span className="font-extrabold text-xs text-slate-900 tracking-tight">
-            InternTrack
-          </span>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-extrabold text-sm text-slate-900 tracking-tight">
+                InternTrack
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-200/70 px-1.5 py-0.2 rounded-md hidden sm:inline-block">
+                Workspace
+              </span>
+            </div>
+          </div>
         </Link>
 
-        {/* Links */}
-        <div className="flex items-center gap-1">
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-1 bg-white/60 backdrop-blur-md p-1 rounded-2xl border border-slate-200/70 shadow-2xs">
           {links.map((link) => {
             const isActive =
               link.href === "/"
@@ -53,19 +85,23 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
-                    ? "bg-slate-900 text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-slate-500"}`} />
+                <Icon
+                  className={`w-3.5 h-3.5 ${
+                    isActive ? "text-white" : "text-slate-500"
+                  }`}
+                />
                 <span>{link.name}</span>
               </Link>
             );
           })}
-        </div>
-      </nav>
+        </nav>
+      </div>
     </header>
   );
 }
