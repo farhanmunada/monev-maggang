@@ -29,21 +29,20 @@ export default function BentoGreeting({ telemetry }) {
 
       <div className="relative z-10 max-w-2xl">
         <div className="flex items-center gap-2 mb-2.5 flex-wrap">
-          <span className="text-[11px] font-semibold text-slate-500 bg-slate-100/90 px-3 py-1 rounded-full flex items-center gap-1.5 font-mono shadow-2xs">
-            <Calendar className="w-3.5 h-3.5 text-slate-500" />
+          <span className="pixel-badge text-slate-700 bg-white/80 border-slate-300">
+            <Calendar className="w-3 h-3 text-slate-500" />
             {formattedToday}
           </span>
 
           {isLogged ? (
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              Presensi: {todayStatus} ({todayActsCount} Aktivitas)
+            <span className="pixel-badge text-emerald-800 bg-emerald-50/90 border-emerald-300">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+              PRESENSI: {todayStatus} ({todayActsCount} ACT)
             </span>
           ) : (
-            <span className="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200/80 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <Clock3 className="w-3.5 h-3.5 text-amber-600" />
-              Jurnal Hari Ini Belum Diisi
+            <span className="pixel-badge text-amber-800 bg-amber-50/90 border-amber-300">
+              <Clock3 className="w-3 h-3 text-amber-600" />
+              JURNAL: BELUM DIISI
             </span>
           )}
         </div>

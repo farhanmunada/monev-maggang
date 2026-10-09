@@ -13,6 +13,7 @@ import {
   Circle,
   ArrowRight,
   GripVertical,
+  Zap,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
@@ -21,26 +22,23 @@ const COLUMNS = [
   {
     id: "todo",
     title: "To Do",
-    desc: "Akan dikerjakan",
-    badge: "bg-slate-100 text-slate-700 border-slate-200",
-    accent: "border-l-slate-400",
-    dropHighlight: "ring-2 ring-slate-400 bg-slate-100/50",
+    tag: "[TODO]",
+    tagClass: "text-slate-600 bg-slate-100/90 border-slate-300",
+    dropHighlight: "ring-1 ring-slate-400 bg-slate-100/40",
   },
   {
     id: "in_progress",
     title: "In Progress",
-    desc: "Sedang berlangsung",
-    badge: "bg-blue-50 text-blue-700 border-blue-200",
-    accent: "border-l-indigo-600",
-    dropHighlight: "ring-2 ring-indigo-400 bg-indigo-50/50",
+    tag: "[RUN]",
+    tagClass: "text-indigo-700 bg-indigo-50/90 border-indigo-300",
+    dropHighlight: "ring-1 ring-indigo-400 bg-indigo-50/40",
   },
   {
     id: "done",
     title: "Done",
-    desc: "Tugas tuntas",
-    badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    accent: "border-l-emerald-600",
-    dropHighlight: "ring-2 ring-emerald-400 bg-emerald-50/50",
+    tag: "[DONE]",
+    tagClass: "text-emerald-700 bg-emerald-50/90 border-emerald-300",
+    dropHighlight: "ring-1 ring-emerald-400 bg-emerald-50/40",
   },
 ];
 
@@ -95,11 +93,11 @@ export default function TasksPage() {
       if (formData.id) {
         const { error } = await supabase.from("notes").update(payload).eq("id", formData.id);
         if (error) throw error;
-        toast.success("Task berhasil diperbarui.");
+        toast.success("Task diperbarui.");
       } else {
         const { error } = await supabase.from("notes").insert(payload);
         if (error) throw error;
-        toast.success("Task baru ditambahkan ke papan.");
+        toast.success("Task baru ditambahkan.");
       }
 
       setIsModalOpen(false);
@@ -151,14 +149,14 @@ export default function TasksPage() {
                   toast.error("Gagal menghapus task.");
                 }
               }}
-              className="px-2.5 py-1 bg-rose-600 text-white rounded-lg text-xs font-semibold hover:bg-rose-700 cursor-pointer"
+              className="px-2.5 py-1 bg-rose-600 text-white rounded-lg text-xs hover:bg-rose-700 cursor-pointer"
             >
               Hapus
             </button>
           </div>
         </div>
       ),
-      { duration: Infinity }
+      { duration: 5000 }
     );
   };
 
@@ -171,12 +169,17 @@ export default function TasksPage() {
         status: task.status || "todo",
       });
     } else {
-      setFormData({ id: null, title: "", content: "", status: defaultCol });
+      setFormData({
+        id: null,
+        title: "",
+        content: "",
+        status: defaultCol,
+      });
     }
     setIsModalOpen(true);
   };
 
-  // Drag and Drop Handlers
+  // Drag and Drop handlers
   const handleDragStart = (e, taskId) => {
     setDraggedTaskId(taskId);
     e.dataTransfer.setData("text/plain", taskId);
@@ -191,8 +194,8 @@ export default function TasksPage() {
     }
   };
 
-  const handleDragLeave = () => {
-    setDragOverColId(null);
+  const handleDragLeave = (e) => {
+    e.preventDefault();
   };
 
   const handleDrop = (e, targetColId) => {
@@ -224,82 +227,82 @@ export default function TasksPage() {
   }, [tasks, searchQuery]);
 
   return (
-    <div className="space-y-6 md:space-y-7 pb-12">
-      {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-4">
+    <div className="space-y-5 md:space-y-6 pb-12">
+      {/* Visual Header */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-white/60">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-200/60 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-              <CheckSquare className="w-3.5 h-3.5" />
-              Workflow Execution
+            <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">
+              KANBAN.EXEC
             </span>
+            <span className="text-[11px] font-mono text-slate-400">Papan Alur Kerja</span>
           </div>
           <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
-            Papan Tugas Kanban
+            Papan Tugas Harian
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-0.5">
-            Tarik & lepas (drag and drop) kartu antar kolom untuk memperbarui progres kerja harianmu.
-          </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => openModal()}
-            className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl shadow-xs transition-all active:scale-95 font-semibold text-xs cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Tambah Task</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => openModal()}
+          className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl shadow-xs transition-all active:scale-95 font-semibold text-xs cursor-pointer w-fit"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Tambah Task</span>
+        </button>
       </header>
 
-      {/* KPI & Search Bar Row */}
+      {/* Visual KPI & Search (Non-Text-Heavy) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        {/* Metric Card: Task Summary */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs md:col-span-2 flex flex-col justify-between">
+        {/* Metric Progress Visual Card */}
+        <div className="glass-panel rounded-2xl p-4 md:col-span-2 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-600">Progres Penyelesaian Tugas</span>
-            <span className="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-200/60">
-              {doneTasks} dari {totalTasks} Selesai ({completionRate}%)
+            <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-amber-500" /> Progres Eksekusi
             </span>
+            <div className="flex items-center gap-1.5">
+              <span className="pixel-counter">
+                {doneTasks}/{totalTasks}
+              </span>
+              <span className="text-xs font-bold font-mono text-indigo-700">
+                {completionRate}%
+              </span>
+            </div>
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-2">
+
+          <div className="w-full bg-slate-200/60 rounded-full h-2 overflow-hidden mb-3">
             <div
               className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
               style={{ width: `${completionRate}%` }}
             />
           </div>
-          <div className="flex items-center gap-2 text-[11px] text-slate-500">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-slate-400" />
-              {todoTasks} To Do
+
+          {/* Scannable Status Chips */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="pixel-badge text-slate-700 bg-slate-100/90 border-slate-300">
+              {todoTasks} TODO
             </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-blue-500" />
-              {inProgressTasks} In Progress
+            <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">
+              {inProgressTasks} WIP
             </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              {doneTasks} Selesai
+            <span className="pixel-badge text-emerald-700 bg-emerald-50/90 border-emerald-300">
+              {doneTasks} DONE
             </span>
           </div>
         </div>
 
         {/* Live Search Input */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs md:col-span-2 flex flex-col justify-center">
-          <label className="text-[11px] font-semibold text-slate-500 mb-1.5 flex items-center gap-1">
-            <Search className="w-3.5 h-3.5" /> Cari Tugas
+        <div className="glass-panel rounded-2xl p-4 md:col-span-2 flex flex-col justify-center">
+          <label className="text-[11px] font-bold text-slate-600 mb-1.5 flex items-center gap-1.5">
+            <Search className="w-3.5 h-3.5 text-slate-500" /> Filter Cepat Task
           </label>
           <div className="relative">
             <input
               type="text"
-              placeholder="Cari judul task atau instruksi..."
+              placeholder="Ketik kata kunci judul..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 transition-colors"
+              className="w-full px-3 py-2 bg-white/70 border border-white/80 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 transition-all font-sans"
             />
             {searchQuery && (
               <button
@@ -314,7 +317,7 @@ export default function TasksPage() {
         </div>
       </div>
 
-      {/* Interactive Kanban Board */}
+      {/* Modern Pixel-Glass Kanban Board */}
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -331,28 +334,28 @@ export default function TasksPage() {
                 onDragOver={(e) => handleDragOver(e, col.id)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, col.id)}
-                className={`bg-white border rounded-3xl flex flex-col shadow-xs transition-all ${
-                  isTarget ? col.dropHighlight : "border-slate-200/90"
+                className={`glass-panel rounded-3xl flex flex-col transition-all overflow-hidden ${
+                  isTarget ? col.dropHighlight : ""
                 }`}
               >
                 {/* Column Header */}
-                <div className="p-4 border-b border-slate-100 flex justify-between items-center">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-xs text-slate-900 tracking-tight">
-                        {col.title}
-                      </h3>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${col.badge}`}>
-                        {colTasks.length}
-                      </span>
-                    </div>
-                    <p className="text-[10px] text-slate-400 mt-0.5">{col.desc}</p>
+                <div className="p-3.5 border-b border-white/70 flex justify-between items-center bg-white/40">
+                  <div className="flex items-center gap-2">
+                    <span className={`pixel-badge ${col.tagClass}`}>
+                      {col.tag}
+                    </span>
+                    <h3 className="font-bold text-xs text-slate-900 tracking-tight">
+                      {col.title}
+                    </h3>
+                    <span className="pixel-counter">
+                      {colTasks.length}
+                    </span>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => openModal(null, col.id)}
-                    className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg hover:bg-white/80 text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer"
                     title={`Tambah task langsung di ${col.title}`}
                   >
                     <Plus className="w-4 h-4" />
@@ -360,9 +363,12 @@ export default function TasksPage() {
                 </div>
 
                 {/* Drop Container & Tasks List */}
-                <div className="p-3 flex-1 space-y-2.5 bg-slate-50/40 min-h-[300px] rounded-b-3xl">
+                <div className="p-3 flex-1 space-y-2.5 min-h-[340px]">
                   {colTasks.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-14 text-center border border-dashed border-slate-200 rounded-2xl bg-white/60">
+                    <div className="flex flex-col items-center justify-center py-16 text-center border border-dashed border-white/80 rounded-2xl bg-white/30 backdrop-blur-xs">
+                      <span className="pixel-badge text-slate-400 bg-white/50 border-slate-200 mb-2">
+                        KOSONG
+                      </span>
                       <p className="text-xs text-slate-400">Belum ada task di sini</p>
                       <button
                         type="button"
@@ -378,16 +384,16 @@ export default function TasksPage() {
                         key={task.id}
                         draggable
                         onDragStart={(e) => handleDragStart(e, task.id)}
-                        className={`bg-white border rounded-2xl p-4 shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all flex flex-col group border-l-4 ${col.accent} cursor-grab active:cursor-grabbing`}
+                        className="bg-white/75 backdrop-blur-md border border-white/90 rounded-2xl p-3.5 shadow-2xs hover:border-slate-300 hover:bg-white/90 hover:shadow-xs transition-all flex flex-col group cursor-grab active:cursor-grabbing"
                       >
                         {/* Top: Checkbox, Title & Actions */}
-                        <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-start justify-between gap-2 mb-1.5">
                           <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                            {/* Quick Complete / Toggle Checkbox */}
+                            {/* Toggle Checkbox */}
                             <button
                               type="button"
                               onClick={() => updateStatus(task.id, task.status === "done" ? "todo" : "done")}
-                              className="mt-0.5 text-slate-300 hover:text-emerald-600 transition-colors cursor-pointer flex-shrink-0"
+                              className="mt-0.5 text-slate-300 hover:text-emerald-600 transition-colors cursor-pointer shrink-0"
                               title={task.status === "done" ? "Kembalikan ke To Do" : "Tandai Selesai"}
                             >
                               {task.status === "done" ? (
@@ -398,15 +404,15 @@ export default function TasksPage() {
                             </button>
 
                             <h4
-                              className={`font-semibold text-xs text-slate-900 leading-snug line-clamp-2 ${
-                                task.status === "done" ? "line-through text-slate-400" : ""
+                              className={`font-bold text-xs text-slate-900 leading-snug line-clamp-2 ${
+                                task.status === "done" ? "line-through text-slate-400 font-normal" : ""
                               }`}
                             >
                               {task.title}
                             </h4>
                           </div>
 
-                          <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                          <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity shrink-0">
                             <button
                               type="button"
                               onClick={() => openModal(task)}
@@ -426,16 +432,16 @@ export default function TasksPage() {
                           </div>
                         </div>
 
-                        {/* Content / Notes preview */}
+                        {/* Content preview */}
                         {task.content && (
-                          <p className="text-[11px] text-slate-500 line-clamp-3 mb-3 leading-relaxed pl-6">
+                          <p className="text-[11px] text-slate-600 line-clamp-2 mb-2 leading-relaxed pl-6 font-sans">
                             {task.content}
                           </p>
                         )}
 
-                        {/* Bottom Bar: Move Shortcuts */}
-                        <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-auto pl-6 text-[10px]">
-                          <span className="text-slate-400 font-mono">
+                        {/* Bottom: Fast Move Shortcuts (No Reading Burden) */}
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100/80 mt-auto pl-6 text-[10px]">
+                          <span className="text-slate-400 font-mono text-[9px]">
                             {new Date(task.created_at).toLocaleDateString("id-ID", {
                               day: "numeric",
                               month: "short",
@@ -447,27 +453,30 @@ export default function TasksPage() {
                               <button
                                 type="button"
                                 onClick={() => updateStatus(task.id, "todo")}
-                                className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 font-medium transition-colors cursor-pointer"
+                                className="px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 font-mono text-[9px] font-semibold transition-colors cursor-pointer"
+                                title="Pindah ke To Do"
                               >
-                                To Do
+                                ← TODO
                               </button>
                             )}
                             {col.id !== "in_progress" && (
                               <button
                                 type="button"
                                 onClick={() => updateStatus(task.id, "in_progress")}
-                                className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium transition-colors cursor-pointer"
+                                className="px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-mono text-[9px] font-semibold transition-colors cursor-pointer"
+                                title="Pindah ke In Progress"
                               >
-                                In Progress
+                                ⚡ WIP
                               </button>
                             )}
                             {col.id !== "done" && (
                               <button
                                 type="button"
                                 onClick={() => updateStatus(task.id, "done")}
-                                className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium transition-colors cursor-pointer"
+                                className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-mono text-[9px] font-semibold transition-colors cursor-pointer"
+                                title="Pindah ke Done"
                               >
-                                Selesai
+                                ✓ DONE
                               </button>
                             )}
                           </div>
@@ -482,14 +491,19 @@ export default function TasksPage() {
         </div>
       )}
 
-      {/* Task Modal (Add / Edit) */}
+      {/* Task Modal (Add / Edit) with Glass Styling */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-xl flex flex-col overflow-hidden">
-            <div className="p-4 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="text-sm font-bold text-slate-900">
-                {formData.id ? "Edit Task" : "Tambah Task Baru"}
-              </h2>
+        <div className="fixed inset-0 bg-slate-900/35 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
+          <div className="bg-white/95 backdrop-blur-xl w-full max-w-md rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/80">
+            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white/50">
+              <div className="flex items-center gap-2">
+                <span className="pixel-badge text-indigo-700 bg-indigo-50 border-indigo-300">
+                  {formData.id ? "EDIT" : "NEW"}
+                </span>
+                <h2 className="text-sm font-bold text-slate-900">
+                  {formData.id ? "Edit Task" : "Tambah Task Baru"}
+                </h2>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
@@ -501,7 +515,7 @@ export default function TasksPage() {
 
             <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Kolom Status
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -512,8 +526,8 @@ export default function TasksPage() {
                       onClick={() => setFormData({ ...formData, status: col.id })}
                       className={`py-1.5 px-2 rounded-xl text-xs font-semibold transition-all cursor-pointer border ${
                         formData.status === col.id
-                          ? "bg-indigo-600 border-indigo-600 text-white shadow-2xs"
-                          : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                          ? "bg-slate-900 border-slate-900 text-white shadow-2xs"
+                          : "bg-white/80 border-slate-200 text-slate-600 hover:bg-slate-50"
                       }`}
                     >
                       {col.title}
@@ -523,7 +537,7 @@ export default function TasksPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Judul Task
                 </label>
                 <input
@@ -533,27 +547,27 @@ export default function TasksPage() {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="Misal: Perbaiki responsive layout mobile..."
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 placeholder-slate-400"
+                  className="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 placeholder-slate-400 font-sans"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  Deskripsi / Checklist Instruksi
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  Deskripsi / Checklist Catatan
                 </label>
                 <textarea
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Tuliskan catatan teknis, link referensi, atau instruksi pengerjaan..."
-                  rows={4}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none placeholder-slate-400 leading-relaxed font-sans"
+                  placeholder="Catatan teknis singkat atau instruksi..."
+                  rows={3}
+                  className="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none placeholder-slate-400 leading-relaxed font-sans"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-2.5 rounded-xl bg-indigo-600 text-white font-semibold text-xs hover:bg-indigo-700 shadow-xs transition-colors disabled:opacity-70 mt-1 cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-colors disabled:opacity-70 mt-1 cursor-pointer"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan Task"}
               </button>

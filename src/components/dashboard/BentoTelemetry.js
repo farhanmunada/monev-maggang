@@ -61,17 +61,17 @@ export default function BentoTelemetry({ telemetry }) {
 
           {/* Breakdown pills */}
           <div className="flex items-center gap-1.5 pt-1 text-[10px] font-medium flex-wrap">
-            <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-              {presentDays} Hadir
+            <span className="pixel-badge text-emerald-800 bg-emerald-50/90 border-emerald-300">
+              {presentDays} HADIR
             </span>
             {leaveDays > 0 && (
-              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/60">
-                {leaveDays} Izin
+              <span className="pixel-badge text-blue-800 bg-blue-50/90 border-blue-300">
+                {leaveDays} IZIN
               </span>
             )}
             {sickDays > 0 && (
-              <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200/60">
-                {sickDays} Sakit
+              <span className="pixel-badge text-amber-800 bg-amber-50/90 border-amber-300">
+                {sickDays} SAKIT
               </span>
             )}
           </div>

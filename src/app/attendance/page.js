@@ -150,9 +150,9 @@ export default function AttendancePage() {
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-200/60 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-              <CalendarCheck2 className="w-3.5 h-3.5" />
-              Kalender Presensi
+            <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">
+              <CalendarCheck2 className="w-3 h-3" />
+              PRESENSI.LOG
             </span>
           </div>
           <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
@@ -315,10 +315,10 @@ export default function AttendancePage() {
                       {isPayday && (
                         <span
                           title="Switch Periode & Hari Gajian"
-                          className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-lg bg-amber-100 text-amber-800 border border-amber-300/80 shadow-2xs"
+                          className="pixel-badge text-amber-800 bg-amber-100/90 border-amber-400"
                         >
                           <Coins className="w-2.5 h-2.5 text-amber-600 shrink-0" />
-                          <span className="hidden md:inline font-mono">Gajian</span>
+                          <span className="hidden md:inline">GAJI</span>
                         </span>
                       )}
 
@@ -425,8 +425,8 @@ export default function AttendancePage() {
                   <div className="text-xs space-y-0.5">
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-amber-900">Switch Periode & Hari Gajian</span>
-                      <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-200/80 text-amber-800 px-1.5 py-0.5 rounded-md">
-                        Cut-off Bulanan
+                      <span className="pixel-badge text-amber-900 bg-amber-200/90 border-amber-400">
+                        CUTOFF.BULANAN
                       </span>
                     </div>
                     <p className="text-[11px] text-amber-800/90 leading-relaxed">

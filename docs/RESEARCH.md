@@ -1,40 +1,29 @@
-# Riset: Solusi Autentik Glassmorphism (Aurora Mesh & Saturate Blur)
+# Riset: Konsep Desain "Modern Pixel-Glass" & Overhaul UX Visual
 
-## 1. Mengapa Efek Glassmorphism Sebelumnya Tidak Terlihat?
-1. **Latar Belakang Monokromatik Datar:**
-   - Background aplikasi sebelumnya adalah warna solid datar `#F8FAFC` tanpa elemen warna atau gradien kontras di bawahnya.
-   - Karakteristik optik `backdrop-filter: blur(...)`: Efek blur pada permukaan solid yang rata akan menghasilkan warna yang sama persis dengan latar belakangnya. Tidak ada objek atau warna yang bisa dibiaskan sehingga kartu terlihat seperti warna putih solid biasa.
-2. **Opasitas Terlalu Pekat:**
-   - Nilai opasitas `bg-white/80` hingga `bg-white/90` terlalu pekat, memblokir transparansi dan mematikan efek kedalaman (depth).
-3. **Absennya Pantulan Refraksi (Specular Rim Light):**
-   - Efek kaca nyata (seperti macOS Liquid Glass atau Windows Fluent Acrylic) membutuhkan rim highlight:
-     - `box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9)` (cahaya pantulan di tepi atas).
-     - `backdrop-filter: blur(16px) saturate(180%)` (saturasi optik yang meningkatkan kecerahan warna di balik kaca).
-     - Border semi-transparan `border-white/70` yang menyerupai tepi kaca bening.
+## 1. Validasi Ide Pengguna: Glassmorphism + Pixelate Modern
+- **Apakah bagus?** **Sangat bagus dan unik!**
+  - Menggabungkan material *frosted glass* (kedalaman, glow aurora, refraksi halus) dengan *elemen pixelate modern* (retro-pixel badges `[TODO]`, `[RUNNING]`, `[DONE]`, pixel indicator dots, font mono bertema retro-tech) menciptakan identitas desain **"Neo-Digital Artisan / Modern Pixel-Glass"**.
+  - Sangat kohesif dengan elemen *Walking Companions* yang sudah ada di aplikasi (sprite karakter pixel yang berjalan di layar). Ini membuat seluruh tema terasa satu kesatuan dunia visual yang hidup dan menyenangkan.
 
-## 2. Solusi & Rekomendasi Palet Kombinasi Baru (Aurora Glassmorphism)
-1. **Ambient Aurora Mesh di Latar Belakang (`src/app/layout.js`):**
-   - Menambahkan orbs gradien lembut dengan warna harmonis:
-     - *Sky / Cyan Glow:* `#0ea5e9` (opacity 15-20%) di sudut kiri atas.
-     - *Indigo / Violet Aura:* `#6366f1` / `#a855f7` (opacity 15-20%) di tengah atas.
-     - *Warm Peach / Amber Tint:* `#f59e0b` / `#fb7185` (opacity 10-15%) di sudut kanan tengah.
-   - Posisi `fixed inset-0 pointer-events-none blur-3xl -z-10` sehingga menyatu lembut di bawah semua halaman.
-2. **Token CSS Glassmorphism Standar (`src/app/globals.css`):**
-   - Utility `.glass-panel`:
-     ```css
-     background: rgba(255, 255, 255, 0.68);
-     backdrop-filter: blur(16px) saturate(180%);
-     -webkit-backdrop-filter: blur(16px) saturate(180%);
-     border: 1px solid rgba(255, 255, 255, 0.75);
-     box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-     ```
-   - Utility `.glass-nav`:
-     ```css
-     background: rgba(255, 255, 255, 0.72);
-     backdrop-filter: blur(20px) saturate(190%);
-     -webkit-backdrop-filter: blur(20px) saturate(190%);
-     border-bottom: 1px solid rgba(226, 232, 240, 0.6);
-     box-shadow: 0 4px 24px 0 rgba(15, 23, 42, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
-     ```
-3. **Pengaruh pada Navbar & Komponen:**
-   - Saat navbar melayang di atas konten saat di-scroll, teks, kartu warna, dan orbs aurora di bawahnya akan terbiaskan secara instan dan sangat jelas terlihat efek kacanya.
+## 2. Analisis UX: Menghilangkan Hambatan Membaca & Garis Tebal
+1. **Kurangi Beban Teks (Visual-First & Non-Text-Heavy):**
+   - Pengguna tidak suka membaca teks panjang. Solusi: Ubah informasi menjadi **visual visual chips, icon cues, progress gauge, dan micro-badges**.
+   - Hindari deskripsi berulang di header atau footer. Gunakan counter bergaya digital pixel seperti `[04/12]` dan icon status.
+2. **Eliminasi Garis Tebal (Anti-Thick Borders):**
+   - Menghapus semua `border-l-4`, `border-2`, dan border pembatas hitam/kaku di seluruh halaman.
+   - Menggantinya dengan **hairline glass borders (1px border-white/80 atau border-slate-200/50)** dan specular highlight `inset 0 1px 1px white` untuk ilusi tepi kaca tipis tanpa garis tebal.
+
+## 3. Analisis Masalah Halaman Task (`/tasks`) ("UI Majapahit")
+1. **Kondisi Saat Ini:**
+   - Masih menggunakan kartu putih solid biasa dengan border samping tebal `border-l-4 border-l-indigo-600` / `border-l-emerald-600`.
+   - Kolom kanban terasa kaku dan datar, tidak menyatu dengan background Aurora Mesh.
+   - Tombol dan header terasa generik dan kuno.
+2. **Solusi Overhaul:**
+   - Transformasi kolom menjadi **Glass Columns** (`glass-panel`) semi-transparan.
+   - Kartu tugas menjadi **Glassmorphic Task Cards** dengan aksen **Modern Pixel Tags** (`[TODO]`, `[IN_PROG]`, `[DONE]`) dengan micro-border halus (zero thick lines).
+   - Indikator aksi geser/pindah cepat yang visual dan instan tanpa perlu membaca panduan panjang.
+
+## 4. Analisis Navbar: Aksesibilitas & Readability Terdepan
+- Penyesuaian kontras teks agar tidak tertelan transparansi (`text-slate-800 font-semibold`).
+- Indikator aktif kontras tinggi (`bg-slate-900 text-white` dengan specular rim halus).
+- Logo dengan sentuhan badge retro-pixel minimalis `[PRO] / [WORKSPACE]`.

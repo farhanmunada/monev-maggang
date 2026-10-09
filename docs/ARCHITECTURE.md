@@ -1,44 +1,42 @@
-# Arsitektur: Aurora Mesh Lighting & True Glassmorphism System
+# Arsitektur: Modern Pixel-Glass Design & Kanban Overhaul
 
 ## 1. File Terdampak
-1. `src/app/globals.css`: Deklarasi utility classes `.glass-panel`, `.glass-nav`, `.glass-subtle` dengan formula saturasi refraktif (`saturate(180%)`), backdrop blur, dan specular rim highlight (`inset 0 1px 1px white`).
-2. `src/app/layout.js`: Implementasi sistem pencahayaan multi-layer Aurora Mesh Orbs (Sky Cyan, Indigo Violet, Rose, dan Emerald) di latar kanvas.
-3. `src/components/Navbar.js`: Integrasi class `.glass-nav` dinamis saat discroll, menyaring warna dan teks yang melintas di bawahnya.
-4. `src/app/attendance/page.js`: Penerapan `.glass-panel` pada Monthly Statistics Cards, Calendar Grid Container, dan Modal Dialog.
-5. `src/components/dashboard/BentoGreeting.js` & `BentoTelemetry.js`: Penerapan `.glass-panel` pada Bento Dashboard cards.
+1. `src/app/globals.css`: Utilitas `.pixel-badge`, `.pixel-chip`, hairline glass borders, dan animasi micro-glow.
+2. `src/app/tasks/page.js`: Rombak total dari UI lama ke Modern Pixel-Glass Kanban Board (visual-first, zero thick borders, visual progress gauge, drag and drop glass tiles).
+3. `src/components/Navbar.js`: Penguatan aksesibilitas (kontras tinggi, font weight, pixel tag `[WORKSPACE]`, label tegap).
+4. `src/app/attendance/page.js`: Pembersihan border atau styling tebal agar selaras dengan filosofi hairline glass & pixel badge tanggal gajian.
 
-## 2. Spesifikasi Teknis Formula Glass
+## 2. Rincian Teknis Implementasi
 
-### A. Utilitas CSS `.glass-panel`
+### A. Utilitas CSS (`src/app/globals.css`)
 ```css
-.glass-panel {
-  background: rgba(255, 255, 255, 0.68);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 
-    0 4px 20px -2px rgba(15, 23, 42, 0.05),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+/* Modern Pixel-Glass Utility Classes */
+.pixel-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  box-shadow: 1px 1px 0px 0px currentColor;
 }
 ```
 
-### B. Utilitas CSS `.glass-nav`
-```css
-.glass-nav {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(190%);
-  -webkit-backdrop-filter: blur(20px) saturate(190%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 
-    0 4px 24px 0 rgba(15, 23, 42, 0.05),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
-}
-```
+### B. Overhaul Kanban Board (`src/app/tasks/page.js`)
+- **Header:** Ringkas, icon-focused, tanpa paragraf panjang. Tombol Tambah Task dengan styling glass button + micro-glow.
+- **Visual KPI:** Progress bar visual dengan pixel counter `[DONE 05/10]` dan dot indicators.
+- **Kolom Kanban:** Menggunakan `glass-panel` yang semi-transparan dengan border hairline `border-white/80`.
+- **Kartu Tugas (Task Cards):**
+  - **HAPUS TOTAL `border-l-4`**.
+  - Background kaca: `bg-white/70 backdrop-blur-md border border-white/90 shadow-2xs hover:shadow-xs`.
+  - Tag status pixel:
+    - To Do: `<span className="pixel-badge text-slate-600 bg-slate-100/80">[TODO]</span>`
+    - In Progress: `<span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">[RUN]</span>`
+    - Done: `<span className="pixel-badge text-emerald-700 bg-emerald-50/90 border-emerald-300">[DONE]</span>`
+  - Aksi 1-klik untuk toggle status dan modal edit yang intuitif.
 
-### C. Aurora Mesh Layer (`src/app/layout.js`)
-- Menggunakan 4 orbs gradien warna di layer `fixed inset-0 pointer-events-none -z-10`:
-  1. Top-Left: Sky Blue (`#38bdf8`)
-  2. Top-Center: Indigo/Violet (`#818cf8`)
-  3. Mid-Right: Soft Rose/Peach (`#fb7185`)
-  4. Bottom-Left: Soft Emerald (`#34d399`)
-- Menjamin refraksi optik di seluruh viewport layar.
+### C. Navbar (`src/components/Navbar.js`)
+- Penajaman kontras: Teks tautan menu menggunakan warna yang solid dan jelas terbaca (`text-slate-700 font-semibold hover:text-slate-900`).
+- Menu aktif menggunakan `bg-slate-900 text-white font-bold shadow-xs`.
+- Brand logo dilengkapi micro-badge pixel modern `[V2.0]`.

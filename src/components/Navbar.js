@@ -51,7 +51,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-xl overflow-hidden border border-slate-200/90 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-xl overflow-hidden border border-white/80 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
             <Image
               src="/icon.png"
               alt="InternTrack Logo"
@@ -60,20 +60,18 @@ export default function Navbar() {
               className="object-cover"
             />
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-sm text-slate-900 tracking-tight">
-                InternTrack
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-200/70 px-1.5 py-0.2 rounded-md hidden sm:inline-block">
-                Workspace
-              </span>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold text-sm text-slate-900 tracking-tight">
+              InternTrack
+            </span>
+            <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300 hidden sm:inline-flex">
+              SYS.V2
+            </span>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 bg-white/60 backdrop-blur-md p-1 rounded-2xl border border-slate-200/70 shadow-2xs">
+        <nav className="hidden md:flex items-center gap-1 bg-white/70 backdrop-blur-md p-1 rounded-2xl border border-white/80 shadow-2xs">
           {links.map((link) => {
             const isActive =
               link.href === "/"
@@ -85,16 +83,17 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all ${
                   isActive
-                    ? "bg-slate-900 text-white shadow-2xs"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                    ? "bg-slate-900 text-white font-bold shadow-xs"
+                    : "text-slate-700 hover:text-slate-950 font-semibold hover:bg-slate-100/80"
                 }`}
               >
                 <Icon
                   className={`w-3.5 h-3.5 ${
-                    isActive ? "text-white" : "text-slate-500"
+                    isActive ? "text-white" : "text-slate-600"
                   }`}
+                  strokeWidth={isActive ? 2.2 : 2}
                 />
                 <span>{link.name}</span>
               </Link>

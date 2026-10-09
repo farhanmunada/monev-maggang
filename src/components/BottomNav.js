@@ -24,7 +24,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200/70 flex justify-around items-center h-16 px-1 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-white/80 flex justify-around items-center h-16 px-1 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
       {links.map((link) => {
         const isActive =
           link.href === "/"

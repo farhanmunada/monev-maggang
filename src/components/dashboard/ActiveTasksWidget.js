@@ -7,12 +7,14 @@ export default function ActiveTasksWidget({ tasks, loading, onCompleteTask }) {
       <div>
         <div className="flex justify-between items-center mb-4">
           <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="pixel-badge text-purple-700 bg-purple-50/90 border-purple-300">
+                TODO.EXEC
+              </span>
+            </div>
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 tracking-tight">
               <CheckSquare className="w-4 h-4 text-purple-600" /> Task Prioritas
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Pekerjaan yang sedang berjalan atau perlu dieksekusi
-            </p>
           </div>
           <div className="flex items-center gap-2">
             <Link

@@ -1,42 +1,42 @@
-# PRD: Implementasi Aurora Mesh & Sistem True Glassmorphism
+# PRD: Modern Pixel-Glass Design System & Overhaul Kanban Tasks
 
-## 1. Masalah & Kebutuhan (Problem Statement)
-Efek glassmorphism saat ini tidak terlihat (*"kaga ada glass morph blass"*) karena dua faktor teknis utama:
-1. Kanvas dasar berupa warna datar monokromatik (`#F8FAFC`), sehingga blur optik tidak memiliki variasi warna atau elemen kontras di baliknya untuk dibiaskan.
-2. Opasitas background elemen terlalu tinggi (0.8 - 0.9) dan tidak memiliki pantulan cahaya tepi (*specular rim highlight* `inset 0 1px 1px white`) serta peningkatan saturasi optik (`saturate(180%)`).
+## 1. Visi & Tujuan (Vision & Objectives)
+1. **Konsep Desain "Modern Pixel-Glass":** Memadukan estetika *Frosted Glassmorphism* (kedalaman, translusensi, specular highlight) dengan aksen *Modern Pixelate* (pixel badges, status tags, pixel counters, retro-tech dot indicators) yang harmonis dengan karakter Walking Companions.
+2. **Eliminasi Garis Tebal (Zero Thick Lines):** Menghapus seluruh border samping tebal (`border-l-4`), border ganda, atau garis gelap kaku di seluruh aplikasi. Menggantinya dengan hairline micro-border halus 1px dan specular rim cahaya kaca.
+3. **UX Visual-First (Anti-Text Walls):** Menyajikan antarmuka yang langsung dipahami sekilas (scannable) melalui chip visual, ikon grafis, dan badge ringkas tanpa paragraf panjang yang melelahkan pengguna.
+4. **Overhaul Total Halaman Task (`/tasks`):** Mengubah papan Kanban dari "UI Majapahit" menjadi kanban modern glassmorphic beraksen pixel yang estetik, ringan, dan interaktif.
+5. **Peningkatan Aksesibilitas Navbar:** Memastikan font weight, kontras teks, touch target, dan keterbacaan menu navigasi tetap prima di segala kondisi pencahayaan dan scroll.
 
-Pengguna menanyakan: *"apakah perlu warna baru untk kombinasi ?"*
-Solusinya adalah menghadirkan kombinasi warna latar belakang **Aurora Mesh Gradient** yang dinamis dan berkelas, dipadukan dengan formula **True Glassmorphism Surface**.
+## 2. Cakupan Perubahan (Scope)
 
-## 2. Cakupan Solusi (Scope)
+### A. Token Utilitas Desain Pixel-Glass (`src/app/globals.css`)
+- `.pixel-badge`: Badge bergaya retro-pixel modern dengan font mono tebal, micro-border 1px, dan styling chip visual.
+- `.pixel-counter`: Counter numerik digital kotak minimalis (`[02]`, `[05]`).
+- Penghapusan border tebal di seluruh utilitas komponen.
 
-### A. Palet Kombinasi Baru: Aurora Mesh Lighting
-Latar belakang kanvas dihiasi oleh orbs pencahayaan ambient yang ditempatkan secara strategis di `src/app/layout.js`:
-- **Violet & Indigo Orb (`#6366F1` / `#8B5CF6`):** di area atas tengah, menciptakan bias warna di balik sticky navbar.
-- **Sky Blue Orb (`#0EA5E9`):** di area kiri atas, memberi nuansa segar dan profesional.
-- **Warm Rose & Amber Orb (`#F59E0B` / `#F43F5E`):** di area kanan tengah, memberi kehangatan visual tanpa menyilaukan.
-- Opasitas halus (12-18%) dengan `blur-[110px]` sehingga tetap lembut, tidak mengganggu keterbacaan teks, namun memberi material kaya untuk dibiaskan oleh kaca.
+### B. Overhaul Total Papan Kanban Tasks (`src/app/tasks/page.js`)
+- **Kolom Kanban:** Menggunakan `glass-panel` dengan latar tembus cahaya aurora.
+- **Kartu Tugas (Task Cards):**
+  - Mengeliminasi `border-l-4` sepenuhnya.
+  - Kartu berupa floating glass tile (`bg-white/70 backdrop-blur-md border border-white/80 shadow-2xs hover:shadow-xs`).
+  - Dilengkapi pixel status tag:
+    - To Do: `[TODO]` (Slate/Gray Pixel Chip)
+    - In Progress: `[WIP]` (Indigo/Blue Pixel Chip)
+    - Done: `[DONE]` (Emerald Pixel Chip)
+  - Interaksi drag & drop visual yang mulus dengan drop indicator glow.
+- **KPI & Filter Bar:** Visual progress ring/bar dan quick search chip yang ringkas tanpa dinding teks.
 
-### B. Formula True Glassmorphism (`src/app/globals.css`)
-- **Utility `.glass-card` / `.glass-panel`:**
-  - `background: rgba(255, 255, 255, 0.65)`
-  - `backdrop-filter: blur(16px) saturate(180%)`
-  - `-webkit-backdrop-filter: blur(16px) saturate(180%)`
-  - `border: 1px solid rgba(255, 255, 255, 0.75)`
-  - `box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9)`
-- **Utility `.glass-nav`:**
-  - `background: rgba(255, 255, 255, 0.70)` saat di-scroll
-  - `backdrop-filter: blur(20px) saturate(190%)`
-  - Specular top rim & subtle border
+### C. Pembersihan Garis Tebal di Seluruh Halaman Lainnya
+- `src/app/attendance/page.js`: Memastikan sel kalender, modal, dan filter menggunakan border halus 1px tanpa garis tebal.
+- `src/app/page.js` & dashboard widgets: Menjaga konsistensi hairline glass borders.
 
-### C. Komponen yang Ditingkatkan
-1. `src/app/layout.js`: Inject Aurora Mesh Orbs di kanvas background.
-2. `src/components/Navbar.js`: Menggunakan kelas `.glass-nav` dengan opasitas 0.68 - 0.72 saat di-scroll.
-3. `src/app/attendance/page.js`: Panel statistik, kontrol kalender, dan sel kalender mengadopsi translusensi kaca nyata.
-4. `src/app/page.js` & Bento widgets: Kartu metrik dan greeting card menggunakan styling `.glass-panel`.
+### D. Optimasi Aksesibilitas & Readability Navbar (`src/components/Navbar.js`)
+- Mengoptimalkan warna teks inaktif (`text-slate-700 hover:text-slate-900`) dan aktif (`bg-slate-900 text-white`).
+- Memperjelas kontras badge brand dan menu pills.
 
 ## 3. Kriteria Penerimaan (Acceptance Criteria)
-1. Efek frosted glass terlihat sangat jelas dan nyata secara visual, baik pada navbar maupun pada kartu metrik.
-2. Saat menggulir (scroll) halaman, teks, badge, dan kartu di bawah navbar terlihat membias (blur + saturated) secara dinamis.
-3. Kontras teks tetap terjaga 100% dan memenuhi standar aksesibilitas keterbacaan.
-4. `npm run lint` dan `npm run build` sukses tanpa error.
+1. Halaman `/tasks` tidak lagi memiliki border tebal `border-l-4` dan mengadopsi tema Modern Pixel-Glass seutuhnya.
+2. Tidak ada garis tebal kaku di seluruh halaman aplikasi.
+3. Tampilan visual kaya akan visual cues (chips, badge pixel, visual counters) sehingga pengguna tidak perlu membaca teks panjang.
+4. Navbar menu memiliki keterbacaan (readability) dan aksesibilitas tinggi dengan interaksi scroll glassmorphic yang konsisten.
+5. `npm run lint` dan `npm run build` sukses 100% tanpa error.
