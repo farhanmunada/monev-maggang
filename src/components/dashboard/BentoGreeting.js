@@ -51,8 +51,8 @@ export default function BentoGreeting({ telemetry }) {
           Pusat Kendali Monitoring & Evaluasi
         </h1>
 
-        <div className="mt-2.5 bg-slate-50/80 border border-slate-200/60 p-3 rounded-2xl max-w-xl">
-          <p className="text-xs text-slate-600 leading-relaxed italic">
+        <div className="mt-2.5 glass-subtle p-3 rounded-2xl max-w-xl">
+          <p className="text-xs text-slate-700 leading-relaxed italic">
             &ldquo;{quote}&rdquo;
           </p>
         </div>

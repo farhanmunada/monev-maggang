@@ -47,7 +47,7 @@ export default function ActiveTasksWidget({ tasks, loading, onCompleteTask }) {
             {tasks.map((task) => (
               <div
                 key={task.id}
-                className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-white/95 border border-white/80 hover:border-slate-300 bg-white/70 backdrop-blur-xs transition-all group shadow-2xs"
+                className="flex items-center justify-between p-3.5 rounded-2xl glass-card-nested group"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <button

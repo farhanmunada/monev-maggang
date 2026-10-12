@@ -52,7 +52,7 @@ export default function BentoTelemetry({ telemetry }) {
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-slate-200/60 rounded-full h-2 overflow-hidden">
             <div
               className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(attendanceRate, 100)}%` }}
@@ -162,7 +162,7 @@ export default function BentoTelemetry({ telemetry }) {
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-slate-200/60 rounded-full h-2 overflow-hidden">
             <div
               className="bg-purple-600 h-2 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(taskRate, 100)}%` }}

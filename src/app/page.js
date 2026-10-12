@@ -84,7 +84,7 @@ export default function Dashboard() {
       {/* 2. Key Telemetry Metrics (4 Columns) */}
       <BentoTelemetry telemetry={telemetry} />
 
-      {/* 3. Operational Grid: Jurnal Terkini & Task Prioritas */}
+      {/* 4. Operational Grid: Jurnal Terkini & Task Prioritas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <RecentLogsWidget logs={recentLogs} loading={loading} />
         <ActiveTasksWidget

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #f8fafc;
+  --color-background: #eef2f6;
   --color-foreground: #090d16;
   
   --color-primary-50: #eff6ff;
@@ -33,33 +33,96 @@
 
 /* Custom Micro Utilities for True Glassmorphism Surface */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.68);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.82);
-  box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.24) 100%
+  );
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  border-left-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 20px 45px -12px rgba(15, 23, 42, 0.08),
+    0 4px 12px -2px rgba(15, 23, 42, 0.03),
+    inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1.5px 1.5px 0 rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-panel:hover {
-  background: rgba(255, 255, 255, 0.78);
-  border-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 8px 30px -4px rgba(15, 23, 42, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 1);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.74) 0%,
+    rgba(255, 255, 255, 0.34) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.88);
+  box-shadow: 
+    0 24px 50px -10px rgba(15, 23, 42, 0.12),
+    0 6px 16px -2px rgba(15, 23, 42, 0.04),
+    inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 1),
+    inset 0 -1.5px 1.5px 0 rgba(0, 0, 0, 0.03);
 }
 
 .glass-nav {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(190%);
-  -webkit-backdrop-filter: blur(20px) saturate(190%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 20px 0 rgba(15, 23, 42, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.68) 0%,
+    rgba(255, 255, 255, 0.34) 100%
+  );
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 12px 32px -4px rgba(15, 23, 42, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
 }
 
 .glass-subtle {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(14px) saturate(170%);
-  -webkit-backdrop-filter: blur(14px) saturate(170%);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  backdrop-filter: blur(18px) saturate(190%);
+  -webkit-backdrop-filter: blur(18px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-top-color: rgba(255, 255, 255, 0.88);
+  border-left-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 4px 16px -2px rgba(15, 23, 42, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-card-nested {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.28) 100%
+  );
+  backdrop-filter: blur(16px) saturate(190%);
+  -webkit-backdrop-filter: blur(16px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-top-color: rgba(255, 255, 255, 0.92);
+  border-left-color: rgba(255, 255, 255, 0.82);
+  box-shadow: 
+    0 4px 16px -2px rgba(15, 23, 42, 0.04),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.92);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-nested:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 8px 24px -4px rgba(15, 23, 42, 0.07),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 1);
 }
 
 /* Modern Pixelate Micro Elements */
@@ -91,17 +154,35 @@
 }
 
 .bento-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.24) 100%
+  );
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  border-left-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 16px 36px -8px rgba(15, 23, 42, 0.07),
+    0 3px 10px -2px rgba(15, 23, 42, 0.03),
+    inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.02);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bento-card:hover {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8px 30px -4px rgba(15, 23, 42, 0.08);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.76) 0%,
+    rgba(255, 255, 255, 0.36) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 
+    0 22px 45px -8px rgba(15, 23, 42, 0.1),
+    inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 1);
 }
 
 /* Subtle sleek scrollbar */

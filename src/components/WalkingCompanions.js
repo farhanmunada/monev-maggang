@@ -238,10 +238,10 @@ export default function WalkingCompanions() {
         <button
           type="button"
           onClick={() => setIsVisible(!isVisible)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border shadow-xs text-[11px] font-medium transition-all hover:bg-white cursor-pointer select-none ${
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full glass-subtle shadow-xs text-[11px] font-medium transition-all cursor-pointer select-none ${
             isUrgent
               ? "border-amber-300 text-amber-700 bg-amber-50/80"
-              : "border-slate-200/90 text-slate-600 hover:text-slate-900"
+              : "text-slate-600 hover:text-slate-900"
           }`}
           title={isVisible ? "Sembunyikan Teman Kantor" : "Tampilkan Teman Kantor"}
         >
@@ -287,7 +287,7 @@ export default function WalkingCompanions() {
                     } ${
                       isUrgent
                         ? "bg-amber-50/95 border-amber-200 text-amber-900"
-                        : "bg-white/95 border-slate-200/90 text-slate-800"
+                        : "glass-panel border-white/80 text-slate-800"
                     }`}
                   >
                     <p>{c.activeBubble}</p>

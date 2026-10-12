@@ -54,7 +54,7 @@ export default function QuickShortcuts() {
             <Link
               key={tool.title}
               href={tool.href}
-              className="p-3.5 rounded-2xl border border-white/80 hover:border-slate-300 bg-white/70 hover:bg-white/95 backdrop-blur-xs transition-all flex flex-col justify-between group shadow-2xs hover:shadow-xs"
+              className="p-3.5 rounded-2xl glass-card-nested flex flex-col justify-between group"
             >
               <div className="flex items-center justify-between mb-2.5">
                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center border ${tool.color} group-hover:scale-105 transition-transform`}>

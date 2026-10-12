@@ -114,10 +114,10 @@ export default function SpeedLogModal() {
 
       {/* Speed Log Dialog */}
       {isOpen && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-white/95 backdrop-blur-xl w-full max-w-md rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/80">
+        <div className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
+          <div className="glass-panel w-full max-w-md rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/80">
             {/* Header */}
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-white/60">
+            <div className="p-4 border-b border-white/60 flex items-center justify-between bg-white/40 backdrop-blur-sm">
               <div className="flex items-center gap-2">
                 <span className="pixel-badge text-amber-800 bg-amber-50 border-amber-300">
                   FAST.ENTRY

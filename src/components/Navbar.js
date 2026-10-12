@@ -45,7 +45,7 @@ export default function Navbar() {
       className={`sticky top-0 left-0 right-0 z-40 w-full transition-all duration-300 ${
         isScrolled
           ? "glass-nav py-2.5"
-          : "bg-white/20 backdrop-blur-xs border-b border-white/40 py-3.5"
+          : "glass-subtle border-b border-white/60 py-3.5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
