@@ -55,7 +55,7 @@ PENTING: Gunakan bahasa baku dan formal. JANGAN gunakan "Hari ini saya", "kemudi
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "openai/gpt-oss-20b", // Model terbaru yang tersedia di Groq
+        model: "qwen/qwen3.8-27b",
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },

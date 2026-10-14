@@ -929,6 +929,6 @@ export default function DailyLogPage() {
       }
     >
       <DailyLogContent />
-    </Suspense>
+  </Suspense>
   );
 }
