@@ -20,57 +20,57 @@ export default function BentoTelemetry({ telemetry }) {
   const taskRate = telemetry?.tasks?.completionRate ?? 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
       {/* 1. Kehadiran Magang */}
       <Link
         href="/attendance"
-        className="glass-panel rounded-3xl p-5 shadow-xs flex flex-col justify-between group cursor-pointer relative overflow-hidden"
+        className="brutal-card bg-white p-5 flex flex-col justify-between group cursor-pointer"
       >
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <CalendarCheck2 className="w-4 h-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-[#a3e635] text-black border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_0px_#000] group-hover:-translate-y-0.5 transition-transform">
+              <CalendarCheck2 className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
+              <h3 className="text-xs font-black uppercase text-black tracking-tight">
                 Tingkat Kehadiran
               </h3>
-              <p className="text-[11px] text-slate-400">Rasio presensi resmi</p>
+              <p className="text-[11px] font-mono text-slate-600">Rasio presensi resmi</p>
             </div>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          <ArrowUpRight className="w-5 h-5 text-black stroke-[3] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+            <span className="text-3xl font-black text-black font-mono tracking-tight">
               {attendanceRate}%
             </span>
-            <span className="text-xs font-semibold text-emerald-600 font-mono">
-              {presentDays} / {totalLogs} Hari Hadir
+            <span className="text-xs font-black text-black font-mono bg-[#a3e635] px-2 py-0.5 border border-black shadow-[1.5px_1.5px_0px_#000] rounded">
+              {presentDays} / {totalLogs} HARI
             </span>
           </div>
 
-          {/* Progress bar */}
-          <div className="w-full bg-slate-200/60 rounded-full h-2 overflow-hidden">
+          {/* Brutalist Progress bar */}
+          <div className="w-full bg-[#f4f0ea] border-2 border-black rounded-lg h-3.5 overflow-hidden p-0.5 shadow-[2px_2px_0px_#000]">
             <div
-              className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
+              className="bg-[#a3e635] h-full rounded border-r border-black transition-all duration-500"
               style={{ width: `${Math.min(attendanceRate, 100)}%` }}
             />
           </div>
 
           {/* Breakdown pills */}
-          <div className="flex items-center gap-1.5 pt-1 text-[10px] font-medium flex-wrap">
-            <span className="pixel-badge text-emerald-800 bg-emerald-50/90 border-emerald-300">
+          <div className="flex items-center gap-1.5 pt-1 text-[10px] font-bold flex-wrap">
+            <span className="pixel-badge bg-[#a3e635] text-black">
               {presentDays} HADIR
             </span>
             {leaveDays > 0 && (
-              <span className="pixel-badge text-blue-800 bg-blue-50/90 border-blue-300">
+              <span className="pixel-badge bg-[#00f0ff] text-black">
                 {leaveDays} IZIN
               </span>
             )}
             {sickDays > 0 && (
-              <span className="pixel-badge text-amber-800 bg-amber-50/90 border-amber-300">
+              <span className="pixel-badge bg-[#ffe600] text-black">
                 {sickDays} SAKIT
               </span>
             )}
@@ -81,50 +81,50 @@ export default function BentoTelemetry({ telemetry }) {
       {/* 2. Total Kegiatan Terisi */}
       <Link
         href="/daily-log"
-        className="glass-panel rounded-3xl p-5 shadow-xs flex flex-col justify-between group cursor-pointer relative overflow-hidden"
+        className="brutal-card bg-white p-5 flex flex-col justify-between group cursor-pointer"
       >
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <Zap className="w-4 h-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-[#00f0ff] text-black border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_0px_#000] group-hover:-translate-y-0.5 transition-transform">
+              <Zap className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">
-                Kegiatan Terdokumentasi
+              <h3 className="text-xs font-black uppercase text-black tracking-tight">
+                Log Kegiatan
               </h3>
-              <p className="text-[11px] text-slate-400">Rincian aktivitas logbook</p>
+              <p className="text-[11px] font-mono text-slate-600">Aktivitas & Maintenance</p>
             </div>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          <ArrowUpRight className="w-5 h-5 text-black stroke-[3] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+            <span className="text-3xl font-black text-black font-mono tracking-tight">
               {totalActs}
             </span>
-            <span className="text-xs font-semibold text-slate-500 font-mono">
-              Item Tercatat
+            <span className="text-xs font-black text-black font-mono bg-[#00f0ff] px-2 py-0.5 border border-black shadow-[1.5px_1.5px_0px_#000] rounded">
+              ITEM TERCATAT
             </span>
           </div>
 
           {/* Status hari ini */}
-          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-[#f4f0ea] border-2 border-black rounded-lg h-3.5 overflow-hidden p-0.5 shadow-[2px_2px_0px_#000]">
             <div
-              className={`h-2 rounded-full transition-all duration-500 ${
-                isLoggedToday ? "bg-indigo-600 w-full" : "bg-amber-400 w-1/3"
+              className={`h-full rounded border-r border-black transition-all duration-500 ${
+                isLoggedToday ? "bg-[#00f0ff] w-full" : "bg-[#ffe600] w-1/3"
               }`}
             />
           </div>
 
-          <div className="flex items-center justify-between pt-1 text-[11px]">
-            <span className="text-slate-500">
+          <div className="flex items-center justify-between pt-1 text-[11px] font-mono">
+            <span className="font-bold text-black">
               Hari ini:{" "}
-              <strong className={isLoggedToday ? "text-indigo-600 font-bold" : "text-amber-600 font-bold"}>
+              <strong className={isLoggedToday ? "text-emerald-700 font-black" : "text-amber-800 font-black"}>
                 {isLoggedToday ? `${todayActsCount} kegiatan` : "Belum diisi"}
               </strong>
             </span>
-            <span className="text-[10px] text-slate-400">
+            <span className="text-[10px] font-black text-slate-500">
               {totalLogs > 0 ? `~${Math.round((totalActs / totalLogs) * 10) / 10} / hari` : "-"}
             </span>
           </div>
@@ -134,53 +134,50 @@ export default function BentoTelemetry({ telemetry }) {
       {/* 3. Progres Task Kanban */}
       <Link
         href="/tasks"
-        className="glass-panel rounded-3xl p-5 shadow-xs flex flex-col justify-between group cursor-pointer relative overflow-hidden"
+        className="brutal-card bg-white p-5 flex flex-col justify-between group cursor-pointer"
       >
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-200/60 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <CheckSquare className="w-4 h-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-[#ffe600] text-black border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_0px_#000] group-hover:-translate-y-0.5 transition-transform">
+              <CheckSquare className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-slate-900 group-hover:text-purple-700 transition-colors">
+              <h3 className="text-xs font-black uppercase text-black tracking-tight">
                 Eksekusi Task
               </h3>
-              <p className="text-[11px] text-slate-400">Papan pengerjaan kanban</p>
+              <p className="text-[11px] font-mono text-slate-600">Papan alur kerja kanban</p>
             </div>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          <ArrowUpRight className="w-5 h-5 text-black stroke-[3] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+            <span className="text-3xl font-black text-black font-mono tracking-tight">
               {taskRate}%
             </span>
-            <span className="text-xs font-semibold text-purple-600 font-mono">
-              {tasksDone} / {tasksTotal} Tuntas
+            <span className="text-xs font-black text-black font-mono bg-[#ffe600] px-2 py-0.5 border border-black shadow-[1.5px_1.5px_0px_#000] rounded">
+              {tasksDone} / {tasksTotal} DONE
             </span>
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-slate-200/60 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-[#f4f0ea] border-2 border-black rounded-lg h-3.5 overflow-hidden p-0.5 shadow-[2px_2px_0px_#000]">
             <div
-              className="bg-purple-600 h-2 rounded-full transition-all duration-500"
+              className="bg-[#ffe600] h-full rounded border-r border-black transition-all duration-500"
               style={{ width: `${Math.min(taskRate, 100)}%` }}
             />
           </div>
 
-          <div className="flex items-center gap-1.5 pt-1 text-[10px] font-medium flex-wrap">
-            <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-200/60">
-              {tasksDone} Selesai
+          <div className="flex items-center gap-1.5 pt-1 text-[10px] font-bold flex-wrap">
+            <span className="pixel-badge bg-[#ffe600] text-black">
+              {tasksDone} SELESAI
             </span>
             {tasksInProgress > 0 && (
-              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/60">
-                {tasksInProgress} Progress
+              <span className="pixel-badge bg-[#00f0ff] text-black">
+                {tasksInProgress} IN PROGRESS
               </span>
             )}
-            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
-              {tasksTotal - tasksDone - tasksInProgress} To Do
-            </span>
           </div>
         </div>
       </Link>

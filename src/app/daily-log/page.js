@@ -439,14 +439,14 @@ function DailyLogContent() {
       />
 
       {/* Floating / Sticky Save Bar */}
-      <div className="sticky bottom-6 z-20 flex items-center justify-between glass-panel p-3.5 md:p-4 rounded-2xl shadow-lg">
-        <div className="text-xs text-slate-500 hidden sm:flex items-center gap-2">
+      <div className="sticky bottom-6 z-20 flex items-center justify-between brutal-card bg-white p-3.5 md:p-4 rounded-2xl shadow-[5px_5px_0px_#000]">
+        <div className="text-xs text-black font-mono font-bold hidden sm:flex items-center gap-2">
           {lastSavedAt ? (
-            <span className="flex items-center gap-1.5 text-emerald-600 font-semibold font-mono">
-              <Check className="w-4 h-4" /> Tersimpan hari ini pukul {lastSavedAt} WIB
+            <span className="flex items-center gap-1.5 text-black bg-[#a3e635] px-2.5 py-1 rounded border border-black shadow-[1.5px_1.5px_0px_#000]">
+              <Check className="w-4 h-4 stroke-[3]" /> Tersimpan hari ini pukul {lastSavedAt} WIB
             </span>
           ) : (
-            <span>Pastikan klik simpan setelah mencatat kegiatan atau refleksi.</span>
+            <span className="text-slate-600">[KLIK SIMPAN UNTUK MENYIMPAN CATATAN KE DATABASE]</span>
           )}
         </div>
 
@@ -454,16 +454,16 @@ function DailyLogContent() {
           type="button"
           onClick={handleSaveAll}
           disabled={isSaving}
-          className="flex items-center justify-center gap-2 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl shadow-xs transition-all active:scale-95 font-semibold text-xs disabled:opacity-60 cursor-pointer ml-auto"
+          className="brutal-btn bg-[#a3e635] hover:bg-[#8ee01a] text-black w-full sm:w-auto px-7 py-3 rounded-xl font-black uppercase text-xs shadow-[4px_4px_0px_#000] flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer ml-auto"
         >
           {isSaving ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
               <span>Menyimpan ke Database...</span>
             </>
           ) : (
             <>
-              <Save className="w-4 h-4" />
+              <Save className="w-4 h-4 stroke-[2.5]" />
               <span>Simpan Jurnal ({selectedDate})</span>
             </>
           )}

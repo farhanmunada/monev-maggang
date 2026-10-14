@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Zap, Clock, Plus, Loader2, Check } from "lucide-react";
+import { X, Zap, Clock, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
 import { formatYMD } from "@/lib/date";
@@ -99,41 +99,41 @@ export default function SpeedLogModal() {
 
   return (
     <>
-      {/* Floating Speed Log Button (Stacked cleanly above Focus Mode button) */}
+      {/* Floating Speed Log Button (Neo-Brutalist floating action) */}
       <button
         type="button"
         onClick={handleOpen}
-        className="fixed bottom-32 md:bottom-16 right-4 md:right-4 z-40 bg-slate-900/90 hover:bg-slate-950 text-white px-3 py-1.5 rounded-xl shadow-lg shadow-slate-900/25 backdrop-blur-md border border-white/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer group select-none"
+        className="fixed bottom-32 md:bottom-16 right-4 md:right-4 z-40 bg-[#ffe600] text-black px-3.5 py-2 rounded-xl shadow-[4px_4px_0px_0px_#000] border-[2.5px] border-black transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center gap-2 cursor-pointer group select-none"
         title="Catat Cepat Log Harian Tanpa Pindah Rute"
       >
-        <div className="w-4 h-4 rounded-md bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
-          <Zap className="w-2.5 h-2.5 fill-current" />
+        <div className="w-5 h-5 rounded-md bg-black text-[#ffe600] flex items-center justify-center font-bold">
+          <Zap className="w-3 h-3 fill-current" />
         </div>
-        <span className="pixel-badge text-white bg-slate-800 border-slate-600 group-hover:border-amber-400 text-[10px]">
+        <span className="font-mono font-black text-xs uppercase tracking-wider">
           SPEED.LOG
         </span>
       </button>
 
       {/* Speed Log Dialog */}
       {isOpen && (
-        <div className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="glass-panel w-full max-w-md rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/80">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
+          <div className="bg-[#fffdf8] w-full max-w-md rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col overflow-hidden border-[3px] border-black animate-brutal-pop">
             {/* Header */}
-            <div className="p-4 border-b border-white/60 flex items-center justify-between bg-white/40 backdrop-blur-sm">
+            <div className="p-4 border-b-2 border-black flex items-center justify-between bg-[#ffe600]">
               <div className="flex items-center gap-2">
-                <span className="pixel-badge text-amber-800 bg-amber-50 border-amber-300">
+                <span className="pixel-badge bg-black text-[#ffe600] border border-black shadow-[1.5px_1.5px_0px_#ffe600]">
                   FAST.ENTRY
                 </span>
-                <h3 className="text-sm font-bold text-slate-900">
+                <h3 className="text-sm font-black uppercase text-black">
                   Catat Cepat Aktivitas Hari Ini
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-black hover:bg-black hover:text-white p-1 rounded-lg border-2 border-black transition-colors cursor-pointer shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
 
@@ -141,7 +141,7 @@ export default function SpeedLogModal() {
             <form onSubmit={handleSubmit} className="p-5 space-y-4">
               {/* Preset Chips */}
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1.5">
+                <label className="block text-[11px] font-black uppercase text-black mb-1.5 font-mono">
                   Preset 1-Klik:
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -150,7 +150,7 @@ export default function SpeedLogModal() {
                       key={chip.label}
                       type="button"
                       onClick={() => handleApplyPreset(chip)}
-                      className="pixel-badge text-slate-700 bg-white/90 border-slate-300 hover:border-slate-800 hover:bg-slate-100 cursor-pointer transition-colors"
+                      className="pixel-badge bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:bg-[#ffe600] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none cursor-pointer transition-all"
                     >
                       <span>{chip.icon}</span>
                       <span>{chip.label}</span>
@@ -161,21 +161,21 @@ export default function SpeedLogModal() {
 
               {/* Time Range */}
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1 flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-slate-500" /> Jam / Waktu Pengerjaan
+                <label className="block text-[11px] font-black uppercase text-black mb-1 flex items-center gap-1 font-mono">
+                  <Clock className="w-3.5 h-3.5 stroke-[2.5]" /> Jam / Waktu Pengerjaan
                 </label>
                 <input
                   type="text"
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
                   placeholder="Misal: 14:00 - 15:30"
-                  className="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 font-mono"
+                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
                 />
               </div>
 
               {/* Title Input */}
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                <label className="block text-[11px] font-black uppercase text-black mb-1 font-mono">
                   Aktivitas yang Dikerjakan
                 </label>
                 <input
@@ -185,13 +185,13 @@ export default function SpeedLogModal() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Ketik apa yang barusan kamu kerjakan..."
-                  className="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 font-sans"
+                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
                 />
               </div>
 
               {/* Brief Description */}
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                <label className="block text-[11px] font-black uppercase text-black mb-1 font-mono">
                   Catatan Tambahan (Opsional)
                 </label>
                 <input
@@ -199,7 +199,7 @@ export default function SpeedLogModal() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Detail singkat hasil atau kendala..."
-                  className="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 font-sans"
+                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
                 />
               </div>
 
@@ -207,16 +207,16 @@ export default function SpeedLogModal() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-950 text-white font-bold text-xs shadow-xs transition-colors disabled:opacity-70 mt-1 cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl bg-[#a3e635] hover:bg-[#8ee01a] text-black font-black uppercase tracking-wider text-xs border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
                     <span>Menyimpan...</span>
                   </>
                 ) : (
                   <>
-                    <Zap className="w-3.5 h-3.5 text-amber-400 fill-current" />
+                    <Zap className="w-4 h-4 fill-current" />
                     <span>Simpan ke Jurnal Hari Ini</span>
                   </>
                 )}

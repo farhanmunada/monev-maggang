@@ -8,17 +8,17 @@ export default function ReflectionSection({
   isGeneratingLearning,
 }) {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+    <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
       {/* Learning Reflection Card */}
-      <div className="glass-panel rounded-3xl p-5 md:p-6 flex flex-col justify-between">
+      <div className="brutal-card bg-white p-5 md:p-6 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="pixel-badge border-indigo-200 text-indigo-700 bg-indigo-50/80">
+              <span className="pixel-badge bg-[#00f0ff] text-black">
                 [REFLEKSI]
               </span>
-              <label className="flex items-center gap-1.5 text-xs md:text-sm font-bold text-slate-900 font-mono">
-                <BookOpen className="w-3.5 h-3.5 text-indigo-600 inline" />
+              <label className="flex items-center gap-1.5 text-xs md:text-sm font-black uppercase text-black font-mono">
+                <BookOpen className="w-4 h-4 stroke-[2.5]" />
                 PEMBELAJARAN
               </label>
             </div>
@@ -26,10 +26,10 @@ export default function ReflectionSection({
               type="button"
               onClick={onGenerateLearning}
               disabled={isGeneratingLearning}
-              className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-xl bg-indigo-50/80 text-indigo-700 border border-indigo-200/80 hover:bg-indigo-100 disabled:opacity-50 transition-all cursor-pointer font-mono"
+              className="flex items-center gap-1.5 px-3 py-1 text-xs font-black rounded-lg bg-[#ffe600] text-black border-2 border-black shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-50 transition-all cursor-pointer font-mono uppercase"
               title="Rangkum refleksi dari daftar kegiatan menggunakan AI"
             >
-              <Sparkles className={`w-3.5 h-3.5 ${isGeneratingLearning ? "animate-spin" : ""}`} />
+              <Sparkles className={`w-3.5 h-3.5 stroke-[2.5] ${isGeneratingLearning ? "animate-spin" : ""}`} />
               <span>{isGeneratingLearning ? "Menganalisis..." : "[AI.SUMMARIZE]"}</span>
             </button>
           </div>
@@ -39,14 +39,14 @@ export default function ReflectionSection({
             onChange={onChange}
             rows={5}
             placeholder="Insight teknis, konsep arsitektur, atau pemahaman baru hari ini..."
-            className="w-full px-3.5 py-2.5 rounded-2xl border border-white/80 bg-white/70 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none text-xs leading-relaxed"
+            className="w-full px-3.5 py-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee] resize-none text-xs font-bold leading-relaxed"
           />
         </div>
-        <div className="flex justify-between items-center mt-3 pt-2 border-t border-slate-100/70 text-[10px] text-slate-400 font-mono">
+        <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-black text-[10px] text-slate-700 font-mono font-bold">
           <span>MIN: 80 KARAKTER</span>
           <span
             className={`pixel-counter ${
-              learning.length >= 80 ? "text-emerald-700 bg-emerald-50 border-emerald-300" : ""
+              learning.length >= 80 ? "bg-[#a3e635] text-black" : ""
             }`}
           >
             {learning.length} CHAR
@@ -55,15 +55,15 @@ export default function ReflectionSection({
       </div>
 
       {/* Obstacles / Blockers Card */}
-      <div className="glass-panel rounded-3xl p-5 md:p-6 flex flex-col justify-between">
+      <div className="brutal-card bg-white p-5 md:p-6 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-3 gap-2">
             <div className="flex items-center gap-2">
-              <span className="pixel-badge border-amber-300 text-amber-800 bg-amber-50/80">
+              <span className="pixel-badge bg-[#ffe600] text-black">
                 [KENDALA]
               </span>
-              <label className="flex items-center gap-1.5 text-xs md:text-sm font-bold text-slate-900 font-mono">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-500 inline" />
+              <label className="flex items-center gap-1.5 text-xs md:text-sm font-black uppercase text-black font-mono">
+                <AlertCircle className="w-4 h-4 stroke-[2.5]" />
                 BLOCKER / SOLUSI
               </label>
             </div>
@@ -74,10 +74,10 @@ export default function ReflectionSection({
             onChange={onChange}
             rows={5}
             placeholder="Kendala teknis / bug yang dihadapi (kosongkan bila lancar)..."
-            className="w-full px-3.5 py-2.5 rounded-2xl border border-white/80 bg-white/70 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 resize-none text-xs leading-relaxed"
+            className="w-full px-3.5 py-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee] resize-none text-xs font-bold leading-relaxed"
           />
         </div>
-        <div className="mt-3 pt-2 border-t border-slate-100/70 text-[10px] text-slate-400 font-mono">
+        <div className="mt-3 pt-2.5 border-t border-black text-[10px] text-slate-700 font-mono font-black">
           [OPSIONAL: KOSONGKAN JIKA TANPA BLOCKER]
         </div>
       </div>

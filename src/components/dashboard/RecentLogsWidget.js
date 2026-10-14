@@ -1,74 +1,77 @@
 import Link from "next/link";
-import { Clock, ArrowRight, ChevronRight } from "lucide-react";
+import { Clock, ArrowRight } from "lucide-react";
 import { formatIndonesianDate } from "@/lib/date";
 
 export default function RecentLogsWidget({ logs, loading }) {
   return (
-    <div className="glass-panel rounded-3xl p-5 md:p-6 flex flex-col justify-between">
+    <div className="brutal-card bg-white p-5 md:p-6 flex flex-col justify-between">
       <div>
         <div className="flex justify-between items-center mb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">
+              <span className="pixel-badge bg-[#00f0ff] text-black">
                 LOG.FEED
               </span>
             </div>
-            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 tracking-tight">
-              <Clock className="w-4 h-4 text-indigo-600" /> Jurnal & Presensi Terkini
+            <h2 className="text-sm font-black uppercase text-black flex items-center gap-2 tracking-tight">
+              <Clock className="w-4 h-4 stroke-[2.5]" /> Jurnal & Presensi Terkini
             </h2>
           </div>
           <Link
             href="/attendance"
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+            className="text-xs font-black uppercase tracking-wider text-black hover:bg-[#ffe600] px-2 py-1 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] flex items-center gap-1 transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
           >
-            Semua Log <ArrowRight className="w-3.5 h-3.5" />
+            Semua Log <ArrowRight className="w-3.5 h-3.5 stroke-[3]" />
           </Link>
         </div>
 
         {loading ? (
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-14 bg-slate-100/70 rounded-2xl animate-pulse"></div>
+              <div key={i} className="h-16 bg-[#f4f0ea] border-2 border-black rounded-xl animate-pulse shadow-[2px_2px_0px_#000]"></div>
             ))}
           </div>
         ) : logs.length === 0 ? (
-          <div className="text-center py-10 text-slate-400 border border-dashed border-slate-200 rounded-2xl text-xs">
-            Belum ada jurnal yang disimpan. Mulai buat jurnal harianmu sekarang.
+          <div className="text-center py-10 text-slate-500 border-2 border-dashed border-black rounded-xl text-xs font-mono font-bold bg-[#fbf8f0]">
+            [BELUM ADA JURNAL YANG DISIMPAN]
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {logs.map((log) => (
               <Link
                 key={log.id}
                 href="/attendance"
-                className="flex items-center justify-between p-3.5 rounded-2xl glass-card-nested group"
+                className="flex items-center justify-between p-3.5 rounded-xl border-2 border-black bg-[#fffdfa] shadow-[3px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4.5px_4.5px_0px_0px_#000] transition-all group"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
                   <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-xs font-mono shadow-2xs ${
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-xs font-mono border-2 border-black shadow-[2px_2px_0px_0px_#000] ${
                       log.attendance === "Hadir"
-                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200/70"
+                        ? "bg-[#a3e635] text-black"
                         : log.attendance === "Izin"
-                        ? "bg-blue-50 text-blue-700 border border-blue-200/70"
+                        ? "bg-[#00f0ff] text-black"
                         : log.attendance === "Sakit"
-                        ? "bg-amber-50 text-amber-700 border border-amber-200/70"
-                        : "bg-rose-50 text-rose-700 border border-rose-200/70"
+                        ? "bg-[#ffe600] text-black"
+                        : "bg-[#ff6b6b] text-black"
                     }`}
                   >
                     {log.attendance === "Hadir" ? "HD" : log.attendance.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-xs text-slate-900 group-hover:text-indigo-600 transition-colors">
+                    <p className="font-black text-xs text-black group-hover:text-indigo-900 transition-colors">
                       {formatIndonesianDate(log.date)}
                     </p>
-                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                    <p className="text-[11px] font-mono text-slate-700 truncate mt-0.5 font-bold">
                       {log.activities && log.activities.length > 0
-                        ? `${log.activities.length} aktivitas dicatat`
+                        ? `${log.activities.length} aktivitas tercatat`
                         : log.learning || "Belum ada rincian kegiatan"}
                     </p>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-700 group-hover:translate-x-0.5 transition-all flex-shrink-0 ml-2" />
+
+                <span className="pixel-badge bg-white text-black text-[10px] hidden sm:inline-flex group-hover:bg-[#ffe600] transition-colors">
+                  DETAIL
+                </span>
               </Link>
             ))}
           </div>

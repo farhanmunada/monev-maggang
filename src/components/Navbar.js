@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -15,21 +14,6 @@ import {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 15) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const links = [
     { name: "Beranda", href: "/", icon: LayoutDashboard },
@@ -41,40 +25,34 @@ export default function Navbar() {
   ];
 
   return (
-    <header
-      className={`sticky top-0 left-0 right-0 z-40 w-full transition-all duration-300 ${
-        isScrolled
-          ? "glass-nav py-2.5"
-          : "glass-subtle border-b border-white/60 py-3.5"
-      }`}
-    >
+    <header className="sticky top-0 left-0 right-0 z-40 w-full bg-[#fffdf8] border-b-[3px] border-black shadow-[0_4px_0px_0px_#000] py-2.5 transition-all">
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
         {/* Left: Brand */}
         <div className="flex-1 flex items-center justify-start">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-xl overflow-hidden border border-white/80 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 rounded-lg overflow-hidden border-2 border-black bg-[#ffe600] flex items-center justify-center shadow-[2px_2px_0px_0px_#000] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[3px_3px_0px_0px_#000] transition-all">
               <Image
                 src="/icon.png"
                 alt="InternTrack Logo"
-                width={26}
-                height={26}
+                width={24}
+                height={24}
                 className="object-cover"
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm text-slate-900 tracking-tight">
+              <span className="font-black text-sm text-black tracking-tight uppercase">
                 InternTrack
               </span>
-              <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300 hidden lg:inline-flex">
+              <span className="pixel-badge bg-[#ffe600] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000] hidden lg:inline-flex text-[10px]">
                 SYS.V2
               </span>
             </div>
           </Link>
         </div>
 
-        {/* Center: Desktop Navigation Links with Whitespace & Breathing Room */}
+        {/* Center: Desktop Navigation Links with Neo-Brutalist Block Styling */}
         <div className="hidden md:flex flex-2 justify-center">
-          <nav className="flex items-center gap-1.5 bg-white/75 backdrop-blur-md px-2.5 py-1.5 rounded-2xl border border-white/80 shadow-xs">
+          <nav className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000]">
             {links.map((link) => {
               const isActive =
                 link.href === "/"
@@ -86,17 +64,15 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs transition-all ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                     isActive
-                      ? "bg-slate-900 text-white font-bold shadow-xs"
-                      : "text-slate-600 hover:text-slate-950 font-semibold hover:bg-slate-100/80"
+                      ? "bg-[#ffe600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] -translate-y-0.5"
+                      : "text-slate-700 border-2 border-transparent hover:border-black hover:bg-[#fbf7ee] hover:text-black hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_#000]"
                   }`}
                 >
                   <Icon
-                    className={`w-3.5 h-3.5 ${
-                      isActive ? "text-white" : "text-slate-500"
-                    }`}
-                    strokeWidth={isActive ? 2.2 : 2}
+                    className="w-3.5 h-3.5 text-black"
+                    strokeWidth={isActive ? 2.5 : 2}
                   />
                   <span>{link.name}</span>
                 </Link>
@@ -107,8 +83,8 @@ export default function Navbar() {
 
         {/* Right: Balancer & Live Status */}
         <div className="hidden md:flex flex-1 items-center justify-end">
-          <span className="pixel-badge text-emerald-700 bg-emerald-50/80 border-emerald-300 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="pixel-badge bg-[#a3e635] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] flex items-center gap-1.5 font-black text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
             [LIVE.SYS]
           </span>
         </div>

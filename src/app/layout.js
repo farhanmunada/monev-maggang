@@ -6,36 +6,41 @@ import SpeedLogModal from "@/components/SpeedLogModal";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
-  title: "InternTrack - Asisten Magang Cerdas",
-  description: "Aplikasi monitoring dan evaluasi magang dengan gaya Next-Gen",
+  title: "InternTrack - Asisten Magang Cerdas [BRUTAL.EDITION]",
+  description: "Aplikasi monitoring dan evaluasi magang dengan gaya Neo-Brutalist",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="id" suppressHydrationWarning>
       <body
-        className="bg-[#eef2f6] text-slate-900 font-sans antialiased pb-24 md:pb-16 selection:bg-indigo-600 selection:text-white min-h-screen relative overflow-x-hidden"
+        className="bg-[#f8f5ee] text-black font-sans antialiased pb-24 md:pb-16 selection:bg-[#ffe600] selection:text-black min-h-screen relative overflow-x-hidden"
         suppressHydrationWarning
       >
-        {/* Multi-layered Ambient Aurora Mesh Background */}
+        {/* Retro-Engineering Technical Dot-Grid Background */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none">
-          {/* Top Center: Indigo & Electric Violet Aurora Orb */}
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[850px] h-[580px] bg-gradient-to-b from-indigo-500/38 via-purple-500/28 to-transparent blur-[100px] rounded-full" />
+          <div className="absolute inset-0 bg-[radial-gradient(#000000_1.5px,transparent_1.5px)] [background-size:20px_20px] opacity-12" />
+        </div>
 
-          {/* Top Left: Deep Cyan & Sky Blue Glow Orb */}
-          <div className="absolute -top-24 left-[2%] w-[600px] h-[600px] bg-gradient-to-br from-cyan-400/40 via-sky-500/30 to-transparent blur-[95px] rounded-full" />
-
-          {/* Mid Right: Fuchsia, Rose & Amber Glow Orb */}
-          <div className="absolute top-[20%] -right-24 w-[650px] h-[650px] bg-gradient-to-bl from-rose-500/35 via-fuchsia-400/25 to-amber-300/20 blur-[110px] rounded-full" />
-
-          {/* Bottom Left: Vivid Emerald & Teal Accent Orb */}
-          <div className="absolute bottom-[8%] -left-28 w-[620px] h-[620px] bg-gradient-to-tr from-emerald-400/35 via-teal-400/25 to-transparent blur-[100px] rounded-full" />
-
-          {/* Center Ambient Floating Glow */}
-          <div className="absolute top-[45%] left-[20%] w-[580px] h-[420px] bg-gradient-to-r from-blue-400/25 via-indigo-300/20 to-purple-400/25 blur-[120px] rounded-full" />
-
-          {/* Subtle noise/texture mesh overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px] opacity-25" />
+        {/* Neo-Brutalist Ticker Banner */}
+        <div className="marquee-banner bg-black text-[#ffe600] border-b-2 border-black overflow-hidden py-1 select-none font-mono text-[11px] font-black tracking-wider uppercase flex items-center">
+          <div className="animate-marquee whitespace-nowrap flex items-center gap-8">
+            <span className="flex items-center gap-2">⚡ INTERNTRACK SYS.V2</span>
+            <span>{"//"}</span>
+            <span>🛠️ HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
+            <span>{"//"}</span>
+            <span>🎯 ZERO DOWNTIME — TRACK EVERY GRIND</span>
+            <span>{"//"}</span>
+            <span>🔥 NEO-BRUTALIST PROTOCOL ACTIVATED</span>
+            <span>{"//"}</span>
+            <span>⚡ INTERNTRACK SYS.V2</span>
+            <span>{"//"}</span>
+            <span>🛠️ HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
+            <span>{"//"}</span>
+            <span>🎯 ZERO DOWNTIME — TRACK EVERY GRIND</span>
+            <span>{"//"}</span>
+            <span>🔥 NEO-BRUTALIST PROTOCOL ACTIVATED</span>
+          </div>
         </div>
 
         <Toaster
@@ -43,14 +48,15 @@ export default function RootLayout({ children }) {
           toastOptions={{
             duration: 3500,
             style: {
-              borderRadius: "14px",
+              borderRadius: "10px",
               background: "#ffffff",
-              color: "#0f172a",
-              fontSize: "13px",
-              fontWeight: 500,
+              color: "#000000",
+              fontSize: "12px",
+              fontWeight: 800,
+              fontFamily: "var(--font-mono)",
               padding: "10px 18px",
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.08)",
-              border: "1px solid rgba(226, 232, 240, 0.9)",
+              boxShadow: "4px 4px 0px 0px #000000",
+              border: "2.5px solid #000000",
             },
           }}
         />

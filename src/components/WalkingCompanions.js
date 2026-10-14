@@ -238,22 +238,22 @@ export default function WalkingCompanions() {
         <button
           type="button"
           onClick={() => setIsVisible(!isVisible)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full glass-subtle shadow-xs text-[11px] font-medium transition-all cursor-pointer select-none ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
             isUrgent
-              ? "border-amber-300 text-amber-700 bg-amber-50/80"
-              : "text-slate-600 hover:text-slate-900"
+              ? "bg-[#ff6b6b] text-black"
+              : "bg-[#fffdf8] text-black hover:bg-[#ffe600]"
           }`}
           title={isVisible ? "Sembunyikan Teman Kantor" : "Tampilkan Teman Kantor"}
         >
           {isUrgent ? (
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
           ) : isVisible ? (
-            <EyeOff className="w-3.5 h-3.5 text-slate-400" />
+            <EyeOff className="w-3.5 h-3.5 text-black stroke-[2.5]" />
           ) : (
-            <Eye className="w-3.5 h-3.5 text-slate-500" />
+            <Eye className="w-3.5 h-3.5 text-black stroke-[2.5]" />
           )}
           <span className="hidden sm:inline">
-            {isUrgent ? "Jurnal Menunggu!" : isVisible ? "Mode Fokus" : "Teman Kantor"}
+            {isUrgent ? "JURNAL MENUNGGU!" : isVisible ? "MODE FOKUS" : "TEMAN KANTOR"}
           </span>
         </button>
       </div>
@@ -275,10 +275,10 @@ export default function WalkingCompanions() {
                 className="absolute bottom-1.5 pointer-events-auto flex flex-col items-center cursor-pointer group"
                 onClick={() => handleCompanionClick(c.id)}
               >
-                {/* Speech Bubble */}
+                {/* Speech Bubble Comic Pop */}
                 {c.activeBubble && (
                   <div
-                    className={`absolute bottom-full mb-3 max-w-[220px] sm:max-w-[260px] w-max backdrop-blur-md border text-[11px] font-medium p-2.5 rounded-xl shadow-md leading-snug text-center animate-in fade-in zoom-in-90 duration-200 z-50 pointer-events-auto ${
+                    className={`absolute bottom-full mb-3 max-w-[240px] sm:max-w-[280px] w-max border-2 border-black text-[11px] font-black p-3 rounded-xl shadow-[4px_4px_0px_0px_#000] leading-snug text-center animate-brutal-pop z-50 pointer-events-auto ${
                       c.x < 15
                         ? "left-0"
                         : c.x > 85
@@ -286,13 +286,13 @@ export default function WalkingCompanions() {
                         : "left-1/2 -translate-x-1/2"
                     } ${
                       isUrgent
-                        ? "bg-amber-50/95 border-amber-200 text-amber-900"
-                        : "glass-panel border-white/80 text-slate-800"
+                        ? "bg-[#ff6b6b] text-black"
+                        : "bg-[#ffe600] text-black"
                     }`}
                   >
                     <p>{c.activeBubble}</p>
                     <div
-                      className={`absolute -bottom-1 w-2 h-2 border-r border-b rotate-45 ${
+                      className={`absolute -bottom-1.5 w-3 h-3 border-r-2 border-b-2 border-black rotate-45 ${
                         c.x < 15
                           ? "left-4"
                           : c.x > 85
@@ -300,8 +300,8 @@ export default function WalkingCompanions() {
                           : "left-1/2 -translate-x-1/2"
                       } ${
                         isUrgent
-                          ? "bg-amber-50 border-amber-200"
-                          : "bg-white border-slate-200"
+                          ? "bg-[#ff6b6b]"
+                          : "bg-[#ffe600]"
                       }`}
                     />
                   </div>
@@ -311,9 +311,9 @@ export default function WalkingCompanions() {
                 <div className="relative">
                   {/* Urgent Attention Badge */}
                   {isUrgent && (
-                    <span className="absolute -top-1.5 -right-1 z-10 flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 text-[8px] text-white font-bold items-center justify-center">
+                    <span className="absolute -top-2 -right-1.5 z-10 flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 border border-black text-[9px] text-white font-black items-center justify-center">
                         !
                       </span>
                     </span>
@@ -323,11 +323,9 @@ export default function WalkingCompanions() {
                     style={{
                       transform: `scaleX(${c.direction === 1 ? 1 : -1})`,
                     }}
-                    className={`p-1 rounded-xl backdrop-blur-xs border shadow-2xs hover:scale-110 active:scale-95 transition-transform ${
-                      isUrgent
-                        ? "bg-amber-50/90 border-amber-200/90"
-                        : "bg-white/80 border-slate-200/80"
-                    } ${c.isWalking ? "animate-walk-bob" : ""}`}
+                    className={`p-1 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:scale-115 active:scale-95 transition-transform bg-white ${
+                      c.isWalking ? "animate-walk-bob" : ""
+                    }`}
                     title={`${compData.name} (${compData.role}) - ${
                       isUrgent ? "Peringatan: Jurnal belum diisi!" : "Klik untuk berinteraksi"
                     }`}
@@ -337,7 +335,7 @@ export default function WalkingCompanions() {
                 </div>
 
                 {/* Name Tag on Hover */}
-                <span className="text-[9px] font-semibold text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 px-1 rounded shadow-2xs mt-0.5">
+                <span className="text-[10px] font-mono font-black uppercase text-black opacity-0 group-hover:opacity-100 transition-opacity bg-[#ffe600] border border-black px-1.5 py-0.5 rounded shadow-[1px_1px_0px_#000] mt-1">
                   {compData.name}
                 </span>
               </div>

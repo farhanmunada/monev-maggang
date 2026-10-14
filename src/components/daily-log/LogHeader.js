@@ -14,55 +14,55 @@ export default function LogHeader({
   onDateChange,
 }) {
   const ATTENDANCE_STATUSES = [
-    { id: "Hadir", label: "Hadir", activeClass: "bg-emerald-600 text-white border-emerald-600" },
-    { id: "Izin", label: "Izin", activeClass: "bg-blue-600 text-white border-blue-600" },
-    { id: "Sakit", label: "Sakit", activeClass: "bg-amber-600 text-white border-amber-600" },
-    { id: "Alfa", label: "Alfa", activeClass: "bg-rose-600 text-white border-rose-600" },
+    { id: "Hadir", label: "Hadir", activeClass: "bg-[#a3e635] text-black border-2 border-black shadow-[2px_2px_0px_#000]" },
+    { id: "Izin", label: "Izin", activeClass: "bg-[#00f0ff] text-black border-2 border-black shadow-[2px_2px_0px_#000]" },
+    { id: "Sakit", label: "Sakit", activeClass: "bg-[#ffe600] text-black border-2 border-black shadow-[2px_2px_0px_#000]" },
+    { id: "Alfa", label: "Alfa", activeClass: "bg-[#ff6b6b] text-black border-2 border-black shadow-[2px_2px_0px_#000]" },
   ];
 
   return (
-    <div className="glass-panel rounded-2xl p-4 md:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="brutal-card bg-white p-4 md:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         {/* Top Badges */}
         <div className="flex items-center gap-2 mb-2 flex-wrap">
-          <span className="pixel-badge border-indigo-200 text-indigo-700 bg-indigo-50/80 flex items-center gap-1">
-            <Calendar className="w-3 h-3 text-indigo-600 inline" />
+          <span className="pixel-badge bg-[#ffe600] text-black flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 stroke-[2.5]" />
             [{isSunday ? "OFF.SUN" : "DAILY.LOG"}]
           </span>
 
           {hasExistingLog ? (
-            <span className="pixel-badge border-emerald-300 text-emerald-700 bg-emerald-50/80 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-600 inline" />
+            <span className="pixel-badge bg-[#a3e635] text-black flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
               [SYNCED]
             </span>
           ) : (
-            <span className="pixel-badge border-amber-300 text-amber-700 bg-amber-50/80 flex items-center gap-1">
-              <Clock className="w-3 h-3 text-amber-600 inline" />
+            <span className="pixel-badge bg-[#ffe600] text-black flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5 stroke-[2.5]" />
               [UNSAVED]
             </span>
           )}
         </div>
 
         {/* Date Title with Quick Day Stepper */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <h1 className="text-lg md:text-xl font-bold tracking-tight text-slate-900 font-mono">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <h1 className="text-lg md:text-2xl font-black uppercase tracking-tight text-black font-mono">
             {formattedDate}
           </h1>
 
-          <div className="flex items-center bg-white/70 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/80 shadow-2xs">
+          <div className="flex items-center bg-white rounded-lg p-0.5 border-2 border-black shadow-[2px_2px_0px_#000]">
             <button
               type="button"
               onClick={onPrevDay}
-              className="p-1 hover:bg-slate-100 rounded text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+              className="p-1 hover:bg-[#ffe600] rounded text-black transition-colors cursor-pointer"
               title="Prev"
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
+              <ChevronLeft className="w-4 h-4 stroke-[3]" />
             </button>
             {!isToday && (
               <button
                 type="button"
                 onClick={onToday}
-                className="px-2 py-0.5 font-mono text-[10px] font-bold text-indigo-600 hover:bg-indigo-50 rounded transition-colors cursor-pointer"
+                className="px-2 py-0.5 font-mono text-[10px] font-black text-black bg-[#ffe600] hover:bg-[#ffd700] rounded transition-colors cursor-pointer"
               >
                 [TODAY]
               </button>
@@ -70,10 +70,10 @@ export default function LogHeader({
             <button
               type="button"
               onClick={onNextDay}
-              className="p-1 hover:bg-slate-100 rounded text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+              className="p-1 hover:bg-[#ffe600] rounded text-black transition-colors cursor-pointer"
               title="Next"
             >
-              <ChevronRight className="w-3.5 h-3.5" />
+              <ChevronRight className="w-4 h-4 stroke-[3]" />
             </button>
           </div>
 
@@ -82,7 +82,7 @@ export default function LogHeader({
             type="date"
             value={selectedDate}
             onChange={(e) => e.target.value && onDateChange(e.target.value)}
-            className="text-xs bg-white/80 border border-slate-200/80 rounded-lg px-2 py-0.5 text-slate-700 font-mono focus:outline-none cursor-pointer"
+            className="text-xs bg-white border-2 border-black rounded-lg px-2.5 py-1 text-black font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none cursor-pointer"
             title="Pilih tanggal"
           />
         </div>
@@ -90,10 +90,10 @@ export default function LogHeader({
 
       {/* Attendance Segmented Selector */}
       <div className="w-full md:w-auto">
-        <div className="text-[10px] font-mono font-semibold text-slate-400 uppercase tracking-wider mb-1 md:text-right">
-          [PRESENSI]
+        <div className="text-[10px] font-mono font-black text-black uppercase tracking-wider mb-1.5 md:text-right">
+          [STATUS PRESENSI]
         </div>
-        <div className="bg-slate-100/80 backdrop-blur-xs p-1 rounded-xl border border-slate-200/80 flex gap-1 w-full md:w-auto">
+        <div className="bg-[#fbf8f0] p-1.5 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] flex gap-1.5 w-full md:w-auto">
           {ATTENDANCE_STATUSES.map((status) => {
             const isActive = attendance === status.id;
             return (
@@ -101,10 +101,10 @@ export default function LogHeader({
                 type="button"
                 key={status.id}
                 onClick={() => onAttendanceChange(status.id)}
-                className={`flex-1 md:flex-none px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer border ${
+                className={`flex-1 md:flex-none px-3.5 py-1.5 rounded-lg text-xs font-mono font-black uppercase transition-all cursor-pointer ${
                   isActive
-                    ? `${status.activeClass} shadow-2xs font-bold`
-                    : "border-transparent text-slate-600 hover:text-slate-900 hover:bg-white/80"
+                    ? `${status.activeClass} -translate-y-0.5`
+                    : "border-2 border-transparent text-slate-700 hover:text-black hover:bg-white"
                 }`}
               >
                 {status.label}

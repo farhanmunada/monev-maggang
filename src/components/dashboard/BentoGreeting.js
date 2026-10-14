@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { formatIndonesianDate, formatYMD } from "@/lib/date";
-import { Calendar, ArrowRight, CheckCircle2, Clock3 } from "lucide-react";
+import { Calendar, ArrowRight, CheckCircle2, Clock3, Terminal } from "lucide-react";
 
 export default function BentoGreeting({ telemetry }) {
   const todayStr = formatYMD();
@@ -23,36 +23,41 @@ export default function BentoGreeting({ telemetry }) {
   const quote = sarcasticQuotes[quoteIndex];
 
   return (
-    <div className="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-      {/* Decorative ambient subtle mesh */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-indigo-100/50 via-blue-50/20 to-transparent rounded-full pointer-events-none -mr-24 -mt-24 blur-3xl" />
+    <div className="brutal-card bg-white p-6 md:p-8 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* Decorative Corner Tag */}
+      <div className="absolute -top-3 -right-3 bg-[#ffe600] border-2 border-black px-4 py-1 font-mono font-black text-[10px] uppercase rotate-2 shadow-[2px_2px_0px_0px_#000] hidden sm:block">
+        COMMAND.CENTER
+      </div>
 
       <div className="relative z-10 max-w-2xl">
-        <div className="flex items-center gap-2 mb-2.5 flex-wrap">
-          <span className="pixel-badge text-slate-700 bg-white/80 border-slate-300">
-            <Calendar className="w-3 h-3 text-slate-500" />
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <span className="pixel-badge bg-[#f4f0ea]">
+            <Calendar className="w-3.5 h-3.5 text-black" />
             {formattedToday}
           </span>
 
           {isLogged ? (
-            <span className="pixel-badge text-emerald-800 bg-emerald-50/90 border-emerald-300">
-              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+            <span className="pixel-badge bg-[#a3e635] text-black">
+              <CheckCircle2 className="w-3.5 h-3.5 text-black" />
               PRESENSI: {todayStatus} ({todayActsCount} ACT)
             </span>
           ) : (
-            <span className="pixel-badge text-amber-800 bg-amber-50/90 border-amber-300">
-              <Clock3 className="w-3 h-3 text-amber-600" />
+            <span className="pixel-badge bg-[#ff6b6b] text-black">
+              <Clock3 className="w-3.5 h-3.5 text-black" />
               JURNAL: BELUM DIISI
             </span>
           )}
         </div>
 
-        <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="text-xl md:text-3xl font-black text-black tracking-tight uppercase">
           Pusat Kendali Monitoring & Evaluasi
         </h1>
 
-        <div className="mt-2.5 glass-subtle p-3 rounded-2xl max-w-xl">
-          <p className="text-xs text-slate-700 leading-relaxed italic">
+        <div className="mt-3.5 bg-[#fbf8f0] border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_0px_#000] max-w-xl">
+          <div className="flex items-center gap-1.5 mb-1 text-[10px] font-mono font-black text-slate-700">
+            <Terminal className="w-3 h-3 text-black" /> [NOTE OF THE DAY]
+          </div>
+          <p className="text-xs font-bold text-black leading-relaxed">
             &ldquo;{quote}&rdquo;
           </p>
         </div>
@@ -61,10 +66,10 @@ export default function BentoGreeting({ telemetry }) {
       <div className="relative z-10 flex-shrink-0">
         <Link
           href="/daily-log"
-          className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-2xl font-semibold text-xs shadow-xs hover:shadow-indigo-100 transition-all active:scale-95 cursor-pointer"
+          className="brutal-btn bg-[#ffe600] text-black hover:bg-[#ffd700] text-xs px-6 py-3.5 rounded-xl font-black tracking-wider flex items-center gap-2"
         >
           <span>{isLogged ? "Perbarui Jurnal Hari Ini" : "Isi Jurnal Sekarang"}</span>
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-4 h-4 stroke-[3]" />
         </Link>
       </div>
     </div>

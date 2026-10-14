@@ -209,34 +209,34 @@ export default function AttendancePage() {
 
       {/* Monthly Statistics Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="glass-panel rounded-2xl p-3.5">
-          <span className="pixel-badge text-emerald-800 bg-emerald-50/90 border-emerald-300">[HADIR %]</span>
-          <p className="text-xl md:text-2xl font-extrabold text-emerald-600 font-mono mt-1">
+        <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000]">
+          <span className="pixel-badge bg-[#a3e635] text-black">[HADIR %]</span>
+          <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
             {monthStats.rate}%
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-3.5">
-          <span className="pixel-badge text-slate-800 bg-slate-100/90 border-slate-300">[HADIR]</span>
-          <p className="text-xl md:text-2xl font-bold text-slate-900 font-mono mt-1">
-            {monthStats.hadir} <span className="text-xs font-normal text-slate-400">HARI</span>
+        <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000]">
+          <span className="pixel-badge bg-white text-black">[HADIR]</span>
+          <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
+            {monthStats.hadir} <span className="text-xs font-bold text-slate-500">HARI</span>
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-3.5">
-          <span className="pixel-badge text-blue-800 bg-blue-50/90 border-blue-300">[IZIN]</span>
-          <p className="text-xl md:text-2xl font-bold text-blue-600 font-mono mt-1">
-            {monthStats.izin} <span className="text-xs font-normal text-slate-400">HARI</span>
+        <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000]">
+          <span className="pixel-badge bg-[#00f0ff] text-black">[IZIN]</span>
+          <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
+            {monthStats.izin} <span className="text-xs font-bold text-slate-500">HARI</span>
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-3.5">
-          <span className="pixel-badge text-amber-800 bg-amber-50/90 border-amber-300">[SAKIT]</span>
-          <p className="text-xl md:text-2xl font-bold text-amber-600 font-mono mt-1">
-            {monthStats.sakit} <span className="text-xs font-normal text-slate-400">HARI</span>
+        <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000]">
+          <span className="pixel-badge bg-[#ffe600] text-black">[SAKIT]</span>
+          <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
+            {monthStats.sakit} <span className="text-xs font-bold text-slate-500">HARI</span>
           </p>
         </div>
-        <div className="glass-panel rounded-2xl p-3.5 col-span-2 sm:col-span-1">
-          <span className="pixel-badge text-rose-800 bg-rose-50/90 border-rose-300">[ALFA]</span>
-          <p className="text-xl md:text-2xl font-bold text-rose-600 font-mono mt-1">
-            {monthStats.alfa} <span className="text-xs font-normal text-slate-400">HARI</span>
+        <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000] col-span-2 sm:col-span-1">
+          <span className="pixel-badge bg-[#ff6b6b] text-black">[ALFA]</span>
+          <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
+            {monthStats.alfa} <span className="text-xs font-bold text-slate-500">HARI</span>
           </p>
         </div>
       </div>
@@ -280,32 +280,32 @@ export default function AttendancePage() {
               const attendance = cell.log?.attendance;
               const actCount = cell.log?.activities?.length || 0;
 
-              let cellStyle = "border-white/80 bg-white/60 backdrop-blur-xs hover:border-slate-300 hover:bg-white/85 hover:shadow-2xs";
+              let cellStyle = "border-2 border-black bg-white shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000]";
               if (isToday && isPayday) {
-                cellStyle = "ring-2 ring-indigo-500 border-amber-400 bg-amber-50/60 backdrop-blur-xs shadow-xs";
+                cellStyle = "border-3 border-black bg-[#ffe600] shadow-[3px_3px_0px_#000]";
               } else if (isToday) {
-                cellStyle = "ring-2 ring-indigo-500 border-indigo-300 bg-indigo-50/50 backdrop-blur-xs shadow-xs";
+                cellStyle = "border-3 border-black bg-[#fef08a] shadow-[3px_3px_0px_#000]";
               } else if (isPayday) {
-                cellStyle = "border-amber-300/90 bg-amber-50/50 backdrop-blur-xs hover:border-amber-400 hover:bg-amber-50/70 hover:shadow-2xs";
+                cellStyle = "border-2 border-black bg-[#fef9c3] shadow-[2px_2px_0px_#000]";
               }
 
               return (
                 <div
                   key={cell.key}
                   onClick={() => setSelectedDateStr(cell.dateStr)}
-                  className={`min-h-[75px] md:min-h-[105px] p-2 md:p-2.5 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer group select-none relative ${cellStyle}`}
+                  className={`min-h-[75px] md:min-h-[105px] p-2 md:p-2.5 rounded-xl border transition-all flex flex-col justify-between cursor-pointer group select-none relative ${cellStyle}`}
                 >
                   {/* Top Bar of Cell: Day Number */}
                   <div className="flex items-center justify-between gap-1">
                     <span
-                      className={`text-xs md:text-sm font-bold font-mono ${
+                      className={`text-xs md:text-sm font-black font-mono ${
                         isToday
-                          ? "w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center -ml-0.5 -mt-0.5 shadow-2xs"
+                          ? "w-6 h-6 rounded-md bg-black text-[#ffe600] flex items-center justify-center -ml-0.5 -mt-0.5 shadow-[1.5px_1.5px_0px_#000]"
                           : cell.isSunday
-                          ? "text-rose-500"
+                          ? "text-rose-600 font-black"
                           : isPayday
-                          ? "text-amber-900 font-extrabold"
-                          : "text-slate-800"
+                          ? "text-black font-black underline decoration-2"
+                          : "text-black font-bold"
                       }`}
                     >
                       {cell.day}
@@ -315,16 +315,16 @@ export default function AttendancePage() {
                       {isPayday && (
                         <span
                           title="Switch Periode & Hari Gajian"
-                          className="pixel-badge text-amber-800 bg-amber-100/90 border-amber-400"
+                          className="pixel-badge bg-[#ffe600] text-black border border-black"
                         >
-                          <Coins className="w-2.5 h-2.5 text-amber-600 shrink-0" />
+                          <Coins className="w-2.5 h-2.5 stroke-[2.5]" />
                           <span className="hidden md:inline">GAJI</span>
                         </span>
                       )}
 
                       {/* Small Activity Dot / Count on Desktop */}
                       {hasLog && actCount > 0 && (
-                        <span className="hidden md:inline-flex text-[9px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-medium">
+                        <span className="hidden md:inline-flex text-[9px] px-1.5 py-0.5 rounded border border-black bg-white text-black font-mono font-bold shadow-[1px_1px_0px_#000]">
                           {actCount} act
                         </span>
                       )}
@@ -335,28 +335,28 @@ export default function AttendancePage() {
                   <div className="mt-1">
                     {hasLog ? (
                       <div
-                        className={`px-1.5 py-1 rounded-xl text-[10px] font-semibold text-center truncate ${
+                        className={`px-1.5 py-1 rounded text-[10px] font-black text-center truncate border border-black shadow-[1.5px_1.5px_0px_#000] ${
                           attendance === "Hadir"
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200/80"
+                            ? "bg-[#a3e635] text-black"
                             : attendance === "Izin"
-                            ? "bg-blue-50 text-blue-700 border border-blue-200/80"
+                            ? "bg-[#00f0ff] text-black"
                             : attendance === "Sakit"
-                            ? "bg-amber-50 text-amber-700 border border-amber-200/80"
-                            : "bg-rose-50 text-rose-700 border border-rose-200/80"
+                            ? "bg-[#ffe600] text-black"
+                            : "bg-[#ff6b6b] text-black"
                         }`}
                       >
                         <span className="md:hidden">
                           {attendance === "Hadir" ? "HD" : attendance?.slice(0, 2)}
                         </span>
-                        <span className="hidden md:inline">{attendance}</span>
+                        <span className="hidden md:inline uppercase">{attendance}</span>
                       </div>
                     ) : cell.isSunday ? (
-                      <div className="text-[9px] md:text-[10px] text-slate-400 text-center py-1 font-medium italic">
-                        Libur
+                      <div className="text-[9px] md:text-[10px] text-slate-500 text-center py-1 font-mono font-bold">
+                        LIBUR
                       </div>
                     ) : (
-                      <div className="text-[9px] text-slate-300 text-center py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        + Catat
+                      <div className="text-[9px] font-mono font-bold text-slate-400 text-center py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        + CATAT
                       </div>
                     )}
                   </div>

@@ -6,14 +6,14 @@ import { X, Copy, Check, Edit2, Calendar } from "lucide-react";
 function getTypeBadgeClass(type) {
   switch (type) {
     case "materi":
-      return "bg-teal-50 text-teal-700 border-teal-200";
+      return "bg-[#00f0ff] text-black";
     case "meeting":
-      return "bg-amber-50 text-amber-700 border-amber-200";
+      return "bg-[#ffe600] text-black";
     case "snippet":
-      return "bg-blue-50 text-blue-700 border-blue-200";
+      return "bg-[#a3e635] text-black";
     case "keyword":
     default:
-      return "bg-purple-50 text-purple-700 border-purple-200";
+      return "bg-[#c084fc] text-black";
   }
 }
 
@@ -43,45 +43,45 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
-        className="bg-white w-full max-w-xl rounded-2xl shadow-xl flex flex-col max-h-[85vh] border border-slate-200/80"
+        className="bg-[#fffdf8] w-full max-w-xl rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col max-h-[85vh] border-[3px] border-black animate-brutal-pop overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between gap-3">
+        <div className="p-4 border-b-2 border-black flex items-center justify-between gap-3 bg-[#ffe600]">
           <div className="flex items-center gap-2 flex-wrap">
             <span
-              className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${getTypeBadgeClass(
+              className={`pixel-badge ${getTypeBadgeClass(
                 note.type
               )}`}
             >
               {note.type}
             </span>
-            <span className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
-              <Calendar className="w-3 h-3" />
+            <span className="text-[11px] text-black font-black flex items-center gap-1 font-mono">
+              <Calendar className="w-3.5 h-3.5 stroke-[2.5]" />
               {formattedDate}
             </span>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={handleCopy}
-              className="text-slate-500 hover:text-slate-800 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer flex items-center gap-1 text-xs"
+              className="bg-white hover:bg-slate-100 text-black border-2 border-black px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
               title="Salin isi catatan"
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-[11px] text-emerald-600 font-medium">Tersalin</span>
+                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  <span>Tersalin</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3.5 h-3.5" />
-                  <span className="text-[11px]">Salin</span>
+                  <Copy className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Salin</span>
                 </>
               )}
             </button>
@@ -89,30 +89,30 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
             <button
               type="button"
               onClick={() => onEdit(note)}
-              className="text-slate-500 hover:text-slate-800 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer flex items-center gap-1 text-xs"
+              className="bg-white hover:bg-slate-100 text-black border-2 border-black px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
               title="Edit catatan"
             >
-              <Edit2 className="w-3.5 h-3.5" />
-              <span className="text-[11px]">Edit</span>
+              <Edit2 className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Edit</span>
             </button>
 
             <button
               type="button"
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer ml-1"
+              className="text-black hover:bg-black hover:text-white p-1 rounded-lg border-2 border-black cursor-pointer shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 ml-1"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 stroke-[3]" />
             </button>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-5 overflow-y-auto flex-1 space-y-3">
-          <h2 className="text-base font-bold text-slate-900 leading-snug">{note.title}</h2>
+        <div className="p-6 overflow-y-auto flex-1 space-y-4">
+          <h2 className="text-base md:text-lg font-black uppercase text-black leading-snug">{note.title}</h2>
 
           <div
-            className={`text-xs text-slate-700 whitespace-pre-wrap leading-relaxed p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl ${
-              note.type === "snippet" ? "font-mono" : "font-sans"
+            className={`text-xs text-black font-bold whitespace-pre-wrap leading-relaxed p-4 bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-xl ${
+              note.type === "snippet" ? "font-mono bg-[#fdfbf7]" : "font-sans"
             }`}
           >
             {note.content || <span className="text-slate-400 italic">Tidak ada isi catatan.</span>}

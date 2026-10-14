@@ -8,65 +8,65 @@ export default function QuickShortcuts() {
       desc: "Log aktivitas per jam & refleksi AI",
       href: "/daily-log",
       icon: BookOpen,
-      color: "text-blue-600 bg-blue-50/80 border-blue-200/70",
+      bg: "bg-[#00f0ff]",
     },
     {
       title: "Rekap Absensi",
       desc: "Statistik kehadiran & cetak laporan",
       href: "/attendance",
       icon: CalendarCheck2,
-      color: "text-emerald-600 bg-emerald-50/80 border-emerald-200/70",
+      bg: "bg-[#a3e635]",
     },
     {
       title: "AI Report Studio",
       desc: "Formulasi uraian formal instan",
       href: "/ai-report",
       icon: Sparkles,
-      color: "text-indigo-600 bg-indigo-50/80 border-indigo-200/70",
+      bg: "bg-[#ffe600]",
     },
     {
       title: "Task Kanban",
       desc: "Kelola status eksekusi tugas harian",
       href: "/tasks",
       icon: CheckSquare,
-      color: "text-purple-600 bg-purple-50/80 border-purple-200/70",
+      bg: "bg-[#ff6b6b]",
     },
     {
       title: "Knowledge Vault",
       desc: "Arsip materi, meeting, & snippet",
       href: "/notes",
       icon: StickyNote,
-      color: "text-amber-600 bg-amber-50/80 border-amber-200/70",
+      bg: "bg-[#c084fc]",
     },
   ];
 
   return (
-    <div className="glass-panel rounded-3xl p-5 md:p-6">
+    <div className="brutal-card bg-white p-5 md:p-6">
       <div className="mb-4">
-        <h2 className="text-sm font-bold text-slate-900 tracking-tight">Navigasi Modul Kerja</h2>
-        <p className="text-xs text-slate-500 mt-0.5">Akses langsung ke seluruh workspace aplikasi</p>
+        <h2 className="text-sm font-black uppercase text-black tracking-tight">Navigasi Modul Kerja</h2>
+        <p className="text-xs font-mono font-bold text-slate-600 mt-0.5">Akses langsung ke seluruh workspace aplikasi</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         {tools.map((tool) => {
           const Icon = tool.icon;
           return (
             <Link
               key={tool.title}
               href={tool.href}
-              className="p-3.5 rounded-2xl glass-card-nested flex flex-col justify-between group"
+              className="p-4 rounded-xl border-2 border-black bg-[#fffdfa] shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between group hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_#000] transition-all cursor-pointer"
             >
-              <div className="flex items-center justify-between mb-2.5">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center border ${tool.color} group-hover:scale-105 transition-transform`}>
-                  <Icon className="w-3.5 h-3.5" />
+              <div className="flex items-center justify-between mb-3">
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center border-2 border-black ${tool.bg} shadow-[2px_2px_0px_0px_#000] group-hover:-rotate-3 transition-transform`}>
+                  <Icon className="w-4 h-4 text-black stroke-[2.5]" />
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                <ArrowUpRight className="w-4 h-4 text-black stroke-[3] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-xs font-black uppercase text-black tracking-tight group-hover:text-amber-800 transition-colors">
                   {tool.title}
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-0.5 leading-snug line-clamp-2 font-normal font-sans">
+                <p className="text-[11px] font-mono font-bold text-slate-600 mt-1 leading-snug line-clamp-2">
                   {tool.desc}
                 </p>
               </div>
