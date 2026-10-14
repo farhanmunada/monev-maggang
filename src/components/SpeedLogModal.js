@@ -10,6 +10,8 @@ const PRESET_CHIPS = [
   { label: "STANDUP", prefix: "Daily Standup Meeting", icon: "⚡" },
   { label: "DEV", prefix: "Slicing & Feature Development", icon: "💻" },
   { label: "BUGFIX", prefix: "Debugging & Problem Resolution", icon: "🐞" },
+  { label: "MAINT", prefix: "Maintenance & Perawatan Hardware", icon: "🛠️" },
+  { label: "HW-CHECK", prefix: "Pengecekan & Diagnosis Hardware", icon: "🖥️" },
   { label: "MEETING", prefix: "Team Sync & Discussion", icon: "🤝" },
   { label: "TESTING", prefix: "Manual Testing & QA Review", icon: "🧪" },
 ];

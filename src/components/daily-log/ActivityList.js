@@ -3,6 +3,8 @@ import { Clock, Plus, Pencil, Trash2, Save, Sparkles, X } from "lucide-react";
 const QUICK_TEMPLATES = [
   "Implementasi Fitur",
   "Bug Fixing & Debugging",
+  "Maintenance & Perawatan Hardware",
+  "Pengecekan Hardware & Jaringan",
   "Daily Standup / Meeting",
   "Code Review",
   "Dokumentasi Teknis",

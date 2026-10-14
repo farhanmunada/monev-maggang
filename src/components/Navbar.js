@@ -35,7 +35,7 @@ export default function Navbar() {
     { name: "Beranda", href: "/", icon: LayoutDashboard },
     { name: "Jurnal", href: "/daily-log", icon: BookOpen },
     { name: "Absensi", href: "/attendance", icon: CalendarCheck2 },
-    { name: "Laporan AI", href: "/ai-report", icon: Sparkles },
+    { name: "Laporan", href: "/ai-report", icon: Sparkles },
     { name: "Tasks", href: "/tasks", icon: CheckSquare },
     { name: "Catatan", href: "/notes", icon: StickyNote },
   ];
