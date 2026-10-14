@@ -96,12 +96,12 @@ export default function LogHeader({
     {
       id: "Sakit",
       label: "Sakit",
-      activeClass: "bg-[#fef08a] text-black border-2 border-black shadow-[2px_2px_0px_#000]",
+      activeClass: "bg-white text-black border-2 border-black shadow-[2px_2px_0px_#000]",
     },
     {
       id: "Alfa",
       label: "Alfa",
-      activeClass: "bg-[#ff6b6b] text-black border-2 border-black shadow-[2px_2px_0px_#000]",
+      activeClass: "bg-black text-white border-2 border-black shadow-[2px_2px_0px_#000]",
     },
   ];
 
@@ -124,7 +124,7 @@ export default function LogHeader({
                 [SYNCED]
               </span>
             ) : (
-              <span className="pixel-badge bg-[#ff6b6b] text-black flex items-center gap-1">
+              <span className="pixel-badge bg-black text-white flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5 stroke-[2.5]" />
                 [UNSAVED]
               </span>
@@ -186,7 +186,7 @@ export default function LogHeader({
           <div className="text-[10px] font-mono font-black text-black uppercase tracking-wider mb-1.5 md:text-right">
             [STATUS PRESENSI]
           </div>
-          <div className="bg-[#fbf8f0] p-1.5 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] flex gap-1.5 w-full md:w-auto">
+          <div className="bg-white p-1.5 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] flex gap-1.5 w-full md:w-auto">
             {ATTENDANCE_STATUSES.map((status) => {
               const isActive = attendance === status.id;
               return (
@@ -211,7 +211,7 @@ export default function LogHeader({
       {/* Custom Neo-Brutalist Date Picker Modal (No ugly browser picker) */}
       {isDatePickerOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-[#fffdf8] w-full max-w-sm rounded-2xl shadow-[8px_8px_0px_0px_#000] border-[3px] border-black animate-brutal-pop overflow-hidden">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-[8px_8px_0px_0px_#000] border-[3px] border-black animate-brutal-pop overflow-hidden">
             {/* Header */}
             <div className="p-4 border-b-2 border-black bg-[#8b5cf6] text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -259,7 +259,7 @@ export default function LogHeader({
                 <span>Kam</span>
                 <span>Jum</span>
                 <span>Sab</span>
-                <span className="text-rose-600">Min</span>
+                <span className="text-[#8b5cf6]">Min</span>
               </div>
 
               {/* Day Grid */}

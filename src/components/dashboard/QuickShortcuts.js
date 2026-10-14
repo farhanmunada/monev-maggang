@@ -8,7 +8,8 @@ export default function QuickShortcuts() {
       desc: "Log aktivitas per jam & refleksi AI",
       href: "/daily-log",
       icon: BookOpen,
-      bg: "bg-[#00f0ff]",
+      bg: "bg-[#8b5cf6]",
+      iconColor: "text-white",
     },
     {
       title: "Rekap Absensi",
@@ -16,27 +17,31 @@ export default function QuickShortcuts() {
       href: "/attendance",
       icon: CalendarCheck2,
       bg: "bg-[#a3e635]",
+      iconColor: "text-black",
     },
     {
       title: "AI Report Studio",
       desc: "Formulasi uraian formal instan",
       href: "/ai-report",
       icon: Sparkles,
-      bg: "bg-[#ffe600]",
+      bg: "bg-[#8b5cf6]",
+      iconColor: "text-white",
     },
     {
       title: "Task Kanban",
       desc: "Kelola status eksekusi tugas harian",
       href: "/tasks",
       icon: CheckSquare,
-      bg: "bg-[#ff6b6b]",
+      bg: "bg-[#a3e635]",
+      iconColor: "text-black",
     },
     {
       title: "Knowledge Vault",
       desc: "Arsip materi, meeting, & snippet",
       href: "/notes",
       icon: StickyNote,
-      bg: "bg-[#c084fc]",
+      bg: "bg-white",
+      iconColor: "text-black",
     },
   ];
 
@@ -54,16 +59,16 @@ export default function QuickShortcuts() {
             <Link
               key={tool.title}
               href={tool.href}
-              className="p-4 rounded-xl border-2 border-black bg-[#fffdfa] shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between group hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_#000] transition-all cursor-pointer"
+              className="p-4 rounded-xl border-2 border-black bg-white shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between group hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_#000] transition-all cursor-pointer"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center border-2 border-black ${tool.bg} shadow-[2px_2px_0px_0px_#000] group-hover:-rotate-3 transition-transform`}>
-                  <Icon className="w-4 h-4 text-black stroke-[2.5]" />
+                  <Icon className={`w-4 h-4 ${tool.iconColor || "text-black"} stroke-[2.5]`} />
                 </div>
                 <ArrowUpRight className="w-4 h-4 text-black stroke-[3] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
               <div>
-                <h3 className="text-xs font-black uppercase text-black tracking-tight group-hover:text-amber-800 transition-colors">
+                <h3 className="text-xs font-black uppercase text-black tracking-tight group-hover:text-[#7c3aed] transition-colors">
                   {tool.title}
                 </h3>
                 <p className="text-[11px] font-mono font-bold text-slate-600 mt-1 leading-snug line-clamp-2">

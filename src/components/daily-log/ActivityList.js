@@ -78,7 +78,7 @@ export default function ActivityList({
 
       {/* Activities Timeline / Cards */}
       {activities.length === 0 ? (
-        <div className="text-center py-10 text-slate-500 border-2 border-dashed border-black rounded-2xl text-xs space-y-3 bg-[#fbf8f0]">
+        <div className="text-center py-10 text-slate-500 border-2 border-dashed border-black rounded-2xl text-xs space-y-3 bg-white">
           <p className="font-mono font-black text-xs text-black">[BELUM ADA KEGIATAN TERCATAT HARI INI]</p>
           <button
             type="button"
@@ -95,7 +95,7 @@ export default function ActivityList({
               <form
                 key={act.id}
                 onSubmit={onUpdateActivity}
-                className="bg-[#fbf8f0] p-4 md:p-5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_#000] space-y-3"
+                className="bg-white p-4 md:p-5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_#000] space-y-3"
               >
                 <div className="flex justify-between items-center">
                   <h4 className="font-black text-xs text-black flex items-center gap-1.5 font-mono uppercase">
@@ -113,7 +113,7 @@ export default function ActivityList({
                       placeholder="Misal: 14:30 atau 09:00 - 11:30"
                       value={editActivityForm.time_range}
                       onChange={(e) => onEditFormChange("time_range", e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+                      className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -126,7 +126,7 @@ export default function ActivityList({
                       required
                       value={editActivityForm.title}
                       onChange={(e) => onEditFormChange("title", e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+                      className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
                     />
                   </div>
                 </div>
@@ -140,7 +140,7 @@ export default function ActivityList({
                     rows={2}
                     value={editActivityForm.description}
                     onChange={(e) => onEditFormChange("description", e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee] resize-none leading-relaxed"
+                    className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff] resize-none leading-relaxed"
                   />
                 </div>
 
@@ -197,7 +197,7 @@ export default function ActivityList({
                   <button
                     type="button"
                     onClick={() => onRemoveActivity(act.id)}
-                    className="p-1 text-black hover:bg-[#ff6b6b] rounded border border-transparent hover:border-black cursor-pointer transition-colors"
+                    className="p-1 text-black hover:bg-black hover:text-white rounded border border-transparent hover:border-black cursor-pointer transition-colors"
                     title="Hapus kegiatan"
                   >
                     <Trash2 className="w-3.5 h-3.5 stroke-[2.5]" />

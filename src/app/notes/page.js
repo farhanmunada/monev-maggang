@@ -106,7 +106,7 @@ export default function NotesPage() {
                   toast.error("Gagal menghapus catatan.");
                 }
               }}
-              className="px-3 py-1 bg-[#ff6b6b] text-black border border-black rounded text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+              className="px-3 py-1 bg-black text-white border border-black rounded text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
             >
               HAPUS
             </button>
@@ -136,7 +136,7 @@ export default function NotesPage() {
   });
 
   return (
-    <div className="space-y-6 md:space-y-7 pb-12">
+    <div className="space-y-6 md:space-y-7 pb-28 md:pb-16">
       {/* Glanceable Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-3 border-black">
         <div>

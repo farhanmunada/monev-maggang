@@ -30,7 +30,7 @@ const COMPANIONS = [
         <path d="M6 10L10 6L14 10H18L22 6L26 10V22C26 25 23 27 20 27H12C9 27 6 25 6 22V10Z" />
         <circle cx="11" cy="15" r="1.5" className="fill-slate-900" />
         <circle cx="21" cy="15" r="1.5" className="fill-slate-900" />
-        <path d="M14 18L16 20L18 18" stroke="#0f172a" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+        <path d="M14 18L16 20L18 18" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" fill="none" />
       </svg>
     ),
   },
@@ -233,20 +233,20 @@ export default function WalkingCompanions() {
 
   return (
     <>
-      {/* Toggle Button in bottom right corner */}
-      <div className="fixed bottom-20 md:bottom-4 right-4 z-40 no-print">
+      {/* Toggle Button in bottom left corner - separate from speed log on bottom right */}
+      <div className="fixed bottom-20 md:bottom-4 left-4 z-40 no-print">
         <button
           type="button"
           onClick={() => setIsVisible(!isVisible)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
             isUrgent
-              ? "bg-[#ff6b6b] text-black"
-              : "bg-[#fffdf8] text-black hover:bg-[#ffe600]"
+              ? "bg-black text-[#a3e635]"
+              : "bg-white text-black hover:bg-[#a3e635]"
           }`}
           title={isVisible ? "Sembunyikan Teman Kantor" : "Tampilkan Teman Kantor"}
         >
           {isUrgent ? (
-            <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#a3e635] animate-pulse" />
           ) : isVisible ? (
             <EyeOff className="w-3.5 h-3.5 text-black stroke-[2.5]" />
           ) : (
@@ -286,8 +286,8 @@ export default function WalkingCompanions() {
                         : "left-1/2 -translate-x-1/2"
                     } ${
                       isUrgent
-                        ? "bg-[#ff6b6b] text-black"
-                        : "bg-[#ffe600] text-black"
+                        ? "bg-black text-white"
+                        : "bg-[#a3e635] text-black"
                     }`}
                   >
                     <p>{c.activeBubble}</p>
@@ -300,8 +300,8 @@ export default function WalkingCompanions() {
                           : "left-1/2 -translate-x-1/2"
                       } ${
                         isUrgent
-                          ? "bg-[#ff6b6b]"
-                          : "bg-[#ffe600]"
+                          ? "bg-black"
+                          : "bg-[#a3e635]"
                       }`}
                     />
                   </div>
@@ -312,8 +312,8 @@ export default function WalkingCompanions() {
                   {/* Urgent Attention Badge */}
                   {isUrgent && (
                     <span className="absolute -top-2 -right-1.5 z-10 flex h-4 w-4">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 border border-black text-[9px] text-white font-black items-center justify-center">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8b5cf6] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-black border border-black text-[9px] text-[#a3e635] font-black items-center justify-center">
                         !
                       </span>
                     </span>
@@ -335,7 +335,7 @@ export default function WalkingCompanions() {
                 </div>
 
                 {/* Name Tag on Hover */}
-                <span className="text-[10px] font-mono font-black uppercase text-black opacity-0 group-hover:opacity-100 transition-opacity bg-[#ffe600] border border-black px-1.5 py-0.5 rounded shadow-[1px_1px_0px_#000] mt-1">
+                <span className="text-[10px] font-mono font-black uppercase text-black opacity-0 group-hover:opacity-100 transition-opacity bg-[#a3e635] border border-black px-1.5 py-0.5 rounded shadow-[1px_1px_0px_#000] mt-1">
                   {compData.name}
                 </span>
               </div>

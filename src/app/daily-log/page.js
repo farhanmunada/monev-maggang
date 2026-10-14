@@ -373,7 +373,7 @@ function DailyLogContent() {
   }
 
   return (
-    <div className="space-y-6 md:space-y-7 pb-12">
+    <div className="space-y-6 md:space-y-7 pb-28 md:pb-16">
       {/* Header & Date Navigation */}
       <LogHeader
         selectedDate={selectedDate}
@@ -440,15 +440,15 @@ function DailyLogContent() {
         />
       </div>
 
-      {/* Floating / Sticky Save Bar with Distinct Top Margin */}
-      <div className="sticky bottom-6 z-20 mt-8 mb-4 flex items-center justify-between brutal-card bg-white p-3.5 md:p-4 rounded-2xl shadow-[5px_5px_0px_#000]">
+      {/* Floating / Sticky Save Bar with Distinct Top Margin & Safe Bottom Nav Offset */}
+      <div className="sticky bottom-20 md:bottom-6 z-30 mt-8 mb-4 flex items-center justify-between brutal-card bg-white p-3.5 md:p-4 rounded-2xl shadow-[5px_5px_0px_#000]">
         <div className="text-xs text-black font-mono font-bold hidden sm:flex items-center gap-2">
           {lastSavedAt ? (
             <span className="flex items-center gap-1.5 text-black bg-[#a3e635] px-2.5 py-1 rounded border border-black shadow-[1.5px_1.5px_0px_#000]">
               <Check className="w-4 h-4 stroke-[3]" /> Tersimpan hari ini pukul {lastSavedAt} WIB
             </span>
           ) : (
-            <span className="text-slate-600">[KLIK SIMPAN UNTUK MENYIMPAN CATATAN KE DATABASE]</span>
+            <span className="text-black font-mono text-[11px] font-black">[STATUS: SIAP SIMPAN KE DATABASE]</span>
           )}
         </div>
 

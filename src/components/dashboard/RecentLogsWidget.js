@@ -9,7 +9,7 @@ export default function RecentLogsWidget({ logs, loading }) {
         <div className="flex justify-between items-center mb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="pixel-badge bg-[#00f0ff] text-black">
+              <span className="pixel-badge bg-[#8b5cf6] text-white">
                 LOG.FEED
               </span>
             </div>
@@ -19,7 +19,7 @@ export default function RecentLogsWidget({ logs, loading }) {
           </div>
           <Link
             href="/attendance"
-            className="text-xs font-black uppercase tracking-wider text-black hover:bg-[#ffe600] px-2 py-1 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] flex items-center gap-1 transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            className="text-xs font-black uppercase tracking-wider text-black hover:bg-[#a3e635] px-2 py-1 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] flex items-center gap-1 transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
           >
             Semua Log <ArrowRight className="w-3.5 h-3.5 stroke-[3]" />
           </Link>
@@ -28,11 +28,11 @@ export default function RecentLogsWidget({ logs, loading }) {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 bg-[#f4f0ea] border-2 border-black rounded-xl animate-pulse shadow-[2px_2px_0px_#000]"></div>
+              <div key={i} className="h-16 bg-white border-2 border-black rounded-xl animate-pulse shadow-[2px_2px_0px_#000]"></div>
             ))}
           </div>
         ) : logs.length === 0 ? (
-          <div className="text-center py-10 text-slate-500 border-2 border-dashed border-black rounded-xl text-xs font-mono font-bold bg-[#fbf8f0]">
+          <div className="text-center py-10 text-black border-2 border-dashed border-black rounded-xl text-xs font-mono font-bold bg-white">
             [BELUM ADA JURNAL YANG DISIMPAN]
           </div>
         ) : (
@@ -41,7 +41,7 @@ export default function RecentLogsWidget({ logs, loading }) {
               <Link
                 key={log.id}
                 href="/attendance"
-                className="flex items-center justify-between p-3.5 rounded-xl border-2 border-black bg-[#fffdfa] shadow-[3px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4.5px_4.5px_0px_0px_#000] transition-all group"
+                className="flex items-center justify-between p-3.5 rounded-xl border-2 border-black bg-white shadow-[3px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4.5px_4.5px_0px_0px_#000] transition-all group"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
                   <div
@@ -49,16 +49,16 @@ export default function RecentLogsWidget({ logs, loading }) {
                       log.attendance === "Hadir"
                         ? "bg-[#a3e635] text-black"
                         : log.attendance === "Izin"
-                        ? "bg-[#00f0ff] text-black"
+                        ? "bg-[#8b5cf6] text-white"
                         : log.attendance === "Sakit"
-                        ? "bg-[#ffe600] text-black"
-                        : "bg-[#ff6b6b] text-black"
+                        ? "bg-white text-black"
+                        : "bg-black text-white"
                     }`}
                   >
                     {log.attendance === "Hadir" ? "HD" : log.attendance.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-black text-xs text-black group-hover:text-indigo-900 transition-colors">
+                    <p className="font-black text-xs text-black group-hover:text-[#7c3aed] transition-colors">
                       {formatIndonesianDate(log.date)}
                     </p>
                     <p className="text-[11px] font-mono text-slate-700 truncate mt-0.5 font-bold">
@@ -69,7 +69,7 @@ export default function RecentLogsWidget({ logs, loading }) {
                   </div>
                 </div>
 
-                <span className="pixel-badge bg-white text-black text-[10px] hidden sm:inline-flex group-hover:bg-[#ffe600] transition-colors">
+                <span className="pixel-badge bg-white text-black text-[10px] hidden sm:inline-flex group-hover:bg-[#a3e635] transition-colors">
                   DETAIL
                 </span>
               </Link>

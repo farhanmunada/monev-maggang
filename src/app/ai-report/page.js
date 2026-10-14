@@ -157,17 +157,17 @@ export default function AiReportPage() {
   }
 
   return (
-    <div className="space-y-5 md:space-y-6 pb-12">
+    <div className="space-y-5 md:space-y-6 pb-28 md:pb-16">
       {/* Glanceable Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-white/60">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-3 border-black">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">
+            <span className="pixel-badge bg-[#8b5cf6] text-white">
               AI.RECAPPER
             </span>
-            <span className="text-[11px] font-mono text-slate-400">Generator Narasi Baku</span>
+            <span className="text-[11px] font-mono font-bold text-slate-700">Generator Narasi Baku</span>
           </div>
-          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-xl md:text-3xl font-black text-black uppercase tracking-tight">
             AI Report Studio
           </h1>
         </div>
@@ -179,8 +179,8 @@ export default function AiReportPage() {
             onClick={() => { setRangeMode("single"); setIsGenerated(false); }}
             className={`pixel-badge transition-all cursor-pointer ${
               rangeMode === "single"
-                ? "bg-[#ffe600] text-black border-2 border-black shadow-[2px_2px_0px_#000] -translate-y-0.5"
-                : "text-black bg-white border-2 border-black hover:bg-slate-100"
+                ? "bg-[#8b5cf6] text-white border-2 border-black shadow-[2px_2px_0px_#000] -translate-y-0.5"
+                : "text-black bg-white border-2 border-black hover:bg-[#a3e635]"
             }`}
           >
             [1 HARI]
@@ -190,8 +190,8 @@ export default function AiReportPage() {
             onClick={() => { setRangeMode("weekly"); setIsGenerated(false); }}
             className={`pixel-badge transition-all cursor-pointer ${
               rangeMode === "weekly"
-                ? "bg-[#00f0ff] text-black border-2 border-black shadow-[2px_2px_0px_#000] -translate-y-0.5"
-                : "text-black bg-white border-2 border-black hover:bg-slate-100"
+                ? "bg-[#8b5cf6] text-white border-2 border-black shadow-[2px_2px_0px_#000] -translate-y-0.5"
+                : "text-black bg-white border-2 border-black hover:bg-[#a3e635]"
             }`}
           >
             [PEKAN (7 HARI)]
@@ -202,7 +202,7 @@ export default function AiReportPage() {
             className={`pixel-badge transition-all cursor-pointer ${
               rangeMode === "period"
                 ? "bg-[#a3e635] text-black border-2 border-black shadow-[2px_2px_0px_#000] -translate-y-0.5"
-                : "text-black bg-white border-2 border-black hover:bg-slate-100"
+                : "text-black bg-white border-2 border-black hover:bg-[#a3e635]"
             }`}
           >
             [PERIODE GAJIAN (TGL 20)]
@@ -214,7 +214,7 @@ export default function AiReportPage() {
       <div className="brutal-card bg-white p-5 md:p-7 space-y-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-2 border-black">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#ffe600] border-2 border-black text-black flex items-center justify-center shrink-0 shadow-[2px_2px_0px_#000]">
+            <div className="w-10 h-10 rounded-xl bg-[#8b5cf6] border-2 border-black text-white flex items-center justify-center shrink-0 shadow-[2px_2px_0px_#000]">
               <Bot className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -264,15 +264,15 @@ export default function AiReportPage() {
         {isGenerated && (
           <div className="space-y-4 animate-brutal-pop">
             {/* Uraian Kegiatan */}
-            <div className="bg-[#fffdf8] p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] space-y-2">
+            <div className="bg-white p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="pixel-badge bg-[#00f0ff] text-black">
+                <span className="pixel-badge bg-[#8b5cf6] text-white">
                   KEGIATAN.FORMAL
                 </span>
                 <button
                   type="button"
                   onClick={() => copyToClipboard(aiReport.expandedActivities, "act")}
-                  className="pixel-badge bg-white text-black hover:bg-[#ffe600] cursor-pointer"
+                  className="pixel-badge bg-white text-black hover:bg-[#a3e635] cursor-pointer"
                 >
                   {copiedKey === "act" ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3 stroke-[2.5]" />}
                   <span>{copiedKey === "act" ? "TERSALIN" : "SALIN"}</span>
@@ -284,15 +284,15 @@ export default function AiReportPage() {
             </div>
 
             {/* Pembelajaran */}
-            <div className="bg-[#fffdf8] p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] space-y-2">
+            <div className="bg-white p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="pixel-badge bg-[#ffe600] text-black">
+                <span className="pixel-badge bg-[#a3e635] text-black">
                   INSIGHT.KOMPETENSI
                 </span>
                 <button
                   type="button"
                   onClick={() => copyToClipboard(aiReport.expandedLearning, "learn")}
-                  className="pixel-badge bg-white text-black hover:bg-[#ffe600] cursor-pointer"
+                  className="pixel-badge bg-white text-black hover:bg-[#a3e635] cursor-pointer"
                 >
                   {copiedKey === "learn" ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3 stroke-[2.5]" />}
                   <span>{copiedKey === "learn" ? "TERSALIN" : "SALIN"}</span>
@@ -304,15 +304,15 @@ export default function AiReportPage() {
             </div>
 
             {/* Kendala */}
-            <div className="bg-[#fffdf8] p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] space-y-2">
+            <div className="bg-white p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="pixel-badge bg-[#ff6b6b] text-black">
+                <span className="pixel-badge bg-black text-white">
                   KENDALA.SOLUSI
                 </span>
                 <button
                   type="button"
                   onClick={() => copyToClipboard(aiReport.expandedObstacle, "obs")}
-                  className="pixel-badge bg-white text-black hover:bg-[#ffe600] cursor-pointer"
+                  className="pixel-badge bg-white text-black hover:bg-[#a3e635] cursor-pointer"
                 >
                   {copiedKey === "obs" ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3 stroke-[2.5]" />}
                   <span>{copiedKey === "obs" ? "TERSALIN" : "SALIN"}</span>

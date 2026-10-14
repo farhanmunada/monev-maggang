@@ -145,7 +145,7 @@ export default function AttendancePage() {
   const selectedLog = selectedDateStr ? logsByDate[selectedDateStr] : null;
 
   return (
-    <div className="space-y-6 md:space-y-7 pb-12">
+    <div className="space-y-6 md:space-y-7 pb-28 md:pb-16">
       {/* Header */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-3 border-black pb-4">
         <div>
@@ -222,19 +222,19 @@ export default function AttendancePage() {
           </p>
         </div>
         <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000]">
-          <span className="pixel-badge bg-[#00f0ff] text-black">[IZIN]</span>
+          <span className="pixel-badge bg-[#8b5cf6] text-white">[IZIN]</span>
           <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
             {monthStats.izin} <span className="text-xs font-bold text-slate-500">HARI</span>
           </p>
         </div>
         <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000]">
-          <span className="pixel-badge bg-[#ffe600] text-black">[SAKIT]</span>
+          <span className="pixel-badge bg-white text-black">[SAKIT]</span>
           <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
             {monthStats.sakit} <span className="text-xs font-bold text-slate-500">HARI</span>
           </p>
         </div>
         <div className="border-2 border-black rounded-xl p-3.5 bg-white shadow-[3px_3px_0px_#000] col-span-2 sm:col-span-1">
-          <span className="pixel-badge bg-[#ff6b6b] text-black">[ALFA]</span>
+          <span className="pixel-badge bg-black text-white">[ALFA]</span>
           <p className="text-xl md:text-2xl font-black text-black font-mono mt-1">
             {monthStats.alfa} <span className="text-xs font-bold text-slate-500">HARI</span>
           </p>
@@ -248,8 +248,8 @@ export default function AttendancePage() {
           {DAY_NAMES.map((dayName, idx) => (
             <div
               key={dayName}
-              className={`py-2 text-[11px] font-bold uppercase tracking-wider ${
-                idx === 6 ? "text-rose-500" : "text-slate-500"
+              className={`py-2 text-[11px] font-black uppercase tracking-wider font-mono ${
+                idx === 6 ? "text-[#8b5cf6]" : "text-black"
               }`}
             >
               {dayName}
@@ -259,7 +259,7 @@ export default function AttendancePage() {
 
         {/* Date Cells Grid */}
         {loading ? (
-          <div className="py-20 text-center text-xs text-slate-400">
+          <div className="py-20 text-center text-xs text-black font-mono font-bold">
             Memuat kalender presensi...
           </div>
         ) : (
@@ -281,12 +281,10 @@ export default function AttendancePage() {
               const actCount = cell.log?.activities?.length || 0;
 
               let cellStyle = "border-2 border-black bg-white shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000]";
-              if (isToday && isPayday) {
-                cellStyle = "border-3 border-black bg-[#ffe600] shadow-[3px_3px_0px_#000]";
-              } else if (isToday) {
-                cellStyle = "border-3 border-black bg-[#fef08a] shadow-[3px_3px_0px_#000]";
+              if (isToday) {
+                cellStyle = "border-3 border-black bg-[#a3e635] shadow-[3px_3px_0px_#000]";
               } else if (isPayday) {
-                cellStyle = "border-2 border-black bg-[#fef9c3] shadow-[2px_2px_0px_#000]";
+                cellStyle = "border-2 border-black bg-white shadow-[2px_2px_0px_#000]";
               }
 
               return (
@@ -300,9 +298,9 @@ export default function AttendancePage() {
                     <span
                       className={`text-xs md:text-sm font-black font-mono ${
                         isToday
-                          ? "w-6 h-6 rounded-md bg-black text-[#ffe600] flex items-center justify-center -ml-0.5 -mt-0.5 shadow-[1.5px_1.5px_0px_#000]"
+                          ? "w-6 h-6 rounded-md bg-black text-[#a3e635] flex items-center justify-center -ml-0.5 -mt-0.5 shadow-[1.5px_1.5px_0px_#000]"
                           : cell.isSunday
-                          ? "text-rose-600 font-black"
+                          ? "text-[#8b5cf6] font-black"
                           : isPayday
                           ? "text-black font-black underline decoration-2"
                           : "text-black font-bold"
@@ -315,7 +313,7 @@ export default function AttendancePage() {
                       {isPayday && (
                         <span
                           title="Switch Periode & Hari Gajian"
-                          className="pixel-badge bg-[#ffe600] text-black border border-black"
+                          className="pixel-badge bg-black text-[#a3e635] border border-black"
                         >
                           <Coins className="w-2.5 h-2.5 stroke-[2.5]" />
                           <span className="hidden md:inline">GAJI</span>
@@ -339,10 +337,10 @@ export default function AttendancePage() {
                           attendance === "Hadir"
                             ? "bg-[#a3e635] text-black"
                             : attendance === "Izin"
-                            ? "bg-[#00f0ff] text-black"
+                            ? "bg-[#8b5cf6] text-white"
                             : attendance === "Sakit"
-                            ? "bg-[#ffe600] text-black"
-                            : "bg-[#ff6b6b] text-black"
+                            ? "bg-white text-black"
+                            : "bg-black text-white"
                         }`}
                       >
                         <span className="md:hidden">
@@ -376,10 +374,10 @@ export default function AttendancePage() {
             <span className="pixel-badge bg-[#8b5cf6] text-white border-2 border-black shadow-[2px_2px_0px_#000]">
               IZIN
             </span>
-            <span className="pixel-badge bg-[#fef08a] text-black border-2 border-black shadow-[2px_2px_0px_#000]">
+            <span className="pixel-badge bg-white text-black border-2 border-black shadow-[2px_2px_0px_#000]">
               SAKIT
             </span>
-            <span className="pixel-badge bg-[#ff6b6b] text-black border-2 border-black shadow-[2px_2px_0px_#000]">
+            <span className="pixel-badge bg-black text-white border-2 border-black shadow-[2px_2px_0px_#000]">
               ALFA
             </span>
           </div>
@@ -394,7 +392,7 @@ export default function AttendancePage() {
       {/* Date Detail Inspection Modal with Pop Animation */}
       {selectedDateStr && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-[#fffdf8] w-full max-w-lg rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col max-h-[85vh] overflow-hidden border-[3px] border-black animate-brutal-pop">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col max-h-[85vh] overflow-hidden border-[3px] border-black animate-brutal-pop">
             {/* Modal Header */}
             <div className="p-4 border-b-2 border-black flex items-center justify-between bg-[#8b5cf6] text-white">
               <div>
@@ -448,8 +446,8 @@ export default function AttendancePage() {
                           : selectedLog.attendance === "Izin"
                           ? "bg-[#8b5cf6] text-white"
                           : selectedLog.attendance === "Sakit"
-                          ? "bg-[#fef08a] text-black"
-                          : "bg-[#ff6b6b] text-black"
+                          ? "bg-white text-black"
+                          : "bg-black text-white"
                       }`}
                     >
                       {selectedLog.attendance}
@@ -463,7 +461,7 @@ export default function AttendancePage() {
                       Rincian Kegiatan ({selectedLog.activities ? selectedLog.activities.length : 0})
                     </h4>
                     {!selectedLog.activities || selectedLog.activities.length === 0 ? (
-                      <p className="text-xs text-slate-600 font-mono font-bold bg-[#fbf8f0] p-3 rounded-xl border-2 border-dashed border-black">
+                      <p className="text-xs text-black font-mono font-bold bg-white p-3 rounded-xl border-2 border-dashed border-black">
                         [TIDAK ADA RINCIAN KEGIATAN SPESIFIK TERCATAT HARI INI]
                       </p>
                     ) : (
@@ -518,7 +516,7 @@ export default function AttendancePage() {
                 </>
               ) : (
                 /* Empty state when no log on selected date */
-                <div className="text-center py-10 space-y-3 bg-[#fbf8f0] border-2 border-dashed border-black rounded-xl p-6">
+                <div className="text-center py-10 space-y-3 bg-white border-2 border-dashed border-black rounded-xl p-6">
                   <div className="w-12 h-12 bg-white border-2 border-black rounded-xl flex items-center justify-center mx-auto text-black shadow-[2px_2px_0px_#000]">
                     <CalendarIcon className="w-6 h-6 stroke-[2.5]" />
                   </div>

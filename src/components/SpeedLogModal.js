@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { X, Zap, Clock, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
@@ -17,11 +18,17 @@ const PRESET_CHIPS = [
 ];
 
 export default function SpeedLogModal() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [timeRange, setTimeRange] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Jangan tampilkan speed log di halaman daily-log (karena editor penuh sudah ada di sana)
+  if (pathname === "/daily-log") {
+    return null;
+  }
 
   const getCurrentTimeSlot = () => {
     const now = new Date();
@@ -103,10 +110,10 @@ export default function SpeedLogModal() {
       <button
         type="button"
         onClick={handleOpen}
-        className="fixed bottom-32 md:bottom-16 right-4 md:right-4 z-40 bg-[#ffe600] text-black px-3.5 py-2 rounded-xl shadow-[4px_4px_0px_0px_#000] border-[2.5px] border-black transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center gap-2 cursor-pointer group select-none"
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 bg-[#a3e635] text-black px-3.5 py-2 rounded-xl shadow-[4px_4px_0px_0px_#000] border-[2.5px] border-black transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center gap-2 cursor-pointer group select-none"
         title="Catat Cepat Log Harian Tanpa Pindah Rute"
       >
-        <div className="w-5 h-5 rounded-md bg-black text-[#ffe600] flex items-center justify-center font-bold">
+        <div className="w-5 h-5 rounded-md bg-black text-[#a3e635] flex items-center justify-center font-bold">
           <Zap className="w-3 h-3 fill-current" />
         </div>
         <span className="font-mono font-black text-xs uppercase tracking-wider">
@@ -117,21 +124,21 @@ export default function SpeedLogModal() {
       {/* Speed Log Dialog */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-[#fffdf8] w-full max-w-md rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col overflow-hidden border-[3px] border-black animate-brutal-pop">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col overflow-hidden border-[3px] border-black animate-brutal-pop">
             {/* Header */}
-            <div className="p-4 border-b-2 border-black flex items-center justify-between bg-[#ffe600]">
+            <div className="p-4 border-b-2 border-black flex items-center justify-between bg-[#8b5cf6] text-white">
               <div className="flex items-center gap-2">
-                <span className="pixel-badge bg-black text-[#ffe600] border border-black shadow-[1.5px_1.5px_0px_#ffe600]">
+                <span className="pixel-badge bg-black text-[#a3e635] border border-black shadow-[1.5px_1.5px_0px_#000]">
                   FAST.ENTRY
                 </span>
-                <h3 className="text-sm font-black uppercase text-black">
+                <h3 className="text-sm font-black uppercase text-white">
                   Catat Cepat Aktivitas Hari Ini
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-black hover:bg-black hover:text-white p-1 rounded-lg border-2 border-black transition-colors cursor-pointer shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+                className="text-white hover:bg-black p-1 rounded-lg border-2 border-black transition-colors cursor-pointer shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
               >
                 <X className="w-4 h-4 stroke-[3]" />
               </button>
@@ -150,7 +157,7 @@ export default function SpeedLogModal() {
                       key={chip.label}
                       type="button"
                       onClick={() => handleApplyPreset(chip)}
-                      className="pixel-badge bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:bg-[#ffe600] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none cursor-pointer transition-all"
+                      className="pixel-badge bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:bg-[#a3e635] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none cursor-pointer transition-all"
                     >
                       <span>{chip.icon}</span>
                       <span>{chip.label}</span>
@@ -169,7 +176,7 @@ export default function SpeedLogModal() {
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
                   placeholder="Misal: 14:00 - 15:30"
-                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
                 />
               </div>
 
@@ -185,7 +192,7 @@ export default function SpeedLogModal() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Ketik apa yang barusan kamu kerjakan..."
-                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
                 />
               </div>
 
@@ -199,7 +206,7 @@ export default function SpeedLogModal() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Detail singkat hasil atau kendala..."
-                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
                 />
               </div>
 

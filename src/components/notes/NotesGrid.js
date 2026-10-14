@@ -6,13 +6,13 @@ function getTypeInfo(type) {
   switch (type) {
     case "materi":
       return {
-        badgeClass: "bg-[#00f0ff] text-black",
+        badgeClass: "bg-[#8b5cf6] text-white",
         label: "MATERI",
         icon: BookOpen,
       };
     case "meeting":
       return {
-        badgeClass: "bg-[#ffe600] text-black",
+        badgeClass: "bg-black text-white",
         label: "MEETING",
         icon: Users2,
       };
@@ -25,7 +25,7 @@ function getTypeInfo(type) {
     case "keyword":
     default:
       return {
-        badgeClass: "bg-[#c084fc] text-black",
+        badgeClass: "bg-white text-black",
         label: "KEYWORD",
         icon: FileText,
       };
@@ -66,7 +66,7 @@ export default function NotesGrid({ notes, onOpenModal, onDelete, onViewNote }) 
                 <button
                   type="button"
                   onClick={() => onOpenModal(note)}
-                  className="p-1 text-black hover:bg-[#ffe600] rounded border border-transparent hover:border-black cursor-pointer transition-colors"
+                  className="p-1 text-black hover:bg-[#a3e635] rounded border border-transparent hover:border-black cursor-pointer transition-colors"
                   title="Edit catatan"
                 >
                   <Edit2 className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -74,7 +74,7 @@ export default function NotesGrid({ notes, onOpenModal, onDelete, onViewNote }) 
                 <button
                   type="button"
                   onClick={() => onDelete(note.id)}
-                  className="p-1 text-black hover:bg-[#ff6b6b] rounded border border-transparent hover:border-black cursor-pointer transition-colors"
+                  className="p-1 text-black hover:bg-black hover:text-white rounded border border-transparent hover:border-black cursor-pointer transition-colors"
                   title="Hapus catatan"
                 >
                   <Trash2 className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -97,7 +97,7 @@ export default function NotesGrid({ notes, onOpenModal, onDelete, onViewNote }) 
                   month: "short",
                 })}
               </span>
-              <span className="bg-[#f4f0ea] px-1.5 py-0.5 border border-black rounded text-[9px]">#VAULT</span>
+              <span className="bg-white px-1.5 py-0.5 border border-black rounded text-[9px]">#VAULT</span>
             </div>
           </div>
         );

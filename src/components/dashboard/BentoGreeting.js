@@ -25,13 +25,13 @@ export default function BentoGreeting({ telemetry }) {
   return (
     <div className="brutal-card bg-white p-6 md:p-8 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
       {/* Decorative Corner Tag */}
-      <div className="absolute -top-3 -right-3 bg-[#ffe600] border-2 border-black px-4 py-1 font-mono font-black text-[10px] uppercase rotate-2 shadow-[2px_2px_0px_0px_#000] hidden sm:block">
+      <div className="absolute -top-3 -right-3 bg-[#8b5cf6] text-white border-2 border-black px-4 py-1 font-mono font-black text-[10px] uppercase rotate-2 shadow-[2px_2px_0px_0px_#000] hidden sm:block">
         COMMAND.CENTER
       </div>
 
       <div className="relative z-10 max-w-2xl">
         <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className="pixel-badge bg-[#f4f0ea]">
+          <span className="pixel-badge bg-white text-black">
             <Calendar className="w-3.5 h-3.5 text-black" />
             {formattedToday}
           </span>
@@ -42,8 +42,8 @@ export default function BentoGreeting({ telemetry }) {
               PRESENSI: {todayStatus} ({todayActsCount} ACT)
             </span>
           ) : (
-            <span className="pixel-badge bg-[#ff6b6b] text-black">
-              <Clock3 className="w-3.5 h-3.5 text-black" />
+            <span className="pixel-badge bg-black text-white">
+              <Clock3 className="w-3.5 h-3.5 text-white" />
               JURNAL: BELUM DIISI
             </span>
           )}
@@ -53,7 +53,7 @@ export default function BentoGreeting({ telemetry }) {
           Pusat Kendali Monitoring & Evaluasi
         </h1>
 
-        <div className="mt-3.5 bg-[#fbf8f0] border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_0px_#000] max-w-xl">
+        <div className="mt-3.5 bg-white border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_0px_#000] max-w-xl">
           <div className="flex items-center gap-1.5 mb-1 text-[10px] font-mono font-black text-slate-700">
             <Terminal className="w-3 h-3 text-black" /> [NOTE OF THE DAY]
           </div>
@@ -66,7 +66,7 @@ export default function BentoGreeting({ telemetry }) {
       <div className="relative z-10 flex-shrink-0">
         <Link
           href="/daily-log"
-          className="brutal-btn bg-[#ffe600] text-black hover:bg-[#ffd700] text-xs px-6 py-3.5 rounded-xl font-black tracking-wider flex items-center gap-2"
+          className="brutal-btn bg-[#a3e635] hover:bg-[#84cc16] text-black text-xs px-6 py-3.5 rounded-xl font-black tracking-wider flex items-center gap-2"
         >
           <span>{isLogged ? "Perbarui Jurnal Hari Ini" : "Isi Jurnal Sekarang"}</span>
           <ArrowRight className="w-4 h-4 stroke-[3]" />

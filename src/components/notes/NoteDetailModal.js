@@ -6,14 +6,14 @@ import { X, Copy, Check, Edit2, Calendar } from "lucide-react";
 function getTypeBadgeClass(type) {
   switch (type) {
     case "materi":
-      return "bg-[#00f0ff] text-black";
+      return "bg-[#8b5cf6] text-white";
     case "meeting":
-      return "bg-[#ffe600] text-black";
+      return "bg-black text-white";
     case "snippet":
       return "bg-[#a3e635] text-black";
     case "keyword":
     default:
-      return "bg-[#c084fc] text-black";
+      return "bg-white text-black";
   }
 }
 
@@ -47,11 +47,11 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
       onClick={onClose}
     >
       <div
-        className="bg-[#fffdf8] w-full max-w-xl rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col max-h-[85vh] border-[3px] border-black animate-brutal-pop overflow-hidden"
+        className="bg-white w-full max-w-xl rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col max-h-[85vh] border-[3px] border-black animate-brutal-pop overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b-2 border-black flex items-center justify-between gap-3 bg-[#ffe600]">
+        <div className="p-4 border-b-2 border-black flex items-center justify-between gap-3 bg-[#8b5cf6] text-white">
           <div className="flex items-center gap-2 flex-wrap">
             <span
               className={`pixel-badge ${getTypeBadgeClass(
@@ -60,7 +60,7 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
             >
               {note.type}
             </span>
-            <span className="text-[11px] text-black font-black flex items-center gap-1 font-mono">
+            <span className="text-[11px] text-white font-black flex items-center gap-1 font-mono">
               <Calendar className="w-3.5 h-3.5 stroke-[2.5]" />
               {formattedDate}
             </span>
@@ -70,7 +70,7 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
             <button
               type="button"
               onClick={handleCopy}
-              className="bg-white hover:bg-slate-100 text-black border-2 border-black px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
+              className="bg-white hover:bg-[#a3e635] text-black border-2 border-black px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
               title="Salin isi catatan"
             >
               {copied ? (
@@ -89,7 +89,7 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
             <button
               type="button"
               onClick={() => onEdit(note)}
-              className="bg-white hover:bg-slate-100 text-black border-2 border-black px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
+              className="bg-white hover:bg-[#a3e635] text-black border-2 border-black px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
               title="Edit catatan"
             >
               <Edit2 className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -99,7 +99,7 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
             <button
               type="button"
               onClick={onClose}
-              className="text-black hover:bg-black hover:text-white p-1 rounded-lg border-2 border-black cursor-pointer shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 ml-1"
+              className="text-white hover:bg-black p-1 rounded-lg border-2 border-black cursor-pointer shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 ml-1"
             >
               <X className="w-4 h-4 stroke-[3]" />
             </button>
@@ -112,7 +112,7 @@ export default function NoteDetailModal({ note, onClose, onEdit }) {
 
           <div
             className={`text-xs text-black font-bold whitespace-pre-wrap leading-relaxed p-4 bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-xl ${
-              note.type === "snippet" ? "font-mono bg-[#fdfbf7]" : "font-sans"
+              note.type === "snippet" ? "font-mono bg-white" : "font-sans"
             }`}
           >
             {note.content || <span className="text-slate-400 italic">Tidak ada isi catatan.</span>}

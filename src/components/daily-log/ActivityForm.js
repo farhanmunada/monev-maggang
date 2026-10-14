@@ -13,7 +13,7 @@ export default function ActivityForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-[#fbf8f0] p-4 md:p-5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_#000] space-y-3.5 mt-4 animate-brutal-pop"
+      className="bg-white p-4 md:p-5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_#000] space-y-3.5 mt-4 animate-brutal-pop"
     >
       <div className="flex justify-between items-center">
         <h4 className="font-black text-xs text-black flex items-center gap-1.5 font-mono uppercase">
@@ -34,7 +34,7 @@ export default function ActivityForm({
             placeholder="Misal: 14:30 atau 14:00 - 15:30"
             value={newActivity.time_range}
             onChange={(e) => onChange("time_range", e.target.value)}
-            className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+            className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
           />
         </div>
         <div className="md:col-span-2">
@@ -47,7 +47,7 @@ export default function ActivityForm({
             required
             value={newActivity.title}
             onChange={(e) => onChange("title", e.target.value)}
-            className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+            className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
           />
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function ActivityForm({
           rows={3}
           value={newActivity.description}
           onChange={(e) => onChange("description", e.target.value)}
-          className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee] resize-none leading-relaxed"
+          className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff] resize-none leading-relaxed"
         />
       </div>
 

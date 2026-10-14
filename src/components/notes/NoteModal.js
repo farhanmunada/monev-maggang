@@ -5,15 +5,15 @@ export default function NoteModal({ isOpen, onClose, formData, onChange, onSubmi
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-      <div className="bg-[#fffdf8] w-full max-w-lg rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col max-h-[90vh] border-[3px] border-black animate-brutal-pop overflow-hidden">
-        <div className="p-4 border-b-2 border-black flex justify-between items-center bg-[#ffe600]">
-          <h2 className="text-sm font-black uppercase text-black">
+      <div className="bg-white w-full max-w-lg rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col max-h-[90vh] border-[3px] border-black animate-brutal-pop overflow-hidden">
+        <div className="p-4 border-b-2 border-black flex justify-between items-center bg-[#8b5cf6] text-white">
+          <h2 className="text-sm font-black uppercase text-white">
             {formData.id ? "Edit Catatan" : "Tambah Catatan Baru"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-black hover:bg-black hover:text-white p-1 rounded-lg border-2 border-black cursor-pointer shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
+            className="text-white hover:bg-black p-1 rounded-lg border-2 border-black cursor-pointer shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5"
           >
             <X className="w-4 h-4 stroke-[3]" />
           </button>
@@ -32,8 +32,8 @@ export default function NoteModal({ isOpen, onClose, formData, onChange, onSubmi
                   onClick={() => onChange("type", type)}
                   className={`py-1.5 px-2.5 rounded-lg text-xs font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
                     formData.type === type
-                      ? "bg-[#ffe600] text-black shadow-[2px_2px_0px_#000] -translate-y-0.5"
-                      : "bg-white text-black hover:bg-slate-100"
+                      ? "bg-[#a3e635] text-black shadow-[2px_2px_0px_#000] -translate-y-0.5"
+                      : "bg-white text-black hover:bg-[#a3e635]"
                   }`}
                 >
                   {type}
@@ -50,7 +50,7 @@ export default function NoteModal({ isOpen, onClose, formData, onChange, onSubmi
               value={formData.title}
               onChange={(e) => onChange("title", e.target.value)}
               placeholder="Misal: Rangkuman arsitektur database, snippet fungsi auth..."
-              className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee]"
+              className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
             />
           </div>
 
@@ -61,7 +61,7 @@ export default function NoteModal({ isOpen, onClose, formData, onChange, onSubmi
               onChange={(e) => onChange("content", e.target.value)}
               placeholder="Tuliskan rincian, instruksi, rumus, atau link referensi di sini..."
               rows={6}
-              className="w-full flex-1 bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee] resize-none leading-relaxed"
+              className="w-full flex-1 bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff] resize-none leading-relaxed"
             />
           </div>
 

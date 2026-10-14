@@ -77,7 +77,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-5 md:space-y-6 pb-12">
+    <div className="space-y-5 md:space-y-6 pb-28 md:pb-16">
       {/* 1. Hero Greeting Banner (Bento full width) */}
       <BentoGreeting telemetry={telemetry} />
 
