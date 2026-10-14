@@ -10,6 +10,7 @@ import {
   Sparkles,
   CheckSquare,
   StickyNote,
+  Bell,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -82,7 +83,16 @@ export default function Navbar() {
         </div>
 
         {/* Right: Balancer & Live Status */}
-        <div className="hidden md:flex flex-1 items-center justify-end">
+        <div className="hidden md:flex flex-1 items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("trigger-sarcastic-roast"))}
+            className="pixel-badge bg-[#ef4444] text-white hover:bg-black border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer flex items-center gap-1 font-black text-[10px] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
+            title="Uji Alarm Roasting & Notifikasi Windows"
+          >
+            <Bell className="w-3 h-3 stroke-[3] animate-bounce" />
+            <span>[TEST.ROAST]</span>
+          </button>
           <span className="pixel-badge bg-[#a3e635] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] flex items-center gap-1.5 font-black text-[11px]">
             <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
             [LIVE.SYS]

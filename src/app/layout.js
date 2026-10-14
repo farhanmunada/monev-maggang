@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
 import WalkingCompanions from "@/components/WalkingCompanions";
 import SpeedLogModal from "@/components/SpeedLogModal";
+import SarcasticEmergencyAlert from "@/components/SarcasticEmergencyAlert";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
@@ -74,6 +75,9 @@ export default function RootLayout({ children }) {
 
         {/* Global Floating Speed Log Modal */}
         <SpeedLogModal />
+
+        {/* Global Sarcastic Emergency Alert System */}
+        <SarcasticEmergencyAlert />
 
         {/* Bottom Floating Navigation for Mobile */}
         <BottomNav />
