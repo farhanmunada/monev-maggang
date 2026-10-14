@@ -25,21 +25,21 @@ export default function RootLayout({ children }) {
         {/* Neo-Brutalist Ticker Banner */}
         <div className="marquee-banner bg-black text-[#ffe600] border-b-2 border-black overflow-hidden py-1 select-none font-mono text-[11px] font-black tracking-wider uppercase flex items-center">
           <div className="animate-marquee whitespace-nowrap flex items-center gap-8">
-            <span className="flex items-center gap-2">⚡ INTERNTRACK SYS.V2</span>
+            <span>INTERNTRACK SYS.V2</span>
             <span>{"//"}</span>
-            <span>🛠️ HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
+            <span>HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
             <span>{"//"}</span>
-            <span>🎯 ZERO DOWNTIME — TRACK EVERY GRIND</span>
+            <span>ZERO DOWNTIME — TRACK EVERY GRIND</span>
             <span>{"//"}</span>
-            <span>🔥 NEO-BRUTALIST PROTOCOL ACTIVATED</span>
+            <span>NEO-BRUTALIST PROTOCOL ACTIVATED</span>
             <span>{"//"}</span>
-            <span>⚡ INTERNTRACK SYS.V2</span>
+            <span>INTERNTRACK SYS.V2</span>
             <span>{"//"}</span>
-            <span>🛠️ HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
+            <span>HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
             <span>{"//"}</span>
-            <span>🎯 ZERO DOWNTIME — TRACK EVERY GRIND</span>
+            <span>ZERO DOWNTIME — TRACK EVERY GRIND</span>
             <span>{"//"}</span>
-            <span>🔥 NEO-BRUTALIST PROTOCOL ACTIVATED</span>
+            <span>NEO-BRUTALIST PROTOCOL ACTIVATED</span>
           </div>
         </div>
 
