@@ -45,9 +45,9 @@ const COMPANIONS = [
       "Status CPU stabil: 90% nunggu jam pulang.",
     ],
     urgentQuotes: [
-      "Bip bop! Jam 12:00+ terlewati. Aktivitas: 0. Mentor mulai curiga!",
+      "Bip bop! Jam kerja hampir usai tapi aktivitas masih 0. Mentor mulai curiga!",
       "Sistem mendeteksi kalori masuk tapi progres kerja belum terdokumentasi.",
-      "Peringatan kritis: Tab jurnal masih menunggu diisi sebelum deadline sore.",
+      "Peringatan kritis: Tab jurnal masih menunggu diisi sebelum jam checkout pulang.",
     ],
     satisfiedQuotes: [
       "Status logbook: Tersimpan aman. Sistem beroperasi dalam efisiensi optimal.",
@@ -110,7 +110,14 @@ export default function WalkingCompanions() {
 
   // Cek jam kerja dan status jurnal hari ini
   useEffect(() => {
-    setIsAfterNoon(new Date().getHours() >= 12);
+    const now = new Date();
+    const day = now.getDay();
+    const hours = now.getHours();
+    // Jam pulang: Sabtu 12:00 (urgent >= 11), Senin-Jumat 14:00 (urgent >= 12)
+    const isSaturday = day === 6;
+    const isWorkday = day >= 1 && day <= 6;
+    const cutoff = isSaturday ? 11 : 12;
+    setIsAfterNoon(isWorkday && hours >= cutoff);
 
     const checkStatus = async () => {
       try {
@@ -135,12 +142,17 @@ export default function WalkingCompanions() {
   useEffect(() => {
     if (!isUrgent || !isVisible) return;
 
+    const isSat = new Date().getDay() === 6;
+    const reminderMsg = isSat
+      ? "Bip bop! Mau jam 12 pulang, jurnal Sabtu masih kosong!"
+      : "Bip bop! Mau jam 14 pulang, jurnalmu masih kosong!";
+
     let hideTimer;
     const timer = setTimeout(() => {
       setCompanionsState((prev) =>
         prev.map((c) =>
           c.id === "chip"
-            ? { ...c, activeBubble: "Bip bop! Jam 12 siang lewat, jurnalmu masih kosong!" }
+            ? { ...c, activeBubble: reminderMsg }
             : c
         )
       );

@@ -175,7 +175,7 @@ export default function SpeedLogModal() {
                   type="text"
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
-                  placeholder="Misal: 14:00 - 15:30"
+                  placeholder="Misal: 07:00 - 08:30 atau 10:30 - 12:30"
                   className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
                 />
               </div>

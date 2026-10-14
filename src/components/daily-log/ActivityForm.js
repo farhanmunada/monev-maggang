@@ -31,7 +31,7 @@ export default function ActivityForm({
           </label>
           <input
             type="text"
-            placeholder="Misal: 14:30 atau 14:00 - 15:30"
+            placeholder="Misal: 07:00 - 08:30 atau 10:30 - 12:30"
             value={newActivity.time_range}
             onChange={(e) => onChange("time_range", e.target.value)}
             className="w-full px-3 py-2 text-xs rounded-lg border-2 border-black bg-white font-mono font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"

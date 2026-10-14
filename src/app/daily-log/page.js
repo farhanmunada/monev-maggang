@@ -69,6 +69,7 @@ function DailyLogContent() {
   const [yearNum, monthNum, dayNum] = selectedDate.split("-").map(Number);
   const dateObj = new Date(yearNum, monthNum - 1, dayNum);
   const isSunday = dateObj.getDay() === 0;
+  const isSaturday = dateObj.getDay() === 6;
   const isToday = selectedDate === formatYMD();
   const formattedDate = formatIndonesianDate(selectedDate);
 
@@ -360,7 +361,7 @@ function DailyLogContent() {
       const res = await fetch("/api/generate-daily-draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: draftRole, topic: draftTopic }),
+        body: JSON.stringify({ role: draftRole, topic: draftTopic, date: selectedDate }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Gagal generate draft AI");
@@ -586,7 +587,7 @@ function DailyLogContent() {
                 <span className="pixel-badge bg-[#a3e635] text-black font-black text-[9px]">OTOMATIS</span>
               </div>
               <p className="text-[11px] font-mono font-bold text-slate-600 mt-0.5">
-                Generate 4 blok aktivitas kantor harian (08:30 - 17:00), refleksi, dan kendala dalam 1 klik
+                Generate blok aktivitas jam kerja ({isSaturday ? "Sabtu: 07:00 - 12:00" : "Senin-Jum: 07:00 - 14:00"}), refleksi, dan kendala dalam 1 klik
               </p>
             </div>
           </div>
@@ -740,9 +741,11 @@ function DailyLogContent() {
                 </div>
 
                 <div className="bg-[#a3e635] border-2 border-black p-3 rounded-xl text-[11px] font-mono text-black leading-snug shadow-[2px_2px_0px_#000]">
-                  <p className="font-black mb-1">[JAMINAN KEAMANAN DATA]:</p>
+                  <p className="font-black mb-1">
+                    [JAM KERJA: {isSaturday ? "SABTU 07:00 - 12:00" : "SENIN - JUMAT 07:00 - 14:00"}]:
+                  </p>
                   <p className="font-bold">
-                    Aktivitas draft akan <u>ditinjau terlebih dahulu</u> dan <u>ditambahkan (+ Append)</u> ke daftar. Aktivitas yang sudah Anda tulis sebelumnya <strong>tidak akan pernah dihapus</strong>.
+                    Draft dirancang {isSaturday ? "3 blok kegiatan (07:00 - 12:00)" : "4 blok kegiatan (07:00 - 14:00)"} dan <u>ditinjau terlebih dahulu</u> sebelum <u>ditambahkan (+ Append)</u> ke daftar Anda.
                   </p>
                 </div>
 
