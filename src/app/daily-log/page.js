@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Save, Check, Loader2, Sparkles, Wand2, X, AlertCircle } from "lucide-react";
+import { Save, Check, Loader2, Sparkles, Wand2, X, AlertCircle, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import toast from "react-hot-toast";
 import { formatYMD, formatIndonesianDate } from "@/lib/date";
@@ -42,8 +42,10 @@ function DailyLogContent() {
   // Pabrik Log AI States
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [isDraftingAI, setIsDraftingAI] = useState(false);
+  const [isApplyingDraft, setIsApplyingDraft] = useState(false);
   const [draftRole, setDraftRole] = useState("Software Engineer / IT Developer Magang");
   const [draftTopic, setDraftTopic] = useState("");
+  const [draftPreview, setDraftPreview] = useState(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -367,58 +369,87 @@ function DailyLogContent() {
         localStorage.setItem("monev_user_role", draftRole);
       }
 
-      // Pastikan daily_log tersimpan dengan Hadir
-      const logPayload = {
-        date: selectedDate,
-        attendance: "Hadir",
-        learning: data.learning || logData.learning,
-        obstacle: data.obstacle || logData.obstacle,
-      };
-
-      const { data: savedLog, error: logErr } = await supabase
-        .from("daily_logs")
-        .upsert([logPayload], { onConflict: "date" })
-        .select()
-        .single();
-
-      if (logErr) throw logErr;
-
-      const currentLogId = savedLog.id;
-      setLogId(currentLogId);
-      setLogData({
-        attendance: "Hadir",
-        learning: data.learning,
-        obstacle: data.obstacle,
+      const acts = data.activities || [];
+      setDraftPreview({
+        activities: acts,
+        learning: data.learning || "",
+        obstacle: data.obstacle || "",
+        selectedIndices: acts.map((_, i) => i),
+        applyLearning: !logData.learning.trim(),
+        applyObstacle: !logData.obstacle.trim(),
       });
+      toast.success("Draft AI selesai dibuat! Silakan tinjau sebelum ditambahkan.");
+    } catch (err) {
+      console.error("Gagal generate draft:", err);
+      toast.error("Gagal generate draft: " + err.message);
+    } finally {
+      setIsDraftingAI(false);
+    }
+  };
 
-      // Simpan 4 aktivitas
-      if (data.activities && data.activities.length > 0) {
-        await supabase.from("activities").delete().eq("daily_log_id", currentLogId);
+  const handleApplyDraft = async () => {
+    if (!draftPreview) return;
+    try {
+      setIsApplyingDraft(true);
+      const currentLogId = await ensureDailyLogExists();
 
-        const activitiesToInsert = data.activities.map((act) => ({
+      // Filter aktivitas yang dicentang user
+      const chosenActs = draftPreview.activities.filter((_, idx) =>
+        draftPreview.selectedIndices.includes(idx)
+      );
+
+      // Simpan aktivitas baru (APPEND KE DAFTAR TANPA HAPUS AKTIVITAS SEBELUMNYA)
+      let newlyInserted = [];
+      if (chosenActs.length > 0) {
+        const payload = chosenActs.map((act) => ({
           daily_log_id: currentLogId,
           time_range: act.time_range,
           title: act.title,
           description: act.description,
         }));
 
-        const { data: insertedActs, error: actErr } = await supabase
+        const { data: inserted, error: actErr } = await supabase
           .from("activities")
-          .insert(activitiesToInsert)
+          .insert(payload)
           .select();
 
         if (actErr) throw actErr;
-        setActivities(insertedActs || []);
+        newlyInserted = inserted || [];
+        setActivities((prev) => [...prev, ...newlyInserted]);
+      }
+
+      // Update refleksi dan kendala hanya jika dicentang oleh user
+      const updates = {};
+      if (draftPreview.applyLearning && draftPreview.learning) {
+        updates.learning = draftPreview.learning;
+      }
+      if (draftPreview.applyObstacle && draftPreview.obstacle) {
+        updates.obstacle = draftPreview.obstacle;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        const { error: updateErr } = await supabase
+          .from("daily_logs")
+          .update(updates)
+          .eq("id", currentLogId);
+
+        if (updateErr) throw updateErr;
+
+        setLogData((prev) => ({
+          ...prev,
+          ...updates,
+        }));
       }
 
       setIsDraftModalOpen(false);
+      setDraftPreview(null);
       setLastSavedAt(getCurrentTimeStr());
-      toast.success("⚡ 4 Aktivitas harian & refleksi berhasil digenerate dan tersimpan!");
+      toast.success(`⚡ ${newlyInserted.length} Kegiatan draft berhasil ditambahkan ke jurnal!`);
     } catch (err) {
-      console.error("Gagal generate draft:", err);
-      toast.error("Gagal generate draft: " + err.message);
+      console.error("Gagal menerapkan draft:", err);
+      toast.error("Gagal menerapkan draft: " + err.message);
     } finally {
-      setIsDraftingAI(false);
+      setIsApplyingDraft(false);
     }
   };
 
@@ -655,82 +686,232 @@ function DailyLogContent() {
       {/* Modal Pabrik Log AI */}
       {isDraftModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-150">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col overflow-hidden border-[3px] border-black animate-brutal-pop">
+          <div className="bg-white w-full max-w-xl rounded-2xl shadow-[8px_8px_0px_0px_#000] flex flex-col overflow-hidden border-[3px] border-black animate-brutal-pop max-h-[90vh]">
             {/* Header */}
-            <div className="p-4 border-b-2 border-black flex items-center justify-between bg-[#8b5cf6] text-white">
+            <div className="p-4 border-b-2 border-black flex items-center justify-between bg-[#8b5cf6] text-white shrink-0">
               <div className="flex items-center gap-2">
                 <span className="pixel-badge bg-black text-[#a3e635] border border-black shadow-[1.5px_1.5px_0px_#000]">
-                  AUTO.DRAFT
+                  {draftPreview ? "REVIEW.DRAFT" : "AUTO.DRAFT"}
                 </span>
-                <h3 className="text-sm font-black uppercase text-white">
-                  Pabrik Draft Harian AI
+                <h3 className="text-sm font-black uppercase text-white font-mono">
+                  {draftPreview ? "Tinjau Draft Sebelum Masuk Jurnal" : "Pabrik Draft Harian AI"}
                 </h3>
               </div>
               <button
                 type="button"
-                onClick={() => setIsDraftModalOpen(false)}
+                onClick={() => {
+                  setIsDraftModalOpen(false);
+                  setDraftPreview(null);
+                }}
                 className="text-white hover:bg-black p-1 rounded-lg border-2 border-black transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
               >
                 <X className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleGenerateDraft} className="p-5 space-y-4">
-              <div>
-                <label className="block text-[11px] font-black uppercase text-black mb-1.5 font-mono">
-                  Posisi / Role Magang:
-                </label>
-                <input
-                  type="text"
-                  value={draftRole}
-                  onChange={(e) => setDraftRole(e.target.value)}
-                  placeholder="Contoh: Frontend Developer, Network Support..."
-                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
-                  required
-                />
-              </div>
+            {/* Content: Form or Review */}
+            {!draftPreview ? (
+              <form onSubmit={handleGenerateDraft} className="p-5 space-y-4 overflow-y-auto">
+                <div>
+                  <label className="block text-[11px] font-black uppercase text-black mb-1.5 font-mono">
+                    Posisi / Role Magang:
+                  </label>
+                  <input
+                    type="text"
+                    value={draftRole}
+                    onChange={(e) => setDraftRole(e.target.value)}
+                    placeholder="Contoh: Frontend Developer, Network Support..."
+                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
+                    required
+                  />
+                </div>
 
-              <div>
-                <label className="block text-[11px] font-black uppercase text-black mb-1.5 font-mono">
-                  Fokus Spesifik Hari Ini (Opsional):
-                </label>
-                <input
-                  type="text"
-                  value={draftTopic}
-                  onChange={(e) => setDraftTopic(e.target.value)}
-                  placeholder="Kosongkan jika ingin AI merancang aktivitas umum kantor"
-                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
-                />
-              </div>
+                <div>
+                  <label className="block text-[11px] font-black uppercase text-black mb-1.5 font-mono">
+                    Fokus Spesifik Hari Ini (Opsional):
+                  </label>
+                  <input
+                    type="text"
+                    value={draftTopic}
+                    onChange={(e) => setDraftTopic(e.target.value)}
+                    placeholder="Kosongkan jika ingin AI merancang aktivitas umum kantor"
+                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff]"
+                  />
+                </div>
 
-              <div className="bg-[#faf5ff] border-2 border-black p-3 rounded-xl text-[11px] font-mono text-slate-700 leading-snug">
-                <p className="font-bold text-black mb-1">[OUTPUT OTOMATIS]:</p>
-                <ul className="list-disc list-inside space-y-0.5">
-                  <li>4 Blok kegiatan jam 08:30 s/d 17:00</li>
-                  <li>Paragraf refleksi kompetensi formal</li>
-                  <li>Keterangan kendala & status HADIR</li>
-                </ul>
-              </div>
+                <div className="bg-[#a3e635] border-2 border-black p-3 rounded-xl text-[11px] font-mono text-black leading-snug shadow-[2px_2px_0px_#000]">
+                  <p className="font-black mb-1">[JAMINAN KEAMANAN DATA]:</p>
+                  <p className="font-bold">
+                    Aktivitas draft akan <u>ditinjau terlebih dahulu</u> dan <u>ditambahkan (+ Append)</u> ke daftar. Aktivitas yang sudah Anda tulis sebelumnya <strong>tidak akan pernah dihapus</strong>.
+                  </p>
+                </div>
 
-              <button
-                type="submit"
-                disabled={isDraftingAI}
-                className="w-full py-3 rounded-xl bg-[#a3e635] hover:bg-[#8ee01a] text-black font-black uppercase tracking-wider text-xs border-2 border-black shadow-[4px_4px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
-              >
-                {isDraftingAI ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
-                    <span>AI Sedang Merancang Draft Seharian...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 stroke-[2.5]" />
-                    <span>Generate & Masukkan ke Jurnal</span>
-                  </>
-                )}
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={isDraftingAI}
+                  className="w-full py-3 rounded-xl bg-[#a3e635] hover:bg-[#8ee01a] text-black font-black uppercase tracking-wider text-xs border-2 border-black shadow-[4px_4px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  {isDraftingAI ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
+                      <span>AI Sedang Merancang Draft...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                      <span>Rancang Draft Kegiatan (Pratinjau)</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            ) : (
+              <div className="p-5 space-y-4 overflow-y-auto">
+                <div className="bg-[#a3e635] text-black border-2 border-black p-3 rounded-xl text-xs font-mono font-bold shadow-[2px_2px_0px_#000]">
+                  [CATATAN]: Centang aktivitas yang ingin dimasukkan. Aktivitas terpilih akan DITAMBAHKAN ke jurnal Anda tanpa menghapus kegiatan yang sudah ada.
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-black uppercase font-mono text-black">
+                      Pilih Kegiatan Draft ({draftPreview.selectedIndices.length}/{draftPreview.activities.length}):
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (draftPreview.selectedIndices.length === draftPreview.activities.length) {
+                          setDraftPreview((prev) => ({ ...prev, selectedIndices: [] }));
+                        } else {
+                          setDraftPreview((prev) => ({
+                            ...prev,
+                            selectedIndices: prev.activities.map((_, i) => i),
+                          }));
+                        }
+                      }}
+                      className="pixel-badge bg-white text-black border border-black text-[10px] cursor-pointer"
+                    >
+                      {draftPreview.selectedIndices.length === draftPreview.activities.length
+                        ? "Batal Semua"
+                        : "Pilih Semua"}
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {draftPreview.activities.map((act, idx) => {
+                      const isChecked = draftPreview.selectedIndices.includes(idx);
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            setDraftPreview((prev) => ({
+                              ...prev,
+                              selectedIndices: isChecked
+                                ? prev.selectedIndices.filter((i) => i !== idx)
+                                : [...prev.selectedIndices, idx],
+                            }));
+                          }}
+                          className={`p-3 rounded-xl border-2 border-black cursor-pointer transition-all ${
+                            isChecked
+                              ? "bg-white shadow-[3px_3px_0px_#000]"
+                              : "bg-slate-100 opacity-60 border-dashed"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => {}}
+                              className="w-4 h-4 accent-[#8b5cf6] cursor-pointer"
+                            />
+                            <span className="font-mono text-[10px] bg-[#8b5cf6] text-white border border-black px-1.5 py-0.5 rounded font-black">
+                              {act.time_range}
+                            </span>
+                            <span className="font-black text-xs text-black">{act.title}</span>
+                          </div>
+                          <p className="text-[11px] font-mono text-slate-700 mt-1 pl-6 font-bold leading-relaxed">
+                            {act.description}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Refleksi & Kendala Options */}
+                <div className="space-y-2 pt-2 border-t-2 border-black">
+                  <label className="flex items-start gap-2.5 p-3 rounded-xl border-2 border-black bg-white cursor-pointer shadow-[2px_2px_0px_#000]">
+                    <input
+                      type="checkbox"
+                      checked={draftPreview.applyLearning}
+                      onChange={(e) =>
+                        setDraftPreview((prev) => ({ ...prev, applyLearning: e.target.checked }))
+                      }
+                      className="w-4 h-4 accent-[#8b5cf6] mt-0.5 cursor-pointer"
+                    />
+                    <div className="text-xs">
+                      <span className="font-black font-mono text-black">
+                        Terapkan Refleksi Pembelajaran AI
+                      </span>
+                      {logData.learning.trim() && (
+                        <span className="block text-[10px] text-amber-800 font-mono font-black mt-0.5">
+                          *Refleksi Anda saat ini akan ditimpa jika opsi ini dicentang.
+                        </span>
+                      )}
+                      <p className="text-[11px] font-mono text-slate-700 mt-1 italic font-bold">
+                        &ldquo;{draftPreview.learning}&rdquo;
+                      </p>
+                    </div>
+                  </label>
+
+                  <label className="flex items-start gap-2.5 p-3 rounded-xl border-2 border-black bg-white cursor-pointer shadow-[2px_2px_0px_#000]">
+                    <input
+                      type="checkbox"
+                      checked={draftPreview.applyObstacle}
+                      onChange={(e) =>
+                        setDraftPreview((prev) => ({ ...prev, applyObstacle: e.target.checked }))
+                      }
+                      className="w-4 h-4 accent-[#8b5cf6] mt-0.5 cursor-pointer"
+                    />
+                    <div className="text-xs">
+                      <span className="font-black font-mono text-black">
+                        Terapkan Keterangan Kendala AI
+                      </span>
+                      <p className="text-[11px] font-mono text-slate-700 mt-1 italic font-bold">
+                        &ldquo;{draftPreview.obstacle}&rdquo;
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setDraftPreview(null)}
+                    className="flex-1 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-black font-mono font-black uppercase text-xs border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer"
+                  >
+                    ← Rancang Ulang
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleApplyDraft}
+                    disabled={isApplyingDraft || draftPreview.selectedIndices.length === 0}
+                    className="flex-2 py-2.5 rounded-xl bg-[#a3e635] hover:bg-[#8ee01a] text-black font-mono font-black uppercase text-xs border-2 border-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer disabled:opacity-60 flex items-center justify-center gap-1.5"
+                  >
+                    {isApplyingDraft ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
+                        <span>Menambahkan ke Jurnal...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 stroke-[3]" />
+                        <span>Tambahkan ({draftPreview.selectedIndices.length}) ke Jurnal</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
