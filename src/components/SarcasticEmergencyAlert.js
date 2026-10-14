@@ -8,13 +8,13 @@ import { supabase } from "@/lib/supabase";
 import { formatYMD } from "@/lib/date";
 
 const SAVAGE_ROASTS = [
-  "Buka tab banyak, pura-pura ngetik terminal, tapi logbook masih 0? Mau nilai magang E?",
-  "Jam kerja mau kelar, lu mau langsung checkout? Logbook masih sekosong masa depan kalau gak diisi!",
-  "Minta uang saku lancar, nulis 3 baris logbook kayak disuruh gali sumur. Isi buruan sebelum mentor murka!",
-  "Dosen pembimbing udah siapin spidol merah. Mau bikin alasan 'laptop kebakar' lagi pas sidang magang?",
-  "Status: Pura-pura sibuk 100%, Hasil dokumentasi 0%. Jangan bikin malu kampus, isi jurnal sekarang!",
-  "Server aja lu rawat tiap hari, masa logbook sendiri lu telantarin sampe mau pulang? Cepet isi!",
-  "Karier senior idaman, disiplin nulis logbook kayak bocah. Tinggal klik 'Pabrik AI' apa susahnya, Bos?!",
+  "Buka tab banyak, pura-pura ngetik terminal, tapi report kerja masih 0? Mau kena potong gaji akhir bulan?",
+  "Jam kerja mau kelar lu mau langsung ngacir? Logbook masih kosong melompong, siap-siap SP1 dari HRD!",
+  "Tuntut naik gaji lancar, nulis 3 baris report kerjaan kayak disuruh gali sumur. Isi buruan sebelum bos murka!",
+  "HRD udah siapin potongan absen. Mau bikin alasan 'server down' lagi pas ditagih report kerjaan?",
+  "Status: Pura-pura sibuk 100%, Bukti report 0%. Jangan bikin malu divisi lu, isi timesheet sekarang!",
+  "Server aja lu rawat tiap hari, masa report kerjaan sendiri lu telantarin sampe jam pulang? Cepet isi!",
+  "Gaya kerja pengen dipuji senior, disiplin report kayak anak baru kemarin sore. Tinggal klik 'Pabrik AI' kelar, Bos!",
 ];
 
 function playSirenAudio() {

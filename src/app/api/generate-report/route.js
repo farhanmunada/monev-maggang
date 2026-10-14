@@ -13,7 +13,7 @@ export async function POST(req) {
       );
     }
 
-    const systemPrompt = `Anda adalah asisten cerdas yang bertugas menyusun narasi laporan absensi dan log harian magang resmi menjadi narasi formal, profesional, dan berstandar baku.
+    const systemPrompt = `Anda adalah asisten cerdas yang bertugas menyusun narasi laporan absensi dan log aktivitas kerja profesional menjadi narasi formal, profesional, dan berstandar baku korporat.
 
 Pedoman Penulisan (SANGAT KETAT):
 1. GAYA BAHASA FORMAL & PROFESIONAL:

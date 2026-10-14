@@ -34,7 +34,7 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-lg overflow-hidden border-2 border-black bg-[#8b5cf6] flex items-center justify-center shadow-[2px_2px_0px_0px_#000] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[3px_3px_0px_0px_#000] transition-all">
               <Image
                 src="/icon.png"
-                alt="InternTrack Logo"
+                alt="WorkTrack Logo"
                 width={24}
                 height={24}
                 className="object-cover"
@@ -42,7 +42,7 @@ export default function Navbar() {
             </div>
             <div className="flex items-center gap-2">
               <span className="font-black text-sm text-black tracking-tight uppercase">
-                InternTrack
+                WorkTrack
               </span>
               <span className="pixel-badge bg-[#a3e635] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000] hidden lg:inline-flex text-[10px]">
                 SYS.V2

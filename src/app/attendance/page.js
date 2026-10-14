@@ -505,11 +505,11 @@ export default function AttendancePage() {
                     <div className="flex items-center gap-2">
                       <span className="font-black uppercase">Switch Periode & Hari Gajian</span>
                       <span className="pixel-badge bg-black text-[#a3e635] border border-black text-[9px]">
-                        CUTOFF.BULANAN
+                        PAYROLL.CUTOFF
                       </span>
                     </div>
                     <p className="text-[11px] font-bold leading-relaxed">
-                      Tanggal 20 menandai penutupan siklus evaluasi bulanan magang dan jadwal pencairan uang saku / honor.
+                      Tanggal 20 menandai penutupan siklus evaluasi absensi bulanan dan jadwal pencairan gaji / payroll.
                     </p>
                   </div>
                 </div>

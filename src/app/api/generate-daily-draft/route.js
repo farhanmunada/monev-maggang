@@ -57,7 +57,7 @@ function generateDynamicFallback(role = "", topic = "", isSaturday = false) {
 
 export async function POST(req) {
   try {
-    const { role = "Software Engineer / IT Developer Magang", topic = "", date = "" } = await req.json();
+    const { role = "IT Specialist / Hardware & Network Support", topic = "", date = "" } = await req.json();
     const groqApiKey = process.env.GROQ_API_KEY;
 
     let isSaturday = false;
@@ -95,8 +95,8 @@ Buat TEPAT 4 aktivitas berurutan yang mencakup jam kerja penuh 07:00 sampai 14:0
       ? `{\n  "activities": [\n    { "time_range": "07:00 - 08:30", "title": "...", "description": "..." },\n    { "time_range": "08:30 - 10:15", "title": "...", "description": "..." },\n    { "time_range": "10:15 - 12:00", "title": "...", "description": "..." }\n  ],\n  "learning": "...",\n  "obstacle": "..."\n}`
       : `{\n  "activities": [\n    { "time_range": "07:00 - 08:30", "title": "...", "description": "..." },\n    { "time_range": "08:30 - 10:30", "title": "...", "description": "..." },\n    { "time_range": "10:30 - 12:30", "title": "...", "description": "..." },\n    { "time_range": "12:30 - 14:00", "title": "...", "description": "..." }\n  ],\n  "learning": "...",\n  "obstacle": "..."\n}`;
 
-    const systemPrompt = `Anda adalah asisten cerdas penyusun logbook harian magang industri berstandar formal dan profesional.
-Tugas Anda: membuat 1 paket rancangan logbook harian lengkap untuk mahasiswa magang.
+    const systemPrompt = `Anda adalah asisten cerdas penyusun logbook dan report aktivitas kerja harian profesional industri berstandar formal.
+Tugas Anda: membuat 1 paket rancangan logbook kerja harian lengkap untuk staf/karyawan profesional.
 
 ${focusContext}
 

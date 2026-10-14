@@ -29,7 +29,7 @@ export async function POST(req) {
       })
       .join("\n");
 
-    const systemPrompt = `Anda adalah asisten cerdas untuk mahasiswa magang yang bertugas merangkum hasil pembelajaran dan insight teknis secara formal, profesional, dan berstandar baku berdasarkan daftar kegiatan harian magang.
+    const systemPrompt = `Anda adalah asisten cerdas evaluasi kompetensi kerja profesional yang bertugas merangkum hasil evaluasi teknis, peningkatan kompetensi, dan capaian kerja secara formal, profesional, dan berstandar baku korporat berdasarkan daftar aktivitas kerja harian.
 
 Aturan Ketat Penulisan:
 1. Gunakan bahasa Indonesia baku, formal, objektif, dan profesional (standar laporan resmi instansi/korporat).
@@ -39,7 +39,7 @@ Aturan Ketat Penulisan:
 5. Panjang teks pembelajaran HARUS MINIMAL 100 karakter.
 6. Hasilkan HANYA teks isi pembelajaran dalam bahasa Indonesia, tanpa pengantar, tanpa penutup, tanpa format markdown tebal (*), dan tanpa tanda kutip.`;
 
-    const userMessage = `Berikut adalah kegiatan magang yang dilakukan:\n${activitiesText}\n\nTuliskan hasil pembelajaran formal secara langsung to the point tanpa kata "Hari ini saya", "kemudian", "lalu", dll:`;
+    const userMessage = `Berikut adalah aktivitas kerja yang dilakukan:\n${activitiesText}\n\nTuliskan hasil evaluasi kompetensi kerja formal secara langsung to the point tanpa kata "Hari ini saya", "kemudian", "lalu", dll:`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",

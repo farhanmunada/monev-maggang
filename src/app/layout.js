@@ -7,8 +7,8 @@ import SarcasticEmergencyAlert from "@/components/SarcasticEmergencyAlert";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
-  title: "InternTrack - Asisten Magang Cerdas [BRUTAL.EDITION]",
-  description: "Aplikasi monitoring dan evaluasi magang dengan gaya Neo-Brutalist",
+  title: "WorkTrack - Asisten Kerja Cerdas [BRUTAL.EDITION]",
+  description: "Aplikasi monitoring dan evaluasi aktivitas kerja harian dengan gaya Neo-Brutalist",
 };
 
 export default function RootLayout({ children }) {
@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
         {/* Neo-Brutalist Ticker Banner in Lime on Black */}
         <div className="marquee-banner bg-black text-[#a3e635] border-b-[2.5px] border-black overflow-hidden py-1.5 select-none font-mono text-[11px] font-black tracking-wider uppercase flex items-center">
           <div className="animate-marquee whitespace-nowrap flex items-center gap-8">
-            <span className="text-white">INTERNTRACK SYS.V2</span>
+            <span className="text-white">WORKTRACK SYS.V2</span>
             <span className="text-[#8b5cf6]">{"//"}</span>
             <span>HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
             <span className="text-[#8b5cf6]">{"//"}</span>
@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
             <span className="text-[#8b5cf6]">{"//"}</span>
             <span>VIOLET-LIME BRUTALIST PROTOCOL</span>
             <span className="text-[#8b5cf6]">{"//"}</span>
-            <span className="text-white">INTERNTRACK SYS.V2</span>
+            <span className="text-white">WORKTRACK SYS.V2</span>
             <span className="text-[#8b5cf6]">{"//"}</span>
             <span>HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
             <span className="text-[#8b5cf6]">{"//"}</span>

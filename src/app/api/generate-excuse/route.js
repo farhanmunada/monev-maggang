@@ -7,9 +7,9 @@ const FALLBACK_EXCUSES = {
     "Kondisi fisik kurang fit disertai gejala migrain dan demam tinggi, beristirahat untuk pemulihan optimal agar dapat kembali bekerja esok hari.",
   ],
   Izin: [
-    "Menghadiri agenda akademik wajib di kampus terkait koordinasi bimbingan laporan dan verifikasi administrasi program studi.",
-    "Menyelesaikan keperluan administrasi kependudukan dan keluarga mendesak yang tidak dapat diwakilkan pada jam kerja.",
-    "Menghadiri kegiatan akademik universitas yang bertepatan dengan jadwal kerja lapangan setelah berkoordinasi dengan pihak pembimbing.",
+    "Menyelesaikan keperluan administrasi kependudukan dan urusan keluarga mendesak yang tidak dapat diwakilkan pada jam kerja.",
+    "Menghadiri keperluan perbankan dan legalitas dokumen resmi keluarga yang bertepatan dengan jam operasional kantor.",
+    "Mengurus keperluan mendesak keluarga di luar kota setelah berkoordinasi dan mengajukan permohonan delegasi tugas.",
   ],
 };
 
@@ -25,7 +25,7 @@ export async function POST(req) {
       return NextResponse.json({ excuse: defaultFallback });
     }
 
-    const systemPrompt = `Anda adalah asisten mahasiswa magang yang bertugas menyusun 1-2 kalimat alasan resmi ketidakhadiran (${type}) yang sopan, formal, meyakinkan, dan profesional untuk diajukan ke pembimbing lapangan / HR kantor.
+    const systemPrompt = `Anda adalah asisten profesional yang bertugas menyusun 1-2 kalimat alasan resmi ketidakhadiran (${type}) yang sopan, formal, meyakinkan, dan profesional untuk diajukan ke HRD / atasan kantor.
 Aturan:
 1. Bahasa Indonesia formal, sopan, dan lugas.
 2. Tidak bertele-tele, maksimal 30 kata.

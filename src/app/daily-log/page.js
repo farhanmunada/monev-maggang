@@ -43,7 +43,7 @@ function DailyLogContent() {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [isDraftingAI, setIsDraftingAI] = useState(false);
   const [isApplyingDraft, setIsApplyingDraft] = useState(false);
-  const [draftRole, setDraftRole] = useState("Software Engineer / IT Developer Magang");
+  const [draftRole, setDraftRole] = useState("IT Specialist / Hardware & Network Support");
   const [draftTopic, setDraftTopic] = useState("");
   const [draftPreview, setDraftPreview] = useState(null);
 
@@ -715,7 +715,7 @@ function DailyLogContent() {
               <form onSubmit={handleGenerateDraft} className="p-5 space-y-4 overflow-y-auto">
                 <div>
                   <label className="block text-[11px] font-black uppercase text-black mb-1.5 font-mono">
-                    Posisi / Role Magang:
+                    Posisi / Role Pekerjaan:
                   </label>
                   <input
                     type="text"

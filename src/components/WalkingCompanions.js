@@ -45,7 +45,7 @@ const COMPANIONS = [
       "Status CPU stabil: 90% nunggu jam pulang.",
     ],
     urgentQuotes: [
-      "Bip bop! Jam kerja hampir usai tapi aktivitas masih 0. Mentor mulai curiga!",
+      "Bip bop! Jam kerja hampir usai tapi aktivitas masih 0. Atasan mulai curiga!",
       "Sistem mendeteksi kalori masuk tapi progres kerja belum terdokumentasi.",
       "Peringatan kritis: Tab jurnal masih menunggu diisi sebelum jam checkout pulang.",
     ],
@@ -69,7 +69,7 @@ const COMPANIONS = [
     role: "Bebek Quality Assurance",
     quotes: [
       "Kwek! Error di line 42 bukan salah kamu, salah takdir.",
-      "Tenang, mentor juga dulu waktu magang sering bingung.",
+      "Tenang, atasan juga dulu waktu awal kerja sering bingung.",
       "Sudah minum air putih belum? Ginjal kamu butuh asupan.",
       "Lagi nyari bug atau lagi ngelamunin masa depan?",
     ],

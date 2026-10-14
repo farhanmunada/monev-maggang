@@ -22,7 +22,7 @@ export default function BentoTelemetry({ telemetry }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-      {/* 1. Kehadiran Magang */}
+      {/* 1. Kehadiran Kerja */}
       <Link
         href="/attendance"
         className="brutal-card bg-white p-5 flex flex-col justify-between group cursor-pointer"

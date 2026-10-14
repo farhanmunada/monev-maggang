@@ -12,11 +12,11 @@ export default function BentoGreeting({ telemetry }) {
   const todayActsCount = telemetry?.today?.activitiesCount || 0;
 
   const sarcasticQuotes = [
-    "Dunia industri butuh hasil nyata, bukan alasan sinyal ngadat pas daily standup.",
-    "Buka IDE, minum air putih. Deadline gak bakal selesai kalau cuma dipelototin.",
-    "Status magang boleh junior, tapi kualitas logbook harus sekelas senior engineer.",
-    "Jurnal harian rapi, bimbingan lancar, tanda tangan laporan aman terkendali.",
-    "Ingat: dokumentasi rapi hari ini menyelamatkanmu dari amukan dosen penguji nanti.",
+    "Dunia kerja butuh hasil nyata, bukan alasan sinyal ngadat pas daily standup.",
+    "Buka IDE, minum kopi. Target kantor gak bakal selesai kalau cuma dipelototin.",
+    "Status kerja boleh santai, tapi kualitas report kerja harus sekelas principal engineer.",
+    "Logbook harian rapi, evaluasi KPI lancar, bonus akhir tahun aman terkendali.",
+    "Ingat: dokumentasi kerja rapi hari ini menyelamatkanmu dari amukan atasan & audit HRD.",
   ];
 
   const quoteIndex = new Date().getDate() % sarcasticQuotes.length;

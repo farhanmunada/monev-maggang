@@ -1,8 +1,8 @@
 export default function manifest() {
   return {
-    name: 'InternTrack - Monev Magang',
-    short_name: 'InternTrack',
-    description: 'Aplikasi pencatatan jurnal harian dan evaluasi magang.',
+    name: 'WorkTrack - Monev Kerja Harian',
+    short_name: 'WorkTrack',
+    description: 'Aplikasi pencatatan jurnal aktivitas kerja harian dan evaluasi performa.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
