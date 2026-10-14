@@ -116,12 +116,34 @@ export function calculateStreak(logs = []) {
  * Calculate comprehensive professional telemetry metrics
  */
 export function calculateTelemetry(logs = [], notes = []) {
-  const totalLogs = logs.length;
   const presentDays = logs.filter((l) => l.attendance === "Hadir").length;
   const leaveDays = logs.filter((l) => l.attendance === "Izin").length;
   const sickDays = logs.filter((l) => l.attendance === "Sakit").length;
-  const absentDays = logs.filter((l) => l.attendance === "Alfa").length;
+  let absentDays = logs.filter((l) => l.attendance === "Alfa").length;
 
+  const todayStr = formatYMD();
+  const logDates = new Set(logs.map((l) => l.date));
+
+  // Hitung otomatis hari kerja lampau (Senin - Sabtu) tanpa log/izin sejak tanggal log pertama
+  if (logs.length > 0) {
+    const sortedDates = Array.from(logDates).sort();
+    const [ey, em, ed] = sortedDates[0].split("-").map(Number);
+    const cursor = new Date(ey, em - 1, ed);
+    const [ty, tm, td] = todayStr.split("-").map(Number);
+    const todayDate = new Date(ty, tm - 1, td);
+
+    while (cursor < todayDate) {
+      if (cursor.getDay() !== 0) {
+        const cStr = formatYMD(cursor);
+        if (!logDates.has(cStr)) {
+          absentDays++;
+        }
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+  }
+
+  const totalLogs = presentDays + leaveDays + sickDays + absentDays;
   const attendanceRate = totalLogs > 0 ? Math.round((presentDays / totalLogs) * 100) : 100;
 
   let allActivities = [];
@@ -143,7 +165,6 @@ export function calculateTelemetry(logs = [], notes = []) {
   const knowledgeNotes = notes.filter((n) => n.type !== "task");
   const totalNotes = knowledgeNotes.length;
 
-  const todayStr = formatYMD();
   const todayLog = logs.find((l) => l.date === todayStr);
   const isLoggedToday = !!todayLog;
   const todayActivitiesCount = todayLog?.activities?.length || 0;

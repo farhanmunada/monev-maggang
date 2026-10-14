@@ -8,6 +8,7 @@ export default function BentoTelemetry({ telemetry }) {
   const presentDays = telemetry?.presentDays ?? 0;
   const leaveDays = telemetry?.leaveDays ?? 0;
   const sickDays = telemetry?.sickDays ?? 0;
+  const absentDays = telemetry?.absentDays ?? 0;
   const totalLogs = telemetry?.totalLogs ?? 0;
 
   const totalActs = telemetry?.totalActivitiesCount ?? 0;
@@ -72,6 +73,11 @@ export default function BentoTelemetry({ telemetry }) {
             {sickDays > 0 && (
               <span className="pixel-badge bg-white text-black">
                 {sickDays} SAKIT
+              </span>
+            )}
+            {absentDays > 0 && (
+              <span className="pixel-badge bg-black text-white">
+                {absentDays} ALFA
               </span>
             )}
           </div>

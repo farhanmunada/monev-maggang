@@ -82,29 +82,6 @@ export default function LogHeader({
     return cells;
   }, [pickerYear, pickerMonth]);
 
-  const ATTENDANCE_STATUSES = [
-    {
-      id: "Hadir",
-      label: "Hadir",
-      activeClass: "bg-[#a3e635] text-black border-2 border-black shadow-[2px_2px_0px_#000]",
-    },
-    {
-      id: "Izin",
-      label: "Izin",
-      activeClass: "bg-[#8b5cf6] text-white border-2 border-black shadow-[2px_2px_0px_#000]",
-    },
-    {
-      id: "Sakit",
-      label: "Sakit",
-      activeClass: "bg-white text-black border-2 border-black shadow-[2px_2px_0px_#000]",
-    },
-    {
-      id: "Alfa",
-      label: "Alfa",
-      activeClass: "bg-black text-white border-2 border-black shadow-[2px_2px_0px_#000]",
-    },
-  ];
-
   const todayStr = formatYMD();
 
   return (
@@ -181,29 +158,25 @@ export default function LogHeader({
           </div>
         </div>
 
-        {/* Attendance Segmented Selector */}
-        <div className="w-full md:w-auto">
-          <div className="text-[10px] font-mono font-black text-black uppercase tracking-wider mb-1.5 md:text-right">
+        {/* Presence Status Display */}
+        <div className="w-full md:w-auto flex flex-col md:items-end gap-1.5">
+          <div className="text-[10px] font-mono font-black text-black uppercase tracking-wider">
             [STATUS PRESENSI]
           </div>
-          <div className="bg-white p-1.5 rounded-xl border-2 border-black shadow-[3px_3px_0px_#000] flex gap-1.5 w-full md:w-auto">
-            {ATTENDANCE_STATUSES.map((status) => {
-              const isActive = attendance === status.id;
-              return (
-                <button
-                  type="button"
-                  key={status.id}
-                  onClick={() => onAttendanceChange(status.id)}
-                  className={`flex-1 md:flex-none px-3.5 py-1.5 rounded-lg text-xs font-mono font-black uppercase transition-all cursor-pointer ${
-                    isActive
-                      ? `${status.activeClass} -translate-y-0.5`
-                      : "border-2 border-transparent text-slate-700 hover:text-black hover:bg-white"
-                  }`}
-                >
-                  {status.label}
-                </button>
-              );
-            })}
+          <div className="flex items-center gap-2 flex-wrap">
+            {attendance === "Izin" ? (
+              <span className="px-3.5 py-1.5 rounded-xl bg-[#8b5cf6] text-white font-mono text-xs font-black border-2 border-black shadow-[2px_2px_0px_#000]">
+                IZIN RESMI (VIA PRESENSI)
+              </span>
+            ) : attendance === "Sakit" ? (
+              <span className="px-3.5 py-1.5 rounded-xl bg-white text-black font-mono text-xs font-black border-2 border-black shadow-[2px_2px_0px_#000]">
+                SAKIT (VIA PRESENSI)
+              </span>
+            ) : (
+              <span className="px-3.5 py-1.5 rounded-xl bg-[#a3e635] text-black font-mono text-xs font-black border-2 border-black shadow-[2px_2px_0px_#000]">
+                HADIR // KERJA AKTIF
+              </span>
+            )}
           </div>
         </div>
       </div>

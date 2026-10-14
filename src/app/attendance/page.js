@@ -15,6 +15,7 @@ import {
   Plus,
   Coins,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -33,6 +34,13 @@ export default function AttendancePage() {
   const [logs, setLogs] = useState([]);
   const [activeDate, setActiveDate] = useState(new Date());
   const [selectedDateStr, setSelectedDateStr] = useState(null);
+
+  // State pengajuan Izin / Sakit
+  const [isLeaveModalMode, setIsLeaveModalMode] = useState(false);
+  const [leaveType, setLeaveType] = useState("Izin");
+  const [leaveReason, setLeaveReason] = useState("");
+  const [isGeneratingExcuse, setIsGeneratingExcuse] = useState(false);
+  const [isSubmittingLeave, setIsSubmittingLeave] = useState(false);
 
   const fetchLogs = async () => {
     try {
@@ -82,6 +90,56 @@ export default function AttendancePage() {
     setActiveDate(new Date());
   };
 
+  const todayStr = formatYMD();
+
+  const handleGenerateExcuse = async () => {
+    try {
+      setIsGeneratingExcuse(true);
+      const res = await fetch("/api/generate-excuse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: leaveType, hint: leaveReason }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal membuat saran alasan");
+      setLeaveReason(data.excuse);
+      toast.success("Saran alasan formal berhasil dibuat!");
+    } catch (err) {
+      console.error("Gagal generate alasan:", err);
+      toast.error("Gagal generate alasan: " + err.message);
+    } finally {
+      setIsGeneratingExcuse(false);
+    }
+  };
+
+  const handleSubmitLeave = async (e) => {
+    if (e) e.preventDefault();
+    if (!selectedDateStr) return;
+    try {
+      setIsSubmittingLeave(true);
+      const payload = {
+        date: selectedDateStr,
+        attendance: leaveType,
+        obstacle: leaveReason.trim() || `Keperluan ${leaveType} resmi`,
+      };
+
+      const { error } = await supabase
+        .from("daily_logs")
+        .upsert([payload], { onConflict: "date" });
+
+      if (error) throw error;
+
+      toast.success(`Status ${leaveType} berhasil disimpan!`);
+      setIsLeaveModalMode(false);
+      await fetchLogs();
+    } catch (err) {
+      console.error("Gagal menyimpan izin:", err);
+      toast.error("Gagal menyimpan: " + err.message);
+    } finally {
+      setIsSubmittingLeave(false);
+    }
+  };
+
   // Month days calculation
   const calendarCells = useMemo(() => {
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
@@ -106,6 +164,8 @@ export default function AttendancePage() {
       const isPayday = day === 20;
 
       const log = logsByDate[dateStr] || null;
+      const isPastWorkingDay = !isSunday && dateStr < todayStr;
+      const isSystemAlfa = isPastWorkingDay && !log;
 
       cells.push({
         isBlank: false,
@@ -114,14 +174,15 @@ export default function AttendancePage() {
         dateStr,
         isSunday,
         isPayday,
+        isSystemAlfa,
         log,
       });
     }
 
     return cells;
-  }, [currentYear, currentMonth, logsByDate]);
+  }, [currentYear, currentMonth, logsByDate, todayStr]);
 
-  // Active Month Statistics
+  // Active Month Statistics (Termasuk Alfa otomatis dari hari kerja yang lewat tanpa log)
   const monthStats = useMemo(() => {
     const pad = (n) => String(n).padStart(2, "0");
     const prefix = `${currentYear}-${pad(currentMonth + 1)}`;
@@ -135,13 +196,23 @@ export default function AttendancePage() {
       else if (l.attendance === "Alfa") alfa++;
     });
 
-    const total = monthLogs.length;
-    const rate = total > 0 ? Math.round((hadir / total) * 100) : 100;
+    // Hitung otomatis hari kerja lampau yang tidak ada log sebagai Alfa
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dStr = `${currentYear}-${pad(currentMonth + 1)}-${pad(d)}`;
+      const dObj = new Date(currentYear, currentMonth, d);
+      const isSun = dObj.getDay() === 0;
+      if (!isSun && dStr < todayStr && !logsByDate[dStr]) {
+        alfa++;
+      }
+    }
 
-    return { hadir, izin, sakit, alfa, total, rate };
-  }, [currentYear, currentMonth, logs]);
+    const totalCalculated = hadir + izin + sakit + alfa;
+    const rate = totalCalculated > 0 ? Math.round((hadir / totalCalculated) * 100) : 100;
 
-  const todayStr = formatYMD();
+    return { hadir, izin, sakit, alfa, total: totalCalculated, rate };
+  }, [currentYear, currentMonth, logs, logsByDate, todayStr]);
+
   const selectedLog = selectedDateStr ? logsByDate[selectedDateStr] : null;
 
   return (
@@ -283,6 +354,8 @@ export default function AttendancePage() {
               let cellStyle = "border-2 border-black bg-white shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000]";
               if (isToday) {
                 cellStyle = "border-3 border-black bg-[#a3e635] shadow-[3px_3px_0px_#000]";
+              } else if (cell.isSystemAlfa) {
+                cellStyle = "border-2 border-black bg-white shadow-[2px_2px_0px_#000]";
               } else if (isPayday) {
                 cellStyle = "border-2 border-black bg-white shadow-[2px_2px_0px_#000]";
               }
@@ -290,7 +363,11 @@ export default function AttendancePage() {
               return (
                 <div
                   key={cell.key}
-                  onClick={() => setSelectedDateStr(cell.dateStr)}
+                  onClick={() => {
+                    setSelectedDateStr(cell.dateStr);
+                    setIsLeaveModalMode(false);
+                    setLeaveReason("");
+                  }}
                   className={`min-h-[75px] md:min-h-[105px] p-2 md:p-2.5 rounded-xl border transition-all flex flex-col justify-between cursor-pointer group select-none relative ${cellStyle}`}
                 >
                   {/* Top Bar of Cell: Day Number */}
@@ -351,6 +428,10 @@ export default function AttendancePage() {
                     ) : cell.isSunday ? (
                       <div className="text-[9px] md:text-[10px] text-slate-500 text-center py-1 font-mono font-bold">
                         LIBUR
+                      </div>
+                    ) : cell.isSystemAlfa ? (
+                      <div className="px-1.5 py-1 rounded text-[10px] font-black text-center truncate border border-black shadow-[1.5px_1.5px_0px_#000] bg-black text-white">
+                        ALFA
                       </div>
                     ) : (
                       <div className="text-[9px] font-mono font-bold text-slate-400 text-center py-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -434,120 +515,263 @@ export default function AttendancePage() {
                 </div>
               )}
 
-              {selectedLog ? (
+              {/* Mode Form Pengajuan Izin / Sakit */}
+              {isLeaveModalMode ? (
+                <form onSubmit={handleSubmitLeave} className="space-y-4 animate-brutal-pop">
+                  <div>
+                    <label className="block text-xs font-black uppercase text-black mb-1.5 font-mono">
+                      Tipe Ketidakhadiran
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setLeaveType("Izin")}
+                        className={`py-2 px-3 rounded-xl text-xs font-mono font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+                          leaveType === "Izin"
+                            ? "bg-[#8b5cf6] text-white shadow-[2.5px_2.5px_0px_#000] -translate-y-0.5"
+                            : "bg-white text-black hover:bg-[#a3e635]"
+                        }`}
+                      >
+                        [IZIN RESMI]
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLeaveType("Sakit")}
+                        className={`py-2 px-3 rounded-xl text-xs font-mono font-black uppercase tracking-wider border-2 border-black transition-all cursor-pointer ${
+                          leaveType === "Sakit"
+                            ? "bg-black text-white shadow-[2.5px_2.5px_0px_#000] -translate-y-0.5"
+                            : "bg-white text-black hover:bg-[#a3e635]"
+                        }`}
+                      >
+                        [KONDISI SAKIT]
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-black uppercase text-black font-mono">
+                        Alasan / Keterangan
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleGenerateExcuse}
+                        disabled={isGeneratingExcuse}
+                        className="pixel-badge bg-[#a3e635] hover:bg-[#84cc16] text-black border border-black cursor-pointer flex items-center gap-1 active:translate-x-0.5 active:translate-y-0.5"
+                      >
+                        {isGeneratingExcuse ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin stroke-[2.5]" />
+                            <span>Memproses...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-3 h-3 stroke-[2.5]" />
+                            <span>Saran Alasan AI</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <textarea
+                      rows={3}
+                      value={leaveReason}
+                      onChange={(e) => setLeaveReason(e.target.value)}
+                      placeholder={`Jelaskan alasan ${leaveType.toLowerCase()} secara formal...`}
+                      className="w-full bg-white border-2 border-black rounded-xl p-3 text-xs font-bold shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff] resize-none leading-relaxed"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsLeaveModalMode(false)}
+                      className="flex-1 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-black font-mono font-black uppercase text-xs border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingLeave}
+                      className="flex-1 py-2.5 rounded-xl bg-[#a3e635] hover:bg-[#84cc16] text-black font-mono font-black uppercase text-xs border-2 border-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer disabled:opacity-60 flex items-center justify-center gap-1.5"
+                    >
+                      {isSubmittingLeave ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
+                          <span>Menyimpan...</span>
+                        </>
+                      ) : (
+                        <span>Simpan {leaveType}</span>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              ) : selectedLog ? (
                 <>
                   {/* Status Presensi */}
                   <div className="flex items-center justify-between bg-white border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_#000]">
                     <span className="text-xs font-black uppercase text-black font-mono">Status Kehadiran</span>
-                    <span
-                      className={`px-3 py-1 rounded-lg text-xs font-black uppercase border-2 border-black shadow-[2px_2px_0px_#000] ${
-                        selectedLog.attendance === "Hadir"
-                          ? "bg-[#a3e635] text-black"
-                          : selectedLog.attendance === "Izin"
-                          ? "bg-[#8b5cf6] text-white"
-                          : selectedLog.attendance === "Sakit"
-                          ? "bg-white text-black"
-                          : "bg-black text-white"
-                      }`}
-                    >
-                      {selectedLog.attendance}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-3 py-1 rounded-lg text-xs font-black uppercase border-2 border-black shadow-[2px_2px_0px_#000] ${
+                          selectedLog.attendance === "Hadir"
+                            ? "bg-[#a3e635] text-black"
+                            : selectedLog.attendance === "Izin"
+                            ? "bg-[#8b5cf6] text-white"
+                            : selectedLog.attendance === "Sakit"
+                            ? "bg-white text-black"
+                            : "bg-black text-white"
+                        }`}
+                      >
+                        {selectedLog.attendance}
+                      </span>
+                      {(selectedLog.attendance === "Izin" || selectedLog.attendance === "Sakit") && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLeaveType(selectedLog.attendance);
+                            setLeaveReason(selectedLog.obstacle || "");
+                            setIsLeaveModalMode(true);
+                          }}
+                          className="pixel-badge bg-white hover:bg-[#a3e635] text-black border border-black cursor-pointer text-[10px]"
+                        >
+                          Ubah
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Rincian Kegiatan */}
-                  <div>
-                    <h4 className="text-xs font-black uppercase text-black mb-2 flex items-center gap-1.5 font-mono">
-                      <Clock className="w-3.5 h-3.5 stroke-[2.5]" />
-                      Rincian Kegiatan ({selectedLog.activities ? selectedLog.activities.length : 0})
-                    </h4>
-                    {!selectedLog.activities || selectedLog.activities.length === 0 ? (
-                      <p className="text-xs text-black font-mono font-bold bg-white p-3 rounded-xl border-2 border-dashed border-black">
-                        [TIDAK ADA RINCIAN KEGIATAN SPESIFIK TERCATAT HARI INI]
-                      </p>
-                    ) : (
-                      <div className="space-y-2.5">
-                        {selectedLog.activities.map((act) => (
-                          <div
-                            key={act.id}
-                            className="p-3 bg-white border-2 border-black rounded-xl text-xs space-y-1 shadow-[2px_2px_0px_#000]"
-                          >
-                            <div className="flex items-center gap-2">
-                              {act.time_range && (
-                                <span className="font-mono text-[10px] bg-[#8b5cf6] text-white border border-black px-2 py-0.5 rounded font-black">
-                                  {act.time_range}
-                                </span>
-                              )}
-                              <span className="font-black text-black">{act.title}</span>
-                            </div>
-                            {act.description && (
-                              <p className="text-[11px] font-mono text-slate-700 leading-relaxed font-bold">
-                                {act.description}
-                              </p>
-                            )}
+                  {/* Rincian Kegiatan (Hadir) atau Alasan (Izin/Sakit) */}
+                  {selectedLog.attendance === "Hadir" ? (
+                    <>
+                      <div>
+                        <h4 className="text-xs font-black uppercase text-black mb-2 flex items-center gap-1.5 font-mono">
+                          <Clock className="w-3.5 h-3.5 stroke-[2.5]" />
+                          Rincian Kegiatan ({selectedLog.activities ? selectedLog.activities.length : 0})
+                        </h4>
+                        {!selectedLog.activities || selectedLog.activities.length === 0 ? (
+                          <p className="text-xs text-black font-mono font-bold bg-white p-3 rounded-xl border-2 border-dashed border-black">
+                            [TIDAK ADA RINCIAN KEGIATAN SPESIFIK TERCATAT HARI INI]
+                          </p>
+                        ) : (
+                          <div className="space-y-2.5">
+                            {selectedLog.activities.map((act) => (
+                              <div
+                                key={act.id}
+                                className="p-3 bg-white border-2 border-black rounded-xl text-xs space-y-1 shadow-[2px_2px_0px_#000]"
+                              >
+                                <div className="flex items-center gap-2">
+                                  {act.time_range && (
+                                    <span className="font-mono text-[10px] bg-[#8b5cf6] text-white border border-black px-2 py-0.5 rounded font-black">
+                                      {act.time_range}
+                                    </span>
+                                  )}
+                                  <span className="font-black text-black">{act.title}</span>
+                                </div>
+                                {act.description && (
+                                  <p className="text-[11px] font-mono text-slate-700 leading-relaxed font-bold">
+                                    {act.description}
+                                  </p>
+                                )}
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        )}
                       </div>
-                    )}
-                  </div>
 
-                  {/* Refleksi Pembelajaran */}
-                  <div className="bg-white border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_#000]">
-                    <h5 className="text-xs font-black uppercase text-black mb-1.5 flex items-center gap-1.5 font-mono">
-                      <BookOpen className="w-3.5 h-3.5 stroke-[2.5]" /> Refleksi Pembelajaran
-                    </h5>
-                    <p className="text-xs font-mono font-bold text-slate-800 leading-relaxed whitespace-pre-wrap">
-                      {selectedLog.learning || (
-                        <span className="text-slate-500 italic">[BELUM ADA CATATAN PEMBELAJARAN]</span>
-                      )}
-                    </p>
-                  </div>
+                      {/* Refleksi Pembelajaran */}
+                      <div className="bg-white border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_#000]">
+                        <h5 className="text-xs font-black uppercase text-black mb-1.5 flex items-center gap-1.5 font-mono">
+                          <BookOpen className="w-3.5 h-3.5 stroke-[2.5]" /> Refleksi Pembelajaran
+                        </h5>
+                        <p className="text-xs font-mono font-bold text-slate-800 leading-relaxed whitespace-pre-wrap">
+                          {selectedLog.learning || (
+                            <span className="text-slate-500 italic">[BELUM ADA CATATAN PEMBELAJARAN]</span>
+                          )}
+                        </p>
+                      </div>
 
-                  {/* Kendala & Hambatan */}
-                  <div className="bg-white border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_#000]">
-                    <h5 className="text-xs font-black uppercase text-black mb-1.5 flex items-center gap-1.5 font-mono">
-                      <AlertCircle className="w-3.5 h-3.5 stroke-[2.5]" /> Kendala / Hambatan
-                    </h5>
-                    <p className="text-xs font-mono font-bold text-slate-800 leading-relaxed whitespace-pre-wrap">
-                      {selectedLog.obstacle || (
-                        <span className="text-slate-500 italic">[TIDAK ADA KENDALA TERCATAT]</span>
-                      )}
-                    </p>
-                  </div>
+                      {/* Kendala & Hambatan */}
+                      <div className="bg-white border-2 border-black p-3.5 rounded-xl shadow-[3px_3px_0px_#000]">
+                        <h5 className="text-xs font-black uppercase text-black mb-1.5 flex items-center gap-1.5 font-mono">
+                          <AlertCircle className="w-3.5 h-3.5 stroke-[2.5]" /> Kendala / Hambatan
+                        </h5>
+                        <p className="text-xs font-mono font-bold text-slate-800 leading-relaxed whitespace-pre-wrap">
+                          {selectedLog.obstacle || (
+                            <span className="text-slate-500 italic">[TIDAK ADA KENDALA TERCATAT]</span>
+                          )}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    /* Tampilan untuk Izin / Sakit */
+                    <div className="bg-white border-2 border-black p-4 rounded-xl shadow-[3px_3px_0px_#000] space-y-2">
+                      <div className="flex items-center gap-2 text-xs font-mono font-black uppercase">
+                        <AlertCircle className="w-4 h-4 stroke-[2.5] text-[#8b5cf6]" />
+                        <span>Keterangan Alasan {selectedLog.attendance}:</span>
+                      </div>
+                      <p className="text-xs font-mono font-bold text-black leading-relaxed whitespace-pre-wrap">
+                        &ldquo;{selectedLog.obstacle || "Tidak ada rincian alasan tertulis"}&rdquo;
+                      </p>
+                      <p className="text-[11px] font-mono text-slate-500 pt-1">
+                        *Dicatat via modul pengajuan presensi. Tidak memerlukan input log harian.
+                      </p>
+                    </div>
+                  )}
                 </>
               ) : (
-                /* Empty state when no log on selected date */
-                <div className="text-center py-10 space-y-3 bg-white border-2 border-dashed border-black rounded-xl p-6">
+                /* Empty / Belum Ada Log / Alfa State */
+                <div className="text-center py-8 space-y-3 bg-white border-2 border-dashed border-black rounded-xl p-5">
                   <div className="w-12 h-12 bg-white border-2 border-black rounded-xl flex items-center justify-center mx-auto text-black shadow-[2px_2px_0px_#000]">
                     <CalendarIcon className="w-6 h-6 stroke-[2.5]" />
                   </div>
                   <div>
-                    <h4 className="font-black text-black text-sm uppercase">Belum Ada Catatan Jurnal</h4>
+                    <h4 className="font-black text-black text-sm uppercase">
+                      {selectedDateStr < todayStr ? "[VONIS SISTEM: ALFA]" : "Belum Ada Catatan"}
+                    </h4>
                     <p className="text-xs font-mono font-bold text-slate-600 mt-1 max-w-xs mx-auto">
-                      Tidak ditemukan riwayat log kegiatan atau presensi pada tanggal{" "}
-                      <strong>{formatIndonesianDate(selectedDateStr)}</strong>.
+                      {selectedDateStr < todayStr
+                        ? `Tidak ada catatan log maupun izin pada ${formatIndonesianDate(selectedDateStr)}. Sistem menandai sebagai ALFA.`
+                        : `Pilih aksi presensi untuk ${formatIndonesianDate(selectedDateStr)}.`}
                     </p>
                   </div>
-                  <div className="pt-2">
+
+                  {/* Dual Action Buttons */}
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2">
                     <Link
                       href={`/daily-log?date=${selectedDateStr}`}
-                      className="brutal-btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white px-5 py-2.5 rounded-xl text-xs font-black inline-flex items-center gap-2"
+                      className="brutal-btn bg-[#a3e635] hover:bg-[#84cc16] text-black px-4 py-2 rounded-xl text-xs font-black inline-flex items-center gap-2 w-full sm:w-auto justify-center"
                     >
                       <Plus className="w-4 h-4 stroke-[3]" />
-                      <span>Buka Editor Jurnal</span>
+                      <span>Isi Jurnal (Hadir)</span>
                     </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsLeaveModalMode(true);
+                        setLeaveType("Izin");
+                        setLeaveReason("");
+                      }}
+                      className="brutal-btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white px-4 py-2 rounded-xl text-xs font-black inline-flex items-center gap-2 w-full sm:w-auto justify-center cursor-pointer"
+                    >
+                      <AlertCircle className="w-4 h-4 stroke-[2.5]" />
+                      <span>Ajukan Izin / Sakit</span>
+                    </button>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Modal Footer CTA */}
-            {selectedLog && (
-              <div className="p-4 border-t border-slate-100 bg-slate-50/60 flex justify-end gap-2">
+            {selectedLog && !isLeaveModalMode && (
+              <div className="p-3.5 border-t-2 border-black bg-white flex justify-end gap-2">
                 <Link
                   href={`/daily-log?date=${selectedDateStr}`}
-                  className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all"
+                  className="brutal-btn bg-white hover:bg-[#a3e635] text-black border-2 border-black px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-[2px_2px_0px_#000]"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <ExternalLink className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>Buka di Jurnal Harian</span>
                 </Link>
               </div>
