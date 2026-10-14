@@ -14,7 +14,7 @@ export default function ReflectionSection({
         <div>
           <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="pixel-badge bg-[#00f0ff] text-black">
+              <span className="pixel-badge bg-[#8b5cf6] text-white">
                 [REFLEKSI]
               </span>
               <label className="flex items-center gap-1.5 text-xs md:text-sm font-black uppercase text-black font-mono">
@@ -26,7 +26,7 @@ export default function ReflectionSection({
               type="button"
               onClick={onGenerateLearning}
               disabled={isGeneratingLearning}
-              className="flex items-center gap-1.5 px-3 py-1 text-xs font-black rounded-lg bg-[#ffe600] text-black border-2 border-black shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-50 transition-all cursor-pointer font-mono uppercase"
+              className="flex items-center gap-1.5 px-3 py-1 text-xs font-black rounded-lg bg-[#a3e635] text-black border-2 border-black shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-50 transition-all cursor-pointer font-mono uppercase"
               title="Rangkum refleksi dari daftar kegiatan menggunakan AI"
             >
               <Sparkles className={`w-3.5 h-3.5 stroke-[2.5] ${isGeneratingLearning ? "animate-spin" : ""}`} />
@@ -39,14 +39,14 @@ export default function ReflectionSection({
             onChange={onChange}
             rows={5}
             placeholder="Insight teknis, konsep arsitektur, atau pemahaman baru hari ini..."
-            className="w-full px-3.5 py-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee] resize-none text-xs font-bold leading-relaxed"
+            className="w-full px-3.5 py-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff] resize-none text-xs font-bold leading-relaxed"
           />
         </div>
         <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-black text-[10px] text-slate-700 font-mono font-bold">
           <span>MIN: 80 KARAKTER</span>
           <span
             className={`pixel-counter ${
-              learning.length >= 80 ? "bg-[#a3e635] text-black" : ""
+              learning.length >= 80 ? "bg-[#a3e635] text-black" : "bg-white text-black"
             }`}
           >
             {learning.length} CHAR
@@ -59,7 +59,7 @@ export default function ReflectionSection({
         <div>
           <div className="flex items-center justify-between mb-3 gap-2">
             <div className="flex items-center gap-2">
-              <span className="pixel-badge bg-[#ffe600] text-black">
+              <span className="pixel-badge bg-[#8b5cf6] text-white">
                 [KENDALA]
               </span>
               <label className="flex items-center gap-1.5 text-xs md:text-sm font-black uppercase text-black font-mono">
@@ -74,7 +74,7 @@ export default function ReflectionSection({
             onChange={onChange}
             rows={5}
             placeholder="Kendala teknis / bug yang dihadapi (kosongkan bila lancar)..."
-            className="w-full px-3.5 py-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#fbf7ee] resize-none text-xs font-bold leading-relaxed"
+            className="w-full px-3.5 py-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_#000] focus:outline-none focus:bg-[#faf5ff] resize-none text-xs font-bold leading-relaxed"
           />
         </div>
         <div className="mt-3 pt-2.5 border-t border-black text-[10px] text-slate-700 font-mono font-black">

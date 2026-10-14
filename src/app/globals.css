@@ -1,17 +1,20 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #f8f5ee;
+  --color-background: #ffffff;
   --color-foreground: #000000;
 
-  --color-primary-50: #fef08a;
-  --color-primary-100: #fde047;
-  --color-primary-500: #eab308;
-  --color-primary-600: #ca8a04;
-  --color-primary-700: #a16207;
+  --color-primary-50: #f5f3ff;
+  --color-primary-100: #ede9fe;
+  --color-primary-500: #8b5cf6;
+  --color-primary-600: #7c3aed;
+  --color-primary-700: #6d28d9;
+
+  --color-lime-400: #a3e635;
+  --color-lime-500: #84cc16;
 
   --color-card: #ffffff;
-  --color-secondary: #1e293b;
+  --color-secondary: #000000;
   --color-border: #000000;
 
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -24,21 +27,21 @@
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: #faf9f6;
+    color: #000000;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background-color: #ffe600;
+    background-color: #a3e635;
     color: #000000;
   }
 }
 
 /* ==========================================================================
-   NEO-BRUTALISM SURFACES & UTILITIES
+   NEO-BRUTALISM SURFACES & UTILITIES: WHITE + VIOLET + LIME + BLACK
    ========================================================================== */
 
 /* Main Brutalist Card */
@@ -48,9 +51,9 @@
   position: relative;
   background-color: #ffffff;
   border: 2.5px solid #000000;
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: 4px 4px 0px 0px #000000;
-  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .brutal-card:hover,
@@ -65,9 +68,9 @@
 .brutal-card-subtle {
   background-color: #ffffff;
   border: 2px solid #000000;
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 3px 3px 0px 0px #000000;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
 .glass-card-nested:hover,
@@ -78,13 +81,13 @@
 
 /* Brutalist Header / Nav Surface */
 .glass-nav {
-  background-color: #fffdf8;
+  background-color: #ffffff;
   border-bottom: 3px solid #000000;
   box-shadow: 0 4px 0px 0px rgba(0, 0, 0, 1);
 }
 
 .glass-subtle {
-  background-color: #fbf7ee;
+  background-color: #ffffff;
   border: 2px solid #000000;
   box-shadow: 2px 2px 0px 0px #000000;
 }
@@ -96,23 +99,23 @@
   justify-content: center;
   gap: 0.5rem;
   border: 2.5px solid #000000;
-  box-shadow: 3px 3px 0px 0px #000000;
+  box-shadow: 3.5px 3.5px 0px 0px #000000;
   border-radius: 12px;
-  font-weight: 800;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   font-size: 0.75rem;
-  padding: 0.5rem 1rem;
-  background-color: #ffe600;
-  color: #000000;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+  padding: 0.55rem 1.1rem;
+  background-color: #8b5cf6;
+  color: #ffffff;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.12s ease;
   cursor: pointer;
   user-select: none;
 }
 
 .brutal-btn:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px 0px #000000;
+  box-shadow: 5.5px 5.5px 0px 0px #000000;
 }
 
 .brutal-btn:active {
@@ -120,29 +123,40 @@
   box-shadow: 1px 1px 0px 0px #000000;
 }
 
+/* Lime variant */
+.brutal-btn-lime {
+  background-color: #a3e635;
+  color: #000000;
+}
+
+.brutal-btn-lime:hover {
+  background-color: #84cc16;
+}
+
 /* Inputs & Textareas */
 .brutal-input {
-  border: 2px solid #000000 !important;
+  border: 2.5px solid #000000 !important;
   border-radius: 10px !important;
   box-shadow: 3px 3px 0px 0px #000000 !important;
   background-color: #ffffff !important;
   color: #000000 !important;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
 .brutal-input:focus {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px 0px #000000 !important;
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: 4.5px 4.5px 0px 0px #000000 !important;
   outline: none !important;
+  background-color: #faf5ff !important;
 }
 
-/* Brutalist Badge & Pixel Badges */
+/* Brutalist Badges */
 .pixel-badge,
 .brutal-badge {
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 900;
+  letter-spacing: 0.05em;
   padding: 2.5px 8px;
   border-radius: 6px;
   border: 2px solid #000000;
@@ -164,7 +178,7 @@
   padding: 2px 8px;
   border-radius: 6px;
   border: 2px solid #000000;
-  background-color: #ffe600;
+  background-color: #a3e635;
   color: #000000;
   box-shadow: 2px 2px 0px 0px #000000;
 }
@@ -186,7 +200,7 @@
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: brutalMarquee 25s linear infinite;
+  animation: brutalMarquee 26s linear infinite;
 }
 
 .animate-marquee:hover {
@@ -213,7 +227,7 @@
 /* 3. Pop-In Entry */
 @keyframes brutalPop {
   0% {
-    transform: scale(0.94);
+    transform: scale(0.92);
     opacity: 0;
   }
   70% {
@@ -226,10 +240,10 @@
 }
 
 .animate-brutal-pop {
-  animation: brutalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: brutalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 4. Ambient Walking Animation Keyframes */
+/* 4. Walking Bob */
 @keyframes walkBob {
   0%, 100% {
     transform: translateY(0);
@@ -243,26 +257,25 @@
   animation: walkBob 0.5s infinite ease-in-out;
 }
 
-/* Chunky Retro Scrollbar */
+/* Chunky Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8f5ee;
+  background: #ffffff;
   border-left: 2px solid #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #000000;
-  border: 1px solid #ffe600;
+  background: #8b5cf6;
+  border: 2px solid #000000;
   border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffe600;
-  border-color: #000000;
+  background: #a3e635;
 }
 
 /* Print Styles */

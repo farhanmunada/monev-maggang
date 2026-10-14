@@ -19,7 +19,7 @@ export default function ActivityForm({
         <h4 className="font-black text-xs text-black flex items-center gap-1.5 font-mono uppercase">
           <Clock className="w-3.5 h-3.5 stroke-[2.5]" /> [INPUT KEGIATAN BARU]
         </h4>
-        <span className="pixel-badge bg-[#ffe600] text-black">
+        <span className="pixel-badge bg-[#8b5cf6] text-white">
           AUTO.TIME
         </span>
       </div>

@@ -14,32 +14,32 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id" suppressHydrationWarning>
       <body
-        className="bg-[#f8f5ee] text-black font-sans antialiased pb-24 md:pb-16 selection:bg-[#ffe600] selection:text-black min-h-screen relative overflow-x-hidden"
+        className="bg-[#faf9f6] text-black font-sans antialiased pb-24 md:pb-16 selection:bg-[#a3e635] selection:text-black min-h-screen relative overflow-x-hidden"
         suppressHydrationWarning
       >
         {/* Retro-Engineering Technical Dot-Grid Background */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none">
-          <div className="absolute inset-0 bg-[radial-gradient(#000000_1.5px,transparent_1.5px)] [background-size:20px_20px] opacity-12" />
+          <div className="absolute inset-0 bg-[radial-gradient(#000000_1.5px,transparent_1.5px)] [background-size:22px_22px] opacity-10" />
         </div>
 
-        {/* Neo-Brutalist Ticker Banner */}
-        <div className="marquee-banner bg-black text-[#ffe600] border-b-2 border-black overflow-hidden py-1 select-none font-mono text-[11px] font-black tracking-wider uppercase flex items-center">
+        {/* Neo-Brutalist Ticker Banner in Lime on Black */}
+        <div className="marquee-banner bg-black text-[#a3e635] border-b-[2.5px] border-black overflow-hidden py-1.5 select-none font-mono text-[11px] font-black tracking-wider uppercase flex items-center">
           <div className="animate-marquee whitespace-nowrap flex items-center gap-8">
-            <span>INTERNTRACK SYS.V2</span>
-            <span>{"//"}</span>
+            <span className="text-white">INTERNTRACK SYS.V2</span>
+            <span className="text-[#8b5cf6]">{"//"}</span>
             <span>HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
-            <span>{"//"}</span>
-            <span>ZERO DOWNTIME — TRACK EVERY GRIND</span>
-            <span>{"//"}</span>
-            <span>NEO-BRUTALIST PROTOCOL ACTIVATED</span>
-            <span>{"//"}</span>
-            <span>INTERNTRACK SYS.V2</span>
-            <span>{"//"}</span>
+            <span className="text-[#8b5cf6]">{"//"}</span>
+            <span className="text-white">ZERO DOWNTIME — TRACK EVERY GRIND</span>
+            <span className="text-[#8b5cf6]">{"//"}</span>
+            <span>VIOLET-LIME BRUTALIST PROTOCOL</span>
+            <span className="text-[#8b5cf6]">{"//"}</span>
+            <span className="text-white">INTERNTRACK SYS.V2</span>
+            <span className="text-[#8b5cf6]">{"//"}</span>
             <span>HARDWARE MAINTENANCE & SOFTWARE DEV LOGS</span>
-            <span>{"//"}</span>
-            <span>ZERO DOWNTIME — TRACK EVERY GRIND</span>
-            <span>{"//"}</span>
-            <span>NEO-BRUTALIST PROTOCOL ACTIVATED</span>
+            <span className="text-[#8b5cf6]">{"//"}</span>
+            <span className="text-white">ZERO DOWNTIME — TRACK EVERY GRIND</span>
+            <span className="text-[#8b5cf6]">{"//"}</span>
+            <span>VIOLET-LIME BRUTALIST PROTOCOL</span>
           </div>
         </div>
 

@@ -82,15 +82,15 @@ export default function NotesPage() {
   const handleDelete = (id) => {
     toast(
       (t) => (
-        <div className="flex flex-col gap-2.5">
-          <span className="font-semibold text-xs text-slate-900">Hapus catatan ini secara permanen?</span>
+        <div className="flex flex-col gap-2.5 font-mono">
+          <span className="font-black text-xs text-black">HAPUS CATATAN INI PERMANEN?</span>
           <div className="flex gap-2 justify-end">
             <button
               type="button"
               onClick={() => toast.dismiss(t.id)}
-              className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs hover:bg-slate-200 cursor-pointer"
+              className="px-3 py-1 bg-white border border-black text-black rounded text-xs font-bold hover:bg-slate-100 cursor-pointer"
             >
-              Batal
+              BATAL
             </button>
             <button
               type="button"
@@ -106,9 +106,9 @@ export default function NotesPage() {
                   toast.error("Gagal menghapus catatan.");
                 }
               }}
-              className="px-2.5 py-1 bg-rose-600 text-white rounded-lg text-xs font-semibold hover:bg-rose-700 cursor-pointer"
+              className="px-3 py-1 bg-[#ff6b6b] text-black border border-black rounded text-xs font-black shadow-[1.5px_1.5px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
             >
-              Hapus
+              HAPUS
             </button>
           </div>
         </div>
@@ -138,15 +138,15 @@ export default function NotesPage() {
   return (
     <div className="space-y-6 md:space-y-7 pb-12">
       {/* Glanceable Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-white/60">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-3 border-black">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="pixel-badge text-indigo-700 bg-indigo-50/90 border-indigo-300">
+            <span className="pixel-badge bg-[#8b5cf6] text-white">
               KNOWLEDGE.VAULT
             </span>
-            <span className="text-[11px] font-mono text-slate-400">Arsip Snippet & Catatan</span>
+            <span className="text-[11px] font-mono font-bold text-slate-700">Arsip Snippet & Catatan</span>
           </div>
-          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-xl md:text-3xl font-black text-black uppercase tracking-tight">
             Knowledge Vault
           </h1>
         </div>
@@ -154,27 +154,27 @@ export default function NotesPage() {
         <button
           type="button"
           onClick={() => openModal()}
-          className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-950 text-white px-4 py-2 rounded-xl shadow-xs transition-all active:scale-95 font-bold text-xs cursor-pointer w-fit"
+          className="brutal-btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white text-xs px-5 py-2.5 rounded-xl font-black flex items-center gap-2 cursor-pointer shadow-[3.5px_3.5px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 stroke-[3]" />
           <span>Buat Catatan</span>
         </button>
       </header>
 
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar with Neo-Brutalist Layout */}
       <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-3 text-black stroke-[2.5]" />
           <input
             type="text"
             placeholder="Cari materi atau keyword catatan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 bg-white/70 backdrop-blur-md border border-white/80 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 shadow-2xs font-sans"
+            className="w-full pl-10 pr-3.5 py-2.5 bg-white border-2 border-black rounded-xl text-xs font-mono font-bold text-black shadow-[3px_3px_0px_#000] focus:bg-[#faf5ff] focus:outline-none transition-all"
           />
         </div>
 
-        <div className="flex flex-wrap gap-1.5 items-center">
+        <div className="flex flex-wrap gap-2 items-center">
           {[
             { id: "all", label: "[SEMUA]" },
             { id: "materi", label: "[MATERI]" },
@@ -186,10 +186,10 @@ export default function NotesPage() {
               type="button"
               key={cat.id}
               onClick={() => setCategoryFilter(cat.id)}
-              className={`pixel-badge transition-all cursor-pointer ${
+              className={`pixel-badge transition-all cursor-pointer font-bold border-2 border-black shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
                 categoryFilter === cat.id
-                  ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
-                  : "text-slate-600 bg-white/70 border-slate-300 hover:bg-white"
+                  ? "bg-[#8b5cf6] text-white -translate-y-0.5 shadow-[3px_3px_0px_#000]"
+                  : "text-black bg-white hover:bg-[#a3e635]"
               }`}
             >
               {cat.label}

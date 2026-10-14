@@ -429,17 +429,19 @@ function DailyLogContent() {
         />
       </section>
 
-      {/* Reflections & Obstacles */}
-      <ReflectionSection
-        learning={logData.learning}
-        obstacle={logData.obstacle}
-        onChange={handleLogChange}
-        onGenerateLearning={handleGenerateLearning}
-        isGeneratingLearning={isGeneratingLearning}
-      />
+      {/* Reflections & Obstacles with Bottom Spacing Buffer */}
+      <div className="pb-8">
+        <ReflectionSection
+          learning={logData.learning}
+          obstacle={logData.obstacle}
+          onChange={handleLogChange}
+          onGenerateLearning={handleGenerateLearning}
+          isGeneratingLearning={isGeneratingLearning}
+        />
+      </div>
 
-      {/* Floating / Sticky Save Bar */}
-      <div className="sticky bottom-6 z-20 flex items-center justify-between brutal-card bg-white p-3.5 md:p-4 rounded-2xl shadow-[5px_5px_0px_#000]">
+      {/* Floating / Sticky Save Bar with Distinct Top Margin */}
+      <div className="sticky bottom-6 z-20 mt-8 mb-4 flex items-center justify-between brutal-card bg-white p-3.5 md:p-4 rounded-2xl shadow-[5px_5px_0px_#000]">
         <div className="text-xs text-black font-mono font-bold hidden sm:flex items-center gap-2">
           {lastSavedAt ? (
             <span className="flex items-center gap-1.5 text-black bg-[#a3e635] px-2.5 py-1 rounded border border-black shadow-[1.5px_1.5px_0px_#000]">

@@ -43,7 +43,7 @@ export default function BottomNav() {
             <div
               className={`p-1 rounded-md transition-all ${
                 isActive
-                  ? "bg-[#ffe600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] -translate-y-1"
+                  ? "bg-[#a3e635] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] -translate-y-1"
                   : "text-slate-700"
               }`}
             >

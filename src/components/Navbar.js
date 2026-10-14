@@ -30,7 +30,7 @@ export default function Navbar() {
         {/* Left: Brand */}
         <div className="flex-1 flex items-center justify-start">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg overflow-hidden border-2 border-black bg-[#ffe600] flex items-center justify-center shadow-[2px_2px_0px_0px_#000] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[3px_3px_0px_0px_#000] transition-all">
+            <div className="w-8 h-8 rounded-lg overflow-hidden border-2 border-black bg-[#8b5cf6] flex items-center justify-center shadow-[2px_2px_0px_0px_#000] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[3px_3px_0px_0px_#000] transition-all">
               <Image
                 src="/icon.png"
                 alt="InternTrack Logo"
@@ -43,7 +43,7 @@ export default function Navbar() {
               <span className="font-black text-sm text-black tracking-tight uppercase">
                 InternTrack
               </span>
-              <span className="pixel-badge bg-[#ffe600] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000] hidden lg:inline-flex text-[10px]">
+              <span className="pixel-badge bg-[#a3e635] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000] hidden lg:inline-flex text-[10px]">
                 SYS.V2
               </span>
             </div>
@@ -66,12 +66,12 @@ export default function Navbar() {
                   href={link.href}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                     isActive
-                      ? "bg-[#ffe600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] -translate-y-0.5"
-                      : "text-slate-700 border-2 border-transparent hover:border-black hover:bg-[#fbf7ee] hover:text-black hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_#000]"
+                      ? "bg-[#8b5cf6] text-white border-2 border-black shadow-[2px_2px_0px_0px_#000] -translate-y-0.5"
+                      : "text-slate-800 border-2 border-transparent hover:border-black hover:bg-[#a3e635] hover:text-black hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_#000]"
                   }`}
                 >
                   <Icon
-                    className="w-3.5 h-3.5 text-black"
+                    className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-black"}`}
                     strokeWidth={isActive ? 2.5 : 2}
                   />
                   <span>{link.name}</span>

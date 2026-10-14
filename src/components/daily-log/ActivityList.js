@@ -30,7 +30,7 @@ export default function ActivityList({
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="pixel-badge bg-[#00f0ff] text-black">
+          <span className="pixel-badge bg-[#8b5cf6] text-white">
             [ACTIVITIES]
           </span>
           <h2 className="text-sm md:text-base font-black uppercase text-black flex items-center gap-2 tracking-tight">
@@ -45,7 +45,7 @@ export default function ActivityList({
         <button
           type="button"
           onClick={onToggleAdd}
-          className="brutal-btn bg-[#ffe600] text-black hover:bg-[#ffd700] text-xs px-3.5 py-1.5 rounded-xl font-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 cursor-pointer"
+          className="brutal-btn bg-[#a3e635] hover:bg-[#84cc16] text-black text-xs px-3.5 py-1.5 rounded-xl font-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 cursor-pointer"
         >
           {isAddingActivity ? (
             <>
@@ -69,7 +69,7 @@ export default function ActivityList({
             key={tpl}
             type="button"
             onClick={() => onSelectTemplate(tpl)}
-            className="pixel-badge bg-white text-black border-2 border-black shadow-[2px_2px_0px_#000] hover:bg-[#ffe600] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer font-bold"
+            className="pixel-badge bg-white text-black border-2 border-black shadow-[2px_2px_0px_#000] hover:bg-[#a3e635] hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer font-bold"
           >
             + {tpl}
           </button>
@@ -83,7 +83,7 @@ export default function ActivityList({
           <button
             type="button"
             onClick={onToggleAdd}
-            className="text-black font-black uppercase tracking-wider text-xs bg-[#ffe600] px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none inline-flex items-center gap-1 cursor-pointer"
+            className="text-black font-black uppercase tracking-wider text-xs bg-[#a3e635] px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none inline-flex items-center gap-1 cursor-pointer"
           >
             + Catat Kegiatan Pertama
           </button>
@@ -168,7 +168,7 @@ export default function ActivityList({
                 className="flex flex-col md:flex-row gap-3 p-3.5 md:p-4 border-2 border-black rounded-xl hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#000] transition-all bg-white shadow-[3px_3px_0px_0px_#000] relative group"
               >
                 <div className="flex items-center gap-2 md:flex-col md:items-start flex-shrink-0">
-                  <span className="pixel-badge bg-[#ffe600] text-black border-2 border-black shadow-[1.5px_1.5px_0px_#000]">
+                  <span className="pixel-badge bg-[#a3e635] text-black border-2 border-black shadow-[1.5px_1.5px_0px_#000]">
                     {act.time_range || "ALL.DAY"}
                   </span>
                 </div>
@@ -189,7 +189,7 @@ export default function ActivityList({
                   <button
                     type="button"
                     onClick={() => onStartEdit(act)}
-                    className="p-1 text-black hover:bg-[#ffe600] rounded border border-transparent hover:border-black cursor-pointer transition-colors"
+                    className="p-1 text-black hover:bg-[#a3e635] rounded border border-transparent hover:border-black cursor-pointer transition-colors"
                     title="Edit kegiatan"
                   >
                     <Pencil className="w-3.5 h-3.5 stroke-[2.5]" />
